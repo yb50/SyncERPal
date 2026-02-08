@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: syncerpal-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: syncerpal
+      POSTGRES_USER: syncerpal
+      POSTGRES_PASSWORD: syncerpal
+    volumes:
+      - syncerpal_db_data:/var/lib/postgresql/data
+
+volumes:
+  syncerpal_db_data:

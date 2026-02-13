@@ -1,19 +1,23 @@
-package com.syncerpal.backend.movement;
+package com.syncerpal.backend.movement.requests;
 
 import java.util.UUID;
 
-public class StockInRequest {
-
+public class TransferRequest {
   private UUID itemId;
+  private UUID fromLocationId;
   private UUID toLocationId;
   private int quantity;
   private String note;
 
-  public StockInRequest() {
+  public TransferRequest() {
   }
 
   public UUID getItemId() {
     return itemId;
+  }
+
+  public UUID getFromLocationId() {
+    return fromLocationId;
   }
 
   public UUID getToLocationId() {
@@ -32,6 +36,10 @@ public class StockInRequest {
     this.itemId = itemId;
   }
 
+  public void setFromLocationId(UUID fromLocationId) {
+    this.fromLocationId = fromLocationId;
+  }
+
   public void setToLocationId(UUID toLocationId) {
     this.toLocationId = toLocationId;
   }
@@ -40,7 +48,7 @@ public class StockInRequest {
     this.quantity = quantity;
   }
 
-  public void setNote(String note) {  
-    this.note = note;  
+  public void setNote(String note) {
+    this.note = note;
   }
 }

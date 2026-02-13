@@ -11,24 +11,118 @@ import java.util.UUID;
 public class MovementService {
 
   private final InventoryBalanceRepository inventoryBalanceRepository;
+  private final StockMovementRepository stockMovementRepository;
 
-  public MovementService(InventoryBalanceRepository inventoryBalanceRepository) {
+  public MovementService(
+      InventoryBalanceRepository inventoryBalanceRepository,
+      StockMovementRepository stockMovementRepository) {
     this.inventoryBalanceRepository = inventoryBalanceRepository;
+    this.stockMovementRepository = stockMovementRepository;
+  }
+
+  private String newReferenceNo() {
+    return "TX-" + System.currentTimeMillis();
+  }
+
+  private InventoryBalance getBalance(UUID itemId, UUID locationId) {
+    return inventoryBalanceRepository
+        .findByItemIdAndLocationId(itemId, locationId)
+        .orElseThrow(() -> new IllegalArgumentException("Balance row not found for item/location"));
+  }
+
+  private StockMovement saveMovement(String type, UUID itemId, UUID fromLocationId, UUID toLocationId, int quantity, String note) {
+    StockMovement m = new StockMovement();
+    m.setId(UUID.randomUUID());
+    m.setReferenceNo(newReferenceNo());
+    m.setType(type);
+    m.setItemId(itemId);
+    m.setFromLocationId(fromLocationId);
+    m.setToLocationId(toLocationId);
+    m.setQuantity(quantity);
+    m.setNote(note);
+    return stockMovementRepository.save(m);
   }
 
   @Transactional
-  public InventoryBalance stockIn(UUID itemId, UUID toLocationId, int quantity) {
-    if (quantity <= 0) {
+  public InventoryBalance stockIn(UUID itemId, UUID toLocationId, int quantity, String note) {
+    if (quantity <= 0)
       throw new IllegalArgumentException("Quantity must be greater than 0");
+
+    InventoryBalance toBal = getBalance(itemId, toLocationId);
+    toBal.setQuantity(toBal.getQuantity() + quantity);
+    inventoryBalanceRepository.save(toBal);
+
+    saveMovement("IN", itemId, null, toLocationId, quantity, note);
+
+    return toBal;
+  }
+
+  @Transactional
+  public InventoryBalance stockOut(UUID itemId, UUID fromLocationId, int quantity, String note) {
+    if (quantity <= 0)
+      throw new IllegalArgumentException("Quantity must be greater than 0");
+
+    InventoryBalance fromBal = getBalance(itemId, fromLocationId);
+    if (fromBal.getQuantity() < quantity) {
+      throw new IllegalArgumentException("Insufficient stock for OUT");
     }
 
-    InventoryBalance balance = inventoryBalanceRepository
-            .findByItemIdAndLocationId(itemId, toLocationId)
-            .orElseThrow(() -> new IllegalArgumentException("Balance row not found for item/location"));
+    fromBal.setQuantity(fromBal.getQuantity() - quantity);
+    inventoryBalanceRepository.save(fromBal);
 
-    int newQty = balance.getQuantity() + quantity;
-    balance.setQuantity(newQty);
+    saveMovement("OUT", itemId, fromLocationId, null, quantity, note);
 
-    return inventoryBalanceRepository.save(balance);
+    return fromBal;
+  }
+
+  @Transactional
+  public void transfer(UUID itemId, UUID fromLocationId, UUID toLocationId, int quantity, String note) {
+    if (quantity <= 0)
+      throw new IllegalArgumentException("Quantity must be greater than 0");
+    if (fromLocationId.equals(toLocationId)) {
+      throw new IllegalArgumentException("From and To locations must be different");
+    }
+
+    InventoryBalance fromBal = getBalance(itemId, fromLocationId);
+    InventoryBalance toBal = getBalance(itemId, toLocationId);
+
+    if (fromBal.getQuantity() < quantity) {
+      throw new IllegalArgumentException("Insufficient stock for TRANSFER");
+    }
+
+    fromBal.setQuantity(fromBal.getQuantity() - quantity);
+    toBal.setQuantity(toBal.getQuantity() + quantity);
+
+    inventoryBalanceRepository.save(fromBal);
+    inventoryBalanceRepository.save(toBal);
+
+    saveMovement("TRANSFER", itemId, fromLocationId, toLocationId, quantity, note);
+  }
+
+  @Transactional
+  public InventoryBalance adjust(UUID itemId, UUID locationId, int quantity, String direction, String note) {
+    if (quantity <= 0)
+      throw new IllegalArgumentException("Quantity must be greater than 0");
+    if (direction == null)
+      throw new IllegalArgumentException("Direction is required");
+
+    InventoryBalance bal = getBalance(itemId, locationId);
+
+    if ("INCREASE".equalsIgnoreCase(direction)) {
+      bal.setQuantity(bal.getQuantity() + quantity);
+    } else if ("DECREASE".equalsIgnoreCase(direction)) {
+      if (bal.getQuantity() < quantity) {
+        throw new IllegalArgumentException("Insufficient stock for ADJUST decrease");
+      }
+      bal.setQuantity(bal.getQuantity() - quantity);
+    } else {
+      throw new IllegalArgumentException("Direction must be INCREASE or DECREASE");
+    }
+
+    inventoryBalanceRepository.save(bal);
+    
+    saveMovement("ADJUST", itemId, locationId, null, quantity, note + " (" + direction + ")");
+
+    return bal;
   }
 }

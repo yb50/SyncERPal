@@ -5,23 +5,30 @@ import com.syncerpal.backend.inventory.InventoryBalanceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.syncerpal.backend.security.SecurityUtils;
+import com.syncerpal.backend.user.User;
+import com.syncerpal.backend.user.UserRepository;
+
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class MovementService {
 
   private final InventoryBalanceRepository inventoryBalanceRepository;
   private final StockMovementRepository stockMovementRepository;
+  private final UserRepository userRepository;
 
   public MovementService(
       InventoryBalanceRepository inventoryBalanceRepository,
-      StockMovementRepository stockMovementRepository) {
+      StockMovementRepository stockMovementRepository,
+      UserRepository userRepository) {
     this.inventoryBalanceRepository = inventoryBalanceRepository;
     this.stockMovementRepository = stockMovementRepository;
+    this.userRepository = userRepository;
   }
 
   private String newReferenceNo() {
-    return "TX-" + System.currentTimeMillis();
   }
 
   private InventoryBalance getBalance(UUID itemId, UUID locationId) {
@@ -30,7 +37,13 @@ public class MovementService {
         .orElseThrow(() -> new IllegalArgumentException("Balance row not found for item/location"));
   }
 
-  private StockMovement saveMovement(String type, UUID itemId, UUID fromLocationId, UUID toLocationId, int quantity, String note) {
+  private StockMovement saveMovement(
+      String type,
+      UUID itemId,
+      UUID fromLocationId,
+      UUID toLocationId,
+      int quantity,
+      String note) {
     StockMovement m = new StockMovement();
     m.setId(UUID.randomUUID());
     m.setReferenceNo(newReferenceNo());
@@ -40,6 +53,15 @@ public class MovementService {
     m.setToLocationId(toLocationId);
     m.setQuantity(quantity);
     m.setNote(note);
+
+    String username = SecurityUtils.getCurrentUsername();
+    if (username != null) {
+      User u = userRepository.findByUsername(username).orElse(null);
+      if (u != null) {
+        m.setCreatedByUserId(u.getId());
+      }
+    }
+
     return stockMovementRepository.save(m);
   }
 
@@ -120,7 +142,7 @@ public class MovementService {
     }
 
     inventoryBalanceRepository.save(bal);
-    
+
     saveMovement("ADJUST", itemId, locationId, null, quantity, note + " (" + direction + ")");
 
     return bal;

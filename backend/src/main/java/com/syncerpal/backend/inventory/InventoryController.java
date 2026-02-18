@@ -2,6 +2,7 @@ package com.syncerpal.backend.inventory;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -14,8 +15,9 @@ public class InventoryController {
     this.inventoryBalanceRepository = inventoryBalanceRepository;
   }
 
-  @GetMapping("/api/inventory")
-  public List<InventoryBalance> getAllBalances() {
-    return inventoryBalanceRepository.findAll();
+  @PreAuthorize("hasAnyRole('ADMIN','WORKER')")  
+  @GetMapping("/api/inventory")  
+  public List<InventoryBalance> getAllBalances() {  
+    return inventoryBalanceRepository.findAll();  
   }
 }

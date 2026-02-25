@@ -24,19 +24,14 @@ export default function HomePage() {
   const [balanceLocationFilter, setBalanceLocationFilter] = useState("");
   const [balanceSearch, setBalanceSearch] = useState("");
   const [lowOnly, setLowOnly] = useState(false);
-
-
+  
   const { t, lang, formatNumber, formatDate } = useI18n();
 
-  // Movement paging + filtering (Step: pagination + filtering)
   const [movementPage, setMovementPage] = useState(0);
   const [movementTypeFilter, setMovementTypeFilter] = useState("");
   const [movementItemFilter, setMovementItemFilter] = useState("");
   const [movementLocationFilter, setMovementLocationFilter] = useState("");
-
-  // Page metadata returned by backend
   const [movementTotalPages, setMovementTotalPages] = useState(1);
-
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -68,10 +63,8 @@ export default function HomePage() {
         token
       );
 
-      // Refresh tables after success
       await loadAll();
 
-      // Reset a few fields
       setQuantity(1);
       setNote("");
     } catch (err) {
@@ -98,7 +91,6 @@ export default function HomePage() {
     setItems(its);
     setBalances(bals);
 
-    // movPage is a Spring Page object
     setMovements(movPage.content);
     setMovementTotalPages(movPage.totalPages);
 
@@ -106,7 +98,6 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAll().catch(() => { });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movementPage, movementTypeFilter, movementItemFilter, movementLocationFilter]);
 
 
@@ -127,6 +118,85 @@ export default function HomePage() {
   function locationById(id) {
     return locations.find((l) => l.id === id);
   }
+
+  function getItemThreshold(itemId) {
+    const it = itemById(itemId);
+    if (!it) return null;
+    return typeof it.lowStockThreshold === "number" ? it.lowStockThreshold : null;
+  }
+
+  function isLowStock(balanceRow) {
+    const threshold = getItemThreshold(balanceRow.itemId);
+    if (threshold === null) return false;
+    return balanceRow.quantity <= threshold;
+  }
+
+  function balanceMatchesSearch(balanceRow) {
+    const it = itemById(balanceRow.itemId);
+    if (!it) return true;
+
+    const q = balanceSearch.trim().toLowerCase();
+    if (!q) return true;
+
+    const name = (lang === "ja" ? it.nameJa : it.nameEn) || "";
+    const sku = it.sku || "";
+
+    return (
+      sku.toLowerCase().includes(q) ||
+      name.toLowerCase().includes(q)
+    );
+  }
+
+  const filteredBalances = balances
+    .filter((b) => {
+      if (balanceLocationFilter && b.locationId !== balanceLocationFilter) return false;
+      if (lowOnly && !isLowStock(b)) return false;
+      if (!balanceMatchesSearch(b)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const aLow = isLowStock(a) ? 1 : 0;
+      const bLow = isLowStock(b) ? 1 : 0;
+      return bLow - aLow;
+    });
+
+  function movementTypeLabel(type) {
+    if (type === "IN") return t("type_in");
+    if (type === "OUT") return t("type_out");
+    if (type === "TRANSFER") return t("type_transfer");
+    if (type === "ADJUST") return t("type_adjust");
+    return type;
+  }
+
+  function userLabel(username) {
+    if (!username) return "-";
+
+    if (username === "admin") return t("movement_table_role_admin");
+    if (username === "worker") return t("movement_table_role_worker");
+
+    return username;
+  }
+
+  function downloadCSV(filename, rows) {
+    const csv = rows
+      .map(row =>
+        row
+          .map(v => `"${String(v ?? "").replace(/"/g, '""')}"`)
+          .join(",")
+      )
+      .join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
 
   return (
     <AppLayout>

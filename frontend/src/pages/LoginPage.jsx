@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../api";
 import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ export default function LoginPage() {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin123");
   const [error, setError] = useState("");
+
+  const { t } = useI18n();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,8 +28,6 @@ export default function LoginPage() {
         null
       );
 
-      // Expected response shape:
-      // { accessToken, username, role }
       auth.login(res.accessToken, { username: res.username, role: res.role });
 
       navigate("/", { replace: true });
@@ -38,16 +39,16 @@ export default function LoginPage() {
   return (
     <div style={{ fontFamily: "sans-serif", padding: 16, maxWidth: 420 }}>
       <h1>SyncERPal</h1>
-      <h2>Login</h2>
+      <h2>{t("login_title")}</h2>
 
       <form onSubmit={handleSubmit} style={{ border: "1px solid #ccc", padding: 12 }}>
         <div style={{ marginBottom: 8 }}>
-          <label>Username: </label>
+          <label>{t("login_username")}: </label>
           <input value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
 
         <div style={{ marginBottom: 8 }}>
-          <label>Password: </label>
+          <label>{t("login_password")}: </label>
           <input
             type="password"
             value={password}
@@ -55,9 +56,9 @@ export default function LoginPage() {
           />
         </div>
 
-        <button type="submit">Log in</button>
+        <button type="submit">{t("login_button")}</button>
 
-        {error && <p style={{ marginTop: 8 }}>{error}</p>}
+        {error && <p style={{ marginTop: 8 }}>{t("login_failed")}</p>}
 
         <p style={{ marginTop: 12 }}>
           Demo accounts:

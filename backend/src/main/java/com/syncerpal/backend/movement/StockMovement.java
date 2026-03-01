@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -130,5 +131,16 @@ public class StockMovement {
 
   public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
+  }
+
+  @Transient
+  private String createdByUsername;
+
+  public String getCreatedByUsername() {
+    return createdByUsername;
+  }
+
+  public void setCreatedByUsername(String createdByUsername) {
+    this.createdByUsername = createdByUsername;
   }
 }

@@ -29,6 +29,7 @@ public class MovementService {
   }
 
   private String newReferenceNo() {
+    return "TX-" + System.currentTimeMillis();
   }
 
   private InventoryBalance getBalance(UUID itemId, UUID locationId) {
@@ -147,4 +148,19 @@ public class MovementService {
 
     return bal;
   }
+
+  public List<StockMovement> getMovementHistory() {
+    List<StockMovement> list = stockMovementRepository.findAll();
+
+    for (StockMovement m : list) {
+      if (m.getCreatedByUserId() != null) {
+        userRepository.findById(m.getCreatedByUserId()).ifPresent(u -> {
+          m.setCreatedByUsername(u.getUsername());
+        });
+      }
+    }
+
+    return list;
+  }
+
 }

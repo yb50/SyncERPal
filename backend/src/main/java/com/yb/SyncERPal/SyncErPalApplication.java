@@ -9,5 +9,4 @@ public class SyncErPalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SyncErPalApplication.class, args);
 	}
-
 }

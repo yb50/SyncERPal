@@ -3,6 +3,7 @@ package com.yb.SyncERPal.controller;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,5 +20,10 @@ public class ItemController {
     @GetMapping("/items")
     public List<Item> getAllItems() {
         return itemService.getAllItems();
+    }
+
+    @GetMapping("/items/{id}")
+    public Item getItem(@PathVariable Long id) {
+        return itemService.getItem(id);
     }
 }

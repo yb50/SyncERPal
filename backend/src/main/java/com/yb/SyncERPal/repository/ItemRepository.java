@@ -14,4 +14,16 @@ public class ItemRepository {
 
         return List.of(item1, item2);
     }
+
+    public Item findItem(Long id) {
+        List<Item> items = findAll();
+
+        for (Item item : items) {
+            if (item.getId().equals(id)) {
+                return item;
+            }
+        }
+
+        return null;
+    }
 }

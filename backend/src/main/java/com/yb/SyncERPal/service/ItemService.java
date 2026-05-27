@@ -3,6 +3,7 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.repository.ItemRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -17,5 +18,9 @@ public class ItemService {
 
     public List<Item> getAllItems() {
         return itemRepository.findAll();
+    }
+
+    public Item getItem(Long id) {
+        return itemRepository.findItem(id);
     }
 }

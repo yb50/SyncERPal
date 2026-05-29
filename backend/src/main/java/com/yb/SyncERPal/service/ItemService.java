@@ -23,4 +23,8 @@ public class ItemService {
     public Item getItem(Long id) {
         return itemRepository.findItem(id);
     }
+
+    public Item createItem(Item item) {
+        return itemRepository.save(item);
+    }
 }

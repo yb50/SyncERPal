@@ -29,4 +29,13 @@ public class ItemRepository {
 
         return null;
     }
+
+    public Item save(Item item) {
+        Long newId = (long) (items.size() + 1);
+
+        item.setId(newId);
+        items.add(item);
+
+        return item;
+    }
 }

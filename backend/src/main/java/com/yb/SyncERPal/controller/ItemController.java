@@ -3,9 +3,7 @@ package com.yb.SyncERPal.controller;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +30,14 @@ public class ItemController {
         }
 
         return ResponseEntity.ok(item);
+    }
+
+    @PostMapping("/items")
+    public ResponseEntity<Item> createItem(
+            @RequestBody Item item
+    ) {
+        Item createdItem = itemService.createItem(item);
+
+        return ResponseEntity.ok(createdItem);
     }
 }

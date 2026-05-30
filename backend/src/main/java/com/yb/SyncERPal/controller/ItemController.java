@@ -36,8 +36,12 @@ public class ItemController {
     public ResponseEntity<Item> createItem(
             @RequestBody Item item
     ) {
-        Item createdItem = itemService.createItem(item);
+        try {
+            Item createdItem = itemService.createItem(item);
 
-        return ResponseEntity.ok(createdItem);
+            return ResponseEntity.ok(createdItem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

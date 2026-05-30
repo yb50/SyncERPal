@@ -3,7 +3,6 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.repository.ItemRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -25,6 +24,14 @@ public class ItemService {
     }
 
     public Item createItem(Item item) {
+        if (item.getName() == null || item.getName().isBlank()) {
+            throw new IllegalArgumentException("Item name is required");
+        }
+
+        if (item.getSku() == null || item.getSku().isBlank()) {
+            throw new IllegalArgumentException("item SKU is required");
+        }
+
         return itemRepository.save(item);
     }
 }

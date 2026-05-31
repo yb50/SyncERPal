@@ -33,7 +33,7 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<Item> createItem(
+    public ResponseEntity<?> createItem(
             @RequestBody Item item
     ) {
         try {
@@ -41,7 +41,7 @@ public class ItemController {
 
             return ResponseEntity.ok(createdItem);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

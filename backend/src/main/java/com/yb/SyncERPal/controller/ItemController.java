@@ -44,4 +44,22 @@ public class ItemController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/items/{id}")
+    public ResponseEntity<?> updateItem(
+            @PathVariable Long id,
+            @RequestBody Item item
+    ) {
+        try {
+            Item updatedItem = itemService.updateItem(id, item);
+
+            if (updatedItem == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(updatedItem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

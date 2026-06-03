@@ -38,4 +38,17 @@ public class ItemRepository {
 
         return item;
     }
+
+    public Item updateItem(Long id, Item item) {
+        for (Item existingItem : items) {
+            if (existingItem.getId().equals(id)) {
+                existingItem.setName(item.getName());
+                existingItem.setSku(item.getSku());
+
+                return existingItem;
+            }
+        }
+
+        return null;
+    }
 }

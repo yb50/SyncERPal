@@ -47,4 +47,8 @@ public class ItemService {
 
         return itemRepository.updateItem(id, item);
     }
+
+    public Item deleteItem(Long id) {
+        return itemRepository.deleteItem(id);
+    }
 }

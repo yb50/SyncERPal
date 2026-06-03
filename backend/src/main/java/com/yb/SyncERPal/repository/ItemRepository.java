@@ -51,4 +51,15 @@ public class ItemRepository {
 
         return null;
     }
+
+    public Item deleteItem(Long id) {
+        for (Item existingItem : items) {
+            if (existingItem.getId().equals(id)) {
+                items.remove(existingItem);
+                return existingItem;
+            }
+        }
+
+        return null;
+    }
 }

@@ -22,7 +22,9 @@ public class ItemController {
     }
 
     @GetMapping("/items/{id}")
-    public ResponseEntity<Item> getItem(@PathVariable Long id) {
+    public ResponseEntity<Item> getItem(
+            @PathVariable Long id
+    ) {
         Item item = itemService.getItem(id);
 
         if (item == null) {
@@ -61,5 +63,18 @@ public class ItemController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @DeleteMapping("/items/{id}")
+    public ResponseEntity<?> deleteItem(
+            @PathVariable Long id
+    ) {
+        Item deletedItem = itemService.deleteItem(id);
+
+        if (deletedItem == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(deletedItem);
     }
 }

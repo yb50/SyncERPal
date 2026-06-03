@@ -2,7 +2,6 @@ package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.repository.ItemRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,26 +23,24 @@ public class ItemService {
         return itemRepository.findItem(id);
     }
 
-    public Item createItem(Item item) {
+    private void validateItem(Item item) {
         if (item.getName() == null || item.getName().isBlank()) {
             throw new IllegalArgumentException("Item name is required");
         }
 
         if (item.getSku() == null || item.getSku().isBlank()) {
-            throw new IllegalArgumentException("item SKU is required");
+            throw new IllegalArgumentException(("Item SKU is required"));
         }
+    }
+
+    public Item createItem(Item item) {
+        validateItem(item);
 
         return itemRepository.save(item);
     }
 
     public Item updateItem(Long id, Item item) {
-        if (item.getName() == null || item.getName().isBlank()) {
-            throw new IllegalArgumentException("Item name is required.");
-        }
-
-        if (item.getSku() == null || item.getSku().isBlank()) {
-            throw new IllegalArgumentException("Item SKU is required");
-        }
+        validateItem(item);
 
         return itemRepository.updateItem(id, item);
     }

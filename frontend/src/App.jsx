@@ -56,6 +56,22 @@ function App() {
       });
   }
 
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/items/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete item.");
+        }
+
+        fetchItems();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
   return (
     <div>
       <h1>SyncERPal</h1>
@@ -94,6 +110,7 @@ function App() {
             <th>ID</th>
             <th>SKU</th>
             <th>Name</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -103,6 +120,11 @@ function App() {
               <td>{item.id}</td>
               <td>{item.sku}</td>
               <td>{item.name}</td>
+              <td>
+                <button onClick={() => handleDelete(item.id)}>
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

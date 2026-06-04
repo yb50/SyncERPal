@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import ItemTable from "./components/ItemTable";
+
 function App() {
   const [items, setItems] = useState([]);
   const [name, setName] = useState("");
@@ -118,32 +120,11 @@ function App() {
 
       <h2>Items</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>SKU</th>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.sku}</td>
-              <td>{item.name}</td>
-              <td>
-                <button onClick={() => handleDelete(item.id)}>
-                  Delete
-                </button>
-                <button onClick={() => handleEdit(item)}>Edit</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ItemTable
+        items={items}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }

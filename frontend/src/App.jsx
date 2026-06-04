@@ -2,22 +2,89 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [items, setItems] = useState([]);
+  const [name, setName] = useState("");
+  const [sku, setSku] = useState("");
+  const [error, setError] = useState("");
+
+  function fetchItems() {
+    fetch("http://localhost:8080/items")
+    .then((response) => response.json())
+    .then((data) => {
+      setItems(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching items:", error);
+    });
+  }
 
   useEffect(() => {
-    fetch("http://localhost:8080/items")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Items from backend:", data);
-        setItems(data);
+    fetchItems();
+  }, []);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const newItem = {
+      name: name,
+      sku: sku,
+    };
+
+    fetch("http://localhost:8080/items", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newItem),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((message) => {
+            throw new Error(message);
+          });
+        }
+
+        return response.json();
+      })
+      .then(() => {
+        setName("");
+        setSku("");
+        setError("");
+        fetchItems();
       })
       .catch((error) => {
-        console.error("Error fetching items:", error);
+        setError(error.message);
       });
-  }, []);
+  }
 
   return (
     <div>
       <h1>SyncERPal</h1>
+
+      <h2>Add Item</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name: </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </div>
+
+        <div>
+          <label>SKU: </label>
+          <input 
+            type="text"
+            value={sku}
+            onChange={(event) => setSku(event.target.value)}
+          />
+        </div>
+
+        <button type="submit">Add Item</button>
+      </form>
+
+      {error && <p>{error}</p>}
 
       <h2>Items</h2>
 

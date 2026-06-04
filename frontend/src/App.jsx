@@ -5,6 +5,7 @@ function App() {
   const [name, setName] = useState("");
   const [sku, setSku] = useState("");
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   function fetchItems() {
     fetch("http://localhost:8080/items")
@@ -29,8 +30,14 @@ function App() {
       sku: sku,
     };
 
-    fetch("http://localhost:8080/items", {
-      method: "POST",
+    const url = editingId === null
+      ? "http://localhost:8080/items"
+      : `http://localhost:8080/items/${editingId}`;
+
+    const method = editingId === null ? "POST" : "PUT";
+
+    fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -46,6 +53,7 @@ function App() {
         return response.json();
       })
       .then(() => {
+        setEditingId(null);
         setName("");
         setSku("");
         setError("");
@@ -70,6 +78,12 @@ function App() {
       .catch((error) => {
         setError(error.message);
       });
+  }
+
+  function handleEdit(item) {
+    setEditingId(item.id);
+    setName(item.name);
+    setSku(item.sku);
   }
 
   return (
@@ -124,6 +138,7 @@ function App() {
                 <button onClick={() => handleDelete(item.id)}>
                   Delete
                 </button>
+                <button onClick={() => handleEdit(item)}>Edit</button>
               </td>
             </tr>
           ))}

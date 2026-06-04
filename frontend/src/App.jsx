@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import ItemTable from "./components/ItemTable";
+import ItemForm from "./components/ItemForm";
 
 function App() {
   const [items, setItems] = useState([]);
@@ -94,27 +95,14 @@ function App() {
 
       <h2>Add Item</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name: </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>SKU: </label>
-          <input 
-            type="text"
-            value={sku}
-            onChange={(event) => setSku(event.target.value)}
-          />
-        </div>
-
-        <button type="submit">Add Item</button>
-      </form>
+      <ItemForm 
+        name={name}
+        sku={sku}
+        editingId={editingId}
+        onNameChange={setName}
+        onSkuChange={setSku}
+        onSubmit={handleSubmit}
+      />
 
       {error && <p>{error}</p>}
 

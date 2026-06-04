@@ -1,4 +1,4 @@
-function ItemTable({ items, onEdit, onDelete}) {
+function ItemTable({items, onEdit, onDelete}) {
   return (
     <table>
       <thead>

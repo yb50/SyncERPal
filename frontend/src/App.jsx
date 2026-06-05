@@ -9,8 +9,11 @@ function App() {
   const [sku, setSku] = useState("");
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   function fetchItems() {
+    setLoading(true);
+
     fetch("http://localhost:8080/items")
     .then((response) => response.json())
     .then((data) => {
@@ -18,7 +21,11 @@ function App() {
     })
     .catch((error) => {
       console.error("Error fetching items:", error);
-    });
+      setError("Failed to load items");
+    })
+    .finally(() => {
+      setLoading(false);
+    })
   }
 
   useEffect(() => {
@@ -116,11 +123,15 @@ function App() {
 
       <h2>Items</h2>
 
-      <ItemTable
-        items={items}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading && <p>Loading items...</p>}
+
+      {!loading && (
+        <ItemTable
+          items={items}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }

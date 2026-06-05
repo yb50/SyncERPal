@@ -5,6 +5,7 @@ public class Item {
     private Long id;
     private String name;
     private String sku;
+    private Integer quantity;
 
     public Long getId() {
         return id;
@@ -31,9 +32,18 @@ public class Item {
         this.sku = sku;
     }
 
-    public Item(Long id, String name, String sku) {
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Item(Long id, String name, String sku, Integer quantity) {
         this.id = id;
         this.name = name;
         this.sku = sku;
+        this.quantity = quantity;
     }
 }

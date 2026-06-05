@@ -29,7 +29,11 @@ public class ItemService {
         }
 
         if (item.getSku() == null || item.getSku().isBlank()) {
-            throw new IllegalArgumentException(("Item SKU is required"));
+            throw new IllegalArgumentException("Item SKU is required");
+        }
+
+        if (item.getQuantity() == null || item.getQuantity() < 0) {
+            throw new IllegalArgumentException("Item quantity must be 0 or higher.");
         }
     }
 

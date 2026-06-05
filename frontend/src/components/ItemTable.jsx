@@ -6,6 +6,7 @@ function ItemTable({items, onEdit, onDelete}) {
           <th>ID</th>
           <th>SKU</th>
           <th>Name</th>
+          <th>Quantity</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -16,6 +17,7 @@ function ItemTable({items, onEdit, onDelete}) {
             <td>{item.id}</td>
             <td>{item.sku}</td>
             <td>{item.name}</td>
+            <td>{item.quantity}</td>
             <td>
               <button onClick={() => onEdit(item)}>Edit</button>
               <button onClick={() => onDelete(item.id)}>Delete</button>

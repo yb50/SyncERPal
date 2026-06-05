@@ -10,6 +10,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [name, setName] = useState("");
   const [sku, setSku] = useState("");
+  const [quantity, setQuantity] = useState("")
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,7 @@ function App() {
     const newItem = {
       name: name,
       sku: sku,
+      quantity: Number(quantity),
     };
 
     const url = editingId === null
@@ -69,6 +71,7 @@ function App() {
         setEditingId(null);
         setName("");
         setSku("");
+        setQuantity("");
         setError("");
         fetchItems();
       })
@@ -97,12 +100,14 @@ function App() {
     setEditingId(item.id);
     setName(item.name);
     setSku(item.sku);
+    setQuantity(item.quantity);
   }
 
   function handleCancelEdit() {
     setEditingId(null);
     setName("");
     setSku("");
+    setQuantity("");
     setError("");
   }
 
@@ -115,9 +120,11 @@ function App() {
       <ItemForm 
         name={name}
         sku={sku}
+        quantity={quantity}
         editingId={editingId}
         onNameChange={setName}
         onSkuChange={setSku}
+        onQuantityChange={setQuantity}
         onSubmit={handleSubmit}
         onCancelEdit={handleCancelEdit}
       />

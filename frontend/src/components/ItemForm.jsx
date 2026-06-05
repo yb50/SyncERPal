@@ -1,4 +1,4 @@
-function ItemForm({name, sku, editingId, onNameChange, onSkuChange, onSubmit, onCancelEdit}) {
+function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, onSubmit, onCancelEdit}) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -16,6 +16,15 @@ function ItemForm({name, sku, editingId, onNameChange, onSkuChange, onSubmit, on
           type="text"
           value={sku}
           onChange={(event) => onSkuChange(event.target.value)}
+        />
+      </div>
+
+      <div>
+        <label>Quantity: </label>
+        <input 
+          type="number"
+          value={quantity}
+          onChange={(event) => onQuantityChange(event.target.value)}
         />
       </div>
 

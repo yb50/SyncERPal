@@ -12,8 +12,8 @@ public class ItemRepository {
     private final List<Item> items = new ArrayList<>();
 
     public ItemRepository() {
-        items.add(new Item(1L, "USB Cable", "USB-001"));
-        items.add(new Item(2L, "Keyboard", "KEY-001"));
+        items.add(new Item(1L, "USB Cable", "USB-001", 50));
+        items.add(new Item(2L, "Keyboard", "KEY-001", 20));
     }
 
     public List<Item> findAll() {
@@ -44,6 +44,7 @@ public class ItemRepository {
             if (existingItem.getId().equals(id)) {
                 existingItem.setName(item.getName());
                 existingItem.setSku(item.getSku());
+                existingItem.setQuantity(item.getQuantity());
 
                 return existingItem;
             }

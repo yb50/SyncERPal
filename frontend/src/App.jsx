@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 
+const API_URL = "http://localhost:8080/items";
+
 function App() {
   const [items, setItems] = useState([]);
   const [name, setName] = useState("");
@@ -14,7 +16,7 @@ function App() {
   function fetchItems() {
     setLoading(true);
 
-    fetch("http://localhost:8080/items")
+    fetch(API_URL)
     .then((response) => response.json())
     .then((data) => {
       setItems(data);
@@ -41,8 +43,8 @@ function App() {
     };
 
     const url = editingId === null
-      ? "http://localhost:8080/items"
-      : `http://localhost:8080/items/${editingId}`;
+      ? API_URL
+      : `${API_URL}/${editingId}`;
 
     const method = editingId === null ? "POST" : "PUT";
 
@@ -75,7 +77,7 @@ function App() {
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/items/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

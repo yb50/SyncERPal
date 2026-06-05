@@ -89,6 +89,13 @@ function App() {
     setSku(item.sku);
   }
 
+  function handleCancelEdit() {
+    setEditingId(null);
+    setName("");
+    setSku("");
+    setError("");
+  }
+
   return (
     <div>
       <h1>SyncERPal</h1>
@@ -102,6 +109,7 @@ function App() {
         onNameChange={setName}
         onSkuChange={setSku}
         onSubmit={handleSubmit}
+        onCancelEdit={handleCancelEdit}
       />
 
       {error && <p>{error}</p>}

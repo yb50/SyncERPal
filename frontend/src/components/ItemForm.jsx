@@ -1,4 +1,4 @@
-function ItemForm({name, sku, editingId, onNameChange, onSkuChange, onSubmit}) {
+function ItemForm({name, sku, editingId, onNameChange, onSkuChange, onSubmit, onCancelEdit}) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -22,6 +22,12 @@ function ItemForm({name, sku, editingId, onNameChange, onSkuChange, onSubmit}) {
       <button type="submit">
         {editingId === null ? "Add Item" : "Update Item"}
       </button>
+
+      {editingId !== null && (
+        <button type="button" onClick={onCancelEdit}>
+          Cancel
+        </button>
+      )}
     </form>
   )
 }

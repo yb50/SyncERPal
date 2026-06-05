@@ -126,8 +126,9 @@ function App() {
       <h2>Items</h2>
 
       {loading && <p>Loading items...</p>}
+      {!loading && items.length === 0 && <p>No items found</p>}
 
-      {!loading && (
+      {!loading && items.length > 0 && (
         <ItemTable
           items={items}
           onEdit={handleEdit}

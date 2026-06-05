@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import "./App.css";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 
@@ -106,7 +107,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app">
       <h1>SyncERPal</h1>
 
       <h2>Add Item</h2>
@@ -121,7 +122,7 @@ function App() {
         onCancelEdit={handleCancelEdit}
       />
 
-      {error && <p>{error}</p>}
+      {error && <p className="error">{error}</p>}
 
       <h2>Items</h2>
 

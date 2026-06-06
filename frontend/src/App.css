@@ -50,3 +50,19 @@ td {
   color: red;
   font-weight: bold;
 }
+
+/* Low Stock Threshold */
+.status-ok {
+  color: green;
+  font-weight: bold;
+}
+
+.status-low {
+  color: orange;
+  font-weight: bold;
+}
+
+.status-out {
+  color: red;
+  font-weight: bold;
+}

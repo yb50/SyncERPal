@@ -16,11 +16,14 @@ function ItemTable({items, onEdit, onDelete}) {
       <tbody>
         {items.map((item) => {
           let stockStatus = "OK";
+          let statusClassName = "status-ok";
 
           if (item.quantity === 0) {
             stockStatus = "Out of stock";
+            statusClassName = "status-out";
           } else if (item.quantity <= item.lowStockThreshold) {
             stockStatus = "Low stock";
+            statusClassName = "status-low";
           }
 
           return (
@@ -30,7 +33,7 @@ function ItemTable({items, onEdit, onDelete}) {
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>{item.lowStockThreshold}</td>
-              <td>{stockStatus}</td>
+              <td className={statusClassName}>{stockStatus}</td>
               <td>
                 <button onClick={() => onEdit(item)}>Edit</button>
                 <button onClick={() => onDelete(item.id)}>Delete</button>

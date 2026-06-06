@@ -6,6 +6,7 @@ public class Item {
     private String name;
     private String sku;
     private Integer quantity;
+    private Integer lowStockThreshold;
 
     public Long getId() {
         return id;
@@ -40,10 +41,19 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public Item(Long id, String name, String sku, Integer quantity) {
+    public Integer getLowStockThreshold() {
+        return lowStockThreshold;
+    }
+
+    public void setLowStockThreshold(Integer lowStockThreshold) {
+        this.lowStockThreshold = lowStockThreshold;
+    }
+
+    public Item(Long id, String name, String sku, Integer quantity, Integer lowStockThreshold) {
         this.id = id;
         this.name = name;
         this.sku = sku;
         this.quantity = quantity;
+        this.lowStockThreshold = lowStockThreshold;
     }
 }

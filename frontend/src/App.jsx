@@ -11,6 +11,7 @@ function App() {
   const [name, setName] = useState("");
   const [sku, setSku] = useState("");
   const [quantity, setQuantity] = useState("")
+  const [lowStockThreshold, setLowStockThreshold] = useState("");
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,6 +44,7 @@ function App() {
       name: name,
       sku: sku,
       quantity: Number(quantity),
+      lowStockThreshold: Number(lowStockThreshold),
     };
 
     const url = editingId === null
@@ -72,6 +74,7 @@ function App() {
         setName("");
         setSku("");
         setQuantity("");
+        setLowStockThreshold("");
         setError("");
         fetchItems();
       })
@@ -101,6 +104,7 @@ function App() {
     setName(item.name);
     setSku(item.sku);
     setQuantity(item.quantity);
+    setLowStockThreshold(item.lowStockThreshold);
   }
 
   function handleCancelEdit() {
@@ -108,6 +112,7 @@ function App() {
     setName("");
     setSku("");
     setQuantity("");
+    setLowStockThreshold("");
     setError("");
   }
 
@@ -121,10 +126,12 @@ function App() {
         name={name}
         sku={sku}
         quantity={quantity}
+        lowStockThreshold={lowStockThreshold}
         editingId={editingId}
         onNameChange={setName}
         onSkuChange={setSku}
         onQuantityChange={setQuantity}
+        onLowStockThreshold={setLowStockThreshold}
         onSubmit={handleSubmit}
         onCancelEdit={handleCancelEdit}
       />

@@ -35,6 +35,10 @@ public class ItemService {
         if (item.getQuantity() == null || item.getQuantity() < 0) {
             throw new IllegalArgumentException("Item quantity must be 0 or higher.");
         }
+
+        if (item.getLowStockThreshold() == null || item.getLowStockThreshold() < 0) {
+            throw new IllegalArgumentException("Low stock threshold must be 0 or higher.");
+        }
     }
 
     public Item createItem(Item item) {

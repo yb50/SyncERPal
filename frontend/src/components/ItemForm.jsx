@@ -1,4 +1,4 @@
-function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, onSubmit, onCancelEdit}) {
+function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, lowStockThreshold, setLowStockThreshold,  onSubmit, onCancelEdit}) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -25,6 +25,15 @@ function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, on
           type="number"
           value={quantity}
           onChange={(event) => onQuantityChange(event.target.value)}
+        />
+      </div>
+
+      <div>
+        <label>Low Stock Threshold: </label>
+        <input 
+          type="number"
+          value={lowStockThreshold}
+          onChange={(event) => setLowStockThreshold(event.target.value)}
         />
       </div>
 

@@ -7,6 +7,7 @@ function ItemTable({items, onEdit, onDelete}) {
           <th>SKU</th>
           <th>Name</th>
           <th>Quantity</th>
+          <th>Low Stock Threshold</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -18,6 +19,7 @@ function ItemTable({items, onEdit, onDelete}) {
             <td>{item.sku}</td>
             <td>{item.name}</td>
             <td>{item.quantity}</td>
+            <td>{item.lowStockThreshold}</td>
             <td>
               <button onClick={() => onEdit(item)}>Edit</button>
               <button onClick={() => onDelete(item.id)}>Delete</button>

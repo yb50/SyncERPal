@@ -15,6 +15,7 @@ function App() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [stockMovements, setStockMovements] = useState([]);
 
   function fetchItems() {
     setLoading(true);
@@ -116,6 +117,23 @@ function App() {
     setError("");
   }
 
+  function fetchStockMovements() {
+    fetch("http://localhost:8080/stock-movements")
+      .then((response) => response.json())
+      .then((data) => { 
+        setStockMovements(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching stock movements:", error);
+        setError("Failed to load stock movements.");
+      });
+  }
+
+  useEffect(() => {
+    fetchItems();
+    fetchStockMovements();
+  }, []);
+
   return (
     <div className="app">
       <h1>SyncERPal</h1>
@@ -150,6 +168,32 @@ function App() {
           onDelete={handleDelete}
         />
       )}
+
+      <h2>Stock Movements</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Item ID</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {stockMovements.map((movement) => (
+            <tr key={movement.id}>
+              <td>{movement.id}</td>
+              <td>{movement.itemId}</td>
+              <td>{movement.type}</td>
+              <td>{movement.quantity}</td>
+              <td>{movement.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

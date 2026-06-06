@@ -1,4 +1,4 @@
-function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, lowStockThreshold, setLowStockThreshold,  onSubmit, onCancelEdit}) {
+function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, lowStockThreshold, onLowStockThreshold,  onSubmit, onCancelEdit}) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -33,7 +33,7 @@ function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, on
         <input 
           type="number"
           value={lowStockThreshold}
-          onChange={(event) => setLowStockThreshold(event.target.value)}
+          onChange={(event) => onLowStockThreshold(event.target.value)}
         />
       </div>
 

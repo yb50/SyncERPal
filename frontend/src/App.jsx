@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
+import StockMovementTable from "./components/StockMovementTable";
 
 const API_URL = "http://localhost:8080/items";
 
@@ -171,29 +172,9 @@ function App() {
 
       <h2>Stock Movements</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Item ID</th>
-            <th>Type</th>
-            <th>Quantity</th>
-            <th>Note</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {stockMovements.map((movement) => (
-            <tr key={movement.id}>
-              <td>{movement.id}</td>
-              <td>{movement.itemId}</td>
-              <td>{movement.type}</td>
-              <td>{movement.quantity}</td>
-              <td>{movement.note}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <StockMovementTable 
+        stockMovements={stockMovements}
+      />
     </div>
   );
 }

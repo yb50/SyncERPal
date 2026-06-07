@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.service.StockMovementService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,15 @@ public class StockMovementController {
     }
 
     @PostMapping("/stock-movements")
-    public StockMovement createStockMovement(
+    public ResponseEntity<?> createStockMovement(
             @RequestBody StockMovement stockMovement
     ) {
-        return stockMovementService.createStockMovement(stockMovement);
+        try {
+            StockMovement createdStockMovement = stockMovementService.createStockMovement(stockMovement);
+
+            return ResponseEntity.ok(createdStockMovement);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

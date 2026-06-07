@@ -64,4 +64,15 @@ public class ItemRepository {
 
         return null;
     }
+
+    public Item updateQuantity(Long id, Integer newQuantity) {
+        for (Item existingItem : items) {
+            if (existingItem.getId().equals(id)) {
+                existingItem.setQuantity(newQuantity);
+
+                return existingItem;
+            }
+        }
+        return null;
+    }
 }

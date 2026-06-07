@@ -2,9 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.service.StockMovementService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,12 @@ public class StockMovementController {
     @GetMapping("/stock-movements")
     public List<StockMovement> getAllStockMovements() {
         return stockMovementService.getAllStockMovements();
+    }
+
+    @PostMapping("/stock-movements")
+    public StockMovement createStockMovement(
+            @RequestBody StockMovement stockMovement
+    ) {
+        return stockMovementService.createStockMovement(stockMovement);
     }
 }

@@ -18,4 +18,8 @@ public class StockMovementService {
     public List<StockMovement> getAllStockMovements() {
         return stockMovementRepository.findAll();
     }
+
+    public StockMovement createStockMovement(StockMovement stockMovement) {
+        return stockMovementRepository.save(stockMovement);
+    }
 }

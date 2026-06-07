@@ -20,4 +20,13 @@ public class StockMovementRepository {
     public List<StockMovement> findAll() {
         return movements;
     }
+
+    public StockMovement save(StockMovement stockMovement) {
+        Long newId = (long) (movements.size() + 1);
+
+        stockMovement.setId(newId);
+        movements.add(stockMovement);
+
+        return stockMovement;
+    }
 }

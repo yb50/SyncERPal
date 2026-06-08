@@ -1,10 +1,10 @@
-function StockMovementTable({ stockMovements }) {
+function StockMovementTable({ stockMovements, items }) {
   return (
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th>Item ID</th>
+          <th>Item</th>
           <th>Type</th>
           <th>Quantity</th>
           <th>Note</th>
@@ -12,15 +12,21 @@ function StockMovementTable({ stockMovements }) {
       </thead>
 
       <tbody>
-        {stockMovements.map((movement) => (
-          <tr key={movement.id}>
-            <td>{movement.id}</td>
-            <td>{movement.itemId}</td>
-            <td>{movement.type}</td>
-            <td>{movement.quantity}</td>
-            <td>{movement.note}</td>
-          </tr>
-        ))}
+        {stockMovements.map((movement) => {
+          const item = items.find((item) => item.id === movement.itemId);
+
+          return (
+            <tr key={movement.id}>
+              <td>{movement.id}</td>
+              <td>
+                {item ? `${item.name} (${item.sku})` : `Item ${movement.itemId}`}
+              </td>
+              <td>{movement.type}</td>
+              <td>{movement.quantity}</td>
+              <td>{movement.note}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   )

@@ -231,6 +231,7 @@ function App() {
 
       <StockMovementTable 
         stockMovements={stockMovements}
+        items={items}
       />
     </div>
   );

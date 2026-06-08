@@ -4,6 +4,7 @@ import "./App.css";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 import StockMovementTable from "./components/StockMovementTable";
+import StockMovementForm from "./components/StockMovementForm";
 
 const API_URL = "http://localhost:8080/items";
 
@@ -17,6 +18,10 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [stockMovements, setStockMovements] = useState([]);
+  const [movementItemId, setMovementItemId] = useState("");
+  const [movementType, setMovementType] = useState("IN");
+  const [movementQuantity, setMovementQuantity] = useState("");
+  const [movementNote, setMovementNote] = useState("");
 
   function fetchItems() {
     setLoading(true);
@@ -34,10 +39,6 @@ function App() {
       setLoading(false);
     })
   }
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -135,6 +136,47 @@ function App() {
     fetchStockMovements();
   }, []);
 
+  function handleStockMovementSubmit(event) {
+    event.preventDefault();
+
+    const newStockMovement = {
+      itemId: Number(movementItemId),
+      type: movementType,
+      quantity: Number(movementQuantity),
+      note: movementNote,
+    };
+
+    fetch("http://localhost:8080/stock-movements", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newStockMovement),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((message) => {
+            throw new Error(message);
+          });
+        }
+
+        return response.json();
+      })
+      .then(() => {
+        setMovementItemId("");
+        setMovementType("IN");
+        setMovementQuantity("");
+        setMovementNote("");
+        setError("");
+
+        fetchItems();
+        fetchStockMovements();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
   return (
     <div className="app">
       <h1>SyncERPal</h1>
@@ -169,6 +211,21 @@ function App() {
           onDelete={handleDelete}
         />
       )}
+
+      <h2>Add Stock Movement</h2>
+
+      <StockMovementForm 
+        items={items}
+        movementItemId={movementItemId}
+        movementType={movementType}
+        movementQuantity={movementQuantity}
+        movementNote={movementNote}
+        onMovementItemIdChange={setMovementItemId}
+        onMovementTypeChange={setMovementType}
+        onMovementQuantityChange={setMovementQuantity}
+        onMovementNoteChange={setMovementNote}
+        onSubmit={handleStockMovementSubmit}
+      />
 
       <h2>Stock Movements</h2>
 

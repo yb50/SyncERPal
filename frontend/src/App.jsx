@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 import "./App.css";
+import { getItems, createItem, updateItem, deleteItem } from "./api/itemApi";
+import { getStockMovements, createStockMovements } from "./api/stockMovementApi";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 import StockMovementTable from "./components/StockMovementTable";
 import StockMovementForm from "./components/StockMovementForm";
-
-const API_URL = "http://localhost:8080/items";
 
 function App() {
   const [items, setItems] = useState([]);
@@ -26,14 +26,13 @@ function App() {
   function fetchItems() {
     setLoading(true);
 
-    fetch(API_URL)
-    .then((response) => response.json())
+    getItems()
     .then((data) => {
       setItems(data);
     })
     .catch((error) => {
       console.error("Error fetching items:", error);
-      setError("Failed to load items");
+      setError(error.message);
     })
     .finally(() => {
       setLoading(false);
@@ -50,28 +49,12 @@ function App() {
       lowStockThreshold: Number(lowStockThreshold),
     };
 
-    const url = editingId === null
-      ? API_URL
-      : `${API_URL}/${editingId}`;
+    const saveItem = 
+      editingId === null
+        ? createItem(newItem)
+        : updateItem(editingId, newItem)
 
-    const method = editingId === null ? "POST" : "PUT";
-
-    fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newItem),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((message) => {
-            throw new Error(message);
-          });
-        }
-
-        return response.json();
-      })
+    saveItem
       .then(() => {
         setEditingId(null);
         setName("");
@@ -87,14 +70,8 @@ function App() {
   }
 
   function handleDelete(id) {
-    fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete item.");
-        }
-
+    deleteItem(id)
+      .then(() => {
         fetchItems();
       })
       .catch((error) => {
@@ -120,14 +97,13 @@ function App() {
   }
 
   function fetchStockMovements() {
-    fetch("http://localhost:8080/stock-movements")
-      .then((response) => response.json())
+    getStockMovements()
       .then((data) => { 
         setStockMovements(data);
       })
       .catch((error) => {
         console.error("Error fetching stock movements:", error);
-        setError("Failed to load stock movements.");
+        setError(error.message);
       });
   }
 
@@ -146,22 +122,7 @@ function App() {
       note: movementNote,
     };
 
-    fetch("http://localhost:8080/stock-movements", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newStockMovement),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((message) => {
-            throw new Error(message);
-          });
-        }
-
-        return response.json();
-      })
+    createStockMovements(newStockMovement)
       .then(() => {
         setMovementItemId("");
         setMovementType("IN");

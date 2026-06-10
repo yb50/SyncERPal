@@ -12,7 +12,7 @@ export function getStockMovements() {
     });
 }
 
-export function createStockMovements(stockMovement) {
+export function createStockMovement(stockMovement) {
   return fetch(STOCK_MOVEMENTS_URL, {
     method: "POST",
     headers: {

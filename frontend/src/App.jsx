@@ -1,68 +1,46 @@
 import { useEffect, useState } from "react";
 
 import "./App.css";
-import { getItems, createItem, updateItem, deleteItem } from "./api/itemApi";
-import { getStockMovements, createStockMovements } from "./api/stockMovementApi";
+import useItems from "./hooks/useItems";
+import { getStockMovements, createStockMovement } from "./api/stockMovementApi";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 import StockMovementTable from "./components/StockMovementTable";
 import StockMovementForm from "./components/StockMovementForm";
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [name, setName] = useState("");
-  const [sku, setSku] = useState("");
-  const [quantity, setQuantity] = useState("")
-  const [lowStockThreshold, setLowStockThreshold] = useState("");
+  const {
+    items,
+    name,
+    sku,
+    quantity,
+    lowStockThreshold,
+    editingId,
+    loading,
+    setName,
+    setSku,
+    setQuantity,
+    setLowStockThreshold,
+    fetchItems,
+    saveItem,
+    removeItem,
+    startEditItem,
+    clearItemForm,
+  } = useItems();
+
   const [error, setError] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [stockMovements, setStockMovements] = useState([]);
   const [movementItemId, setMovementItemId] = useState("");
   const [movementType, setMovementType] = useState("IN");
   const [movementQuantity, setMovementQuantity] = useState("");
   const [movementNote, setMovementNote] = useState("");
 
-  function fetchItems() {
-    setLoading(true);
-
-    getItems()
-    .then((data) => {
-      setItems(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching items:", error);
-      setError(error.message);
-    })
-    .finally(() => {
-      setLoading(false);
-    })
-  }
-
   function handleSubmit(event) {
     event.preventDefault();
 
-    const newItem = {
-      name: name,
-      sku: sku,
-      quantity: Number(quantity),
-      lowStockThreshold: Number(lowStockThreshold),
-    };
-
-    const saveItem = 
-      editingId === null
-        ? createItem(newItem)
-        : updateItem(editingId, newItem)
-
-    saveItem
+    saveItem()
       .then(() => {
-        setEditingId(null);
-        setName("");
-        setSku("");
-        setQuantity("");
-        setLowStockThreshold("");
         setError("");
-        fetchItems();
       })
       .catch((error) => {
         setError(error.message);
@@ -70,9 +48,9 @@ function App() {
   }
 
   function handleDelete(id) {
-    deleteItem(id)
+    removeItem(id)
       .then(() => {
-        fetchItems();
+        setError("");
       })
       .catch((error) => {
         setError(error.message);
@@ -80,19 +58,11 @@ function App() {
   }
 
   function handleEdit(item) {
-    setEditingId(item.id);
-    setName(item.name);
-    setSku(item.sku);
-    setQuantity(item.quantity);
-    setLowStockThreshold(item.lowStockThreshold);
+    startEditItem(item);
   }
 
   function handleCancelEdit() {
-    setEditingId(null);
-    setName("");
-    setSku("");
-    setQuantity("");
-    setLowStockThreshold("");
+    clearItemForm();
     setError("");
   }
 
@@ -122,7 +92,7 @@ function App() {
       note: movementNote,
     };
 
-    createStockMovements(newStockMovement)
+    createStockMovement(newStockMovement)
       .then(() => {
         setMovementItemId("");
         setMovementType("IN");

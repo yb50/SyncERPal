@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import "./App.css";
 import useItems from "./hooks/useItems";
-import { getStockMovements, createStockMovement } from "./api/stockMovementApi";
+import useStockMovements from "./hooks/useStockMovements";
 import ItemTable from "./components/ItemTable";
 import ItemForm from "./components/ItemForm";
 import StockMovementTable from "./components/StockMovementTable";
@@ -28,12 +28,21 @@ function App() {
     clearItemForm,
   } = useItems();
 
+  const {
+    stockMovements,
+    movementItemId,
+    movementType,
+    movementQuantity,
+    movementNote,
+    setMovementItemId,
+    setMovementType,
+    setMovementQuantity,
+    setMovementNote,
+    fetchStockMovements,
+    saveStockMovement,
+  } = useStockMovements(fetchItems);
+
   const [error, setError] = useState("");
-  const [stockMovements, setStockMovements] = useState([]);
-  const [movementItemId, setMovementItemId] = useState("");
-  const [movementType, setMovementType] = useState("IN");
-  const [movementQuantity, setMovementQuantity] = useState("");
-  const [movementNote, setMovementNote] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -66,17 +75,6 @@ function App() {
     setError("");
   }
 
-  function fetchStockMovements() {
-    getStockMovements()
-      .then((data) => { 
-        setStockMovements(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching stock movements:", error);
-        setError(error.message);
-      });
-  }
-
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -85,23 +83,9 @@ function App() {
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
-    const newStockMovement = {
-      itemId: Number(movementItemId),
-      type: movementType,
-      quantity: Number(movementQuantity),
-      note: movementNote,
-    };
-
-    createStockMovement(newStockMovement)
+    saveStockMovement()
       .then(() => {
-        setMovementItemId("");
-        setMovementType("IN");
-        setMovementQuantity("");
-        setMovementNote("");
         setError("");
-
-        fetchItems();
-        fetchStockMovements();
       })
       .catch((error) => {
         setError(error.message);

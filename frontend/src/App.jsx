@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import useItems from "./hooks/useItems";
 import useStockMovements from "./hooks/useStockMovements";
-import ItemTable from "./components/ItemTable";
-import ItemForm from "./components/ItemForm";
 import StockMovementTable from "./components/StockMovementTable";
 import StockMovementForm from "./components/StockMovementForm";
+import ItemSection from "./components/ItemSection";
 
 function App() {
   const {
@@ -44,37 +43,6 @@ function App() {
 
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    saveItem()
-      .then(() => {
-        setError("");
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }
-
-  function handleDelete(id) {
-    removeItem(id)
-      .then(() => {
-        setError("");
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }
-
-  function handleEdit(item) {
-    startEditItem(item);
-  }
-
-  function handleCancelEdit() {
-    clearItemForm();
-    setError("");
-  }
-
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -96,36 +64,26 @@ function App() {
     <div className="app">
       <h1>SyncERPal</h1>
 
-      <h2>Add Item</h2>
+      {error && <p className="error">{error}</p>}
 
-      <ItemForm 
+      <ItemSection
+        items={items}
         name={name}
         sku={sku}
         quantity={quantity}
         lowStockThreshold={lowStockThreshold}
         editingId={editingId}
-        onNameChange={setName}
-        onSkuChange={setSku}
-        onQuantityChange={setQuantity}
-        onLowStockThreshold={setLowStockThreshold}
-        onSubmit={handleSubmit}
-        onCancelEdit={handleCancelEdit}
+        loading={loading}
+        setName={setName}
+        setSku={setSku}
+        setQuantity={setQuantity}
+        setLowStockThreshold={setLowStockThreshold}
+        saveItem={saveItem}
+        removeItem={removeItem}
+        startEditItem={startEditItem}
+        clearItemForm={clearItemForm}
+        setError={setError}
       />
-
-      {error && <p className="error">{error}</p>}
-
-      <h2>Items</h2>
-
-      {loading && <p>Loading items...</p>}
-      {!loading && items.length === 0 && <p>No items found</p>}
-
-      {!loading && items.length > 0 && (
-        <ItemTable
-          items={items}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      )}
 
       <h2>Add Stock Movement</h2>
 

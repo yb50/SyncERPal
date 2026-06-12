@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import useItems from "./hooks/useItems";
 import useStockMovements from "./hooks/useStockMovements";
-import StockMovementTable from "./components/StockMovementTable";
-import StockMovementForm from "./components/StockMovementForm";
 import ItemSection from "./components/ItemSection";
+import StockMovementSection from "./components/StockMovementSection";
 
 function App() {
   const {
@@ -48,18 +47,6 @@ function App() {
     fetchStockMovements();
   }, []);
 
-  function handleStockMovementSubmit(event) {
-    event.preventDefault();
-
-    saveStockMovement()
-      .then(() => {
-        setError("");
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }
-
   return (
     <div className="app">
       <h1>SyncERPal</h1>
@@ -85,26 +72,19 @@ function App() {
         setError={setError}
       />
 
-      <h2>Add Stock Movement</h2>
-
-      <StockMovementForm 
+      <StockMovementSection
         items={items}
+        stockMovements={stockMovements}
         movementItemId={movementItemId}
         movementType={movementType}
         movementQuantity={movementQuantity}
         movementNote={movementNote}
-        onMovementItemIdChange={setMovementItemId}
-        onMovementTypeChange={setMovementType}
-        onMovementQuantityChange={setMovementQuantity}
-        onMovementNoteChange={setMovementNote}
-        onSubmit={handleStockMovementSubmit}
-      />
-
-      <h2>Stock Movements</h2>
-
-      <StockMovementTable 
-        stockMovements={stockMovements}
-        items={items}
+        setMovementItemId={setMovementItemId}
+        setMovementType={setMovementType}
+        setMovementQuantity={setMovementQuantity}
+        setMovementNote={setMovementNote}
+        saveStockMovement={saveStockMovement}
+        setError={setError}
       />
     </div>
   );

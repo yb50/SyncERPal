@@ -1,4 +1,14 @@
 function StockMovementTable({ stockMovements, items }) {
+  function formatDateTime(dateTimeText) {
+    if (!dateTimeText) {
+      return "";
+    }
+
+    const date = new Date(dateTimeText);
+
+    return date.toLocaleString();
+  }
+  
   return (
     <table>
       <thead>
@@ -8,6 +18,7 @@ function StockMovementTable({ stockMovements, items }) {
           <th>Type</th>
           <th>Quantity</th>
           <th>Note</th>
+          <th>Created At</th>
         </tr>
       </thead>
 
@@ -24,6 +35,7 @@ function StockMovementTable({ stockMovements, items }) {
               <td>{movement.type}</td>
               <td>{movement.quantity}</td>
               <td>{movement.note}</td>
+              <td>{formatDateTime(movement.createdAt)}</td>
             </tr>
           );
         })}

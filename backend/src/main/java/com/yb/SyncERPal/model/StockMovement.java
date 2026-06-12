@@ -1,5 +1,7 @@
 package com.yb.SyncERPal.model;
 
+import java.time.LocalDateTime;
+
 public class StockMovement {
 
     private Long id;
@@ -7,6 +9,7 @@ public class StockMovement {
     private String type;
     private Integer quantity;
     private String note;
+    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -51,11 +54,20 @@ public class StockMovement {
     public StockMovement() {
     }
 
-    public StockMovement(Long id, Long itemId, String type, Integer quantity, String note) {
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public StockMovement(Long id, Long itemId, String type, Integer quantity, String note, LocalDateTime createdAt) {
         this.id = id;
         this.itemId = itemId;
         this.type = type;
         this.quantity = quantity;
         this.note = note;
+        this.createdAt = createdAt;
     }
 }

@@ -21,11 +21,18 @@ function ItemForm({name, sku, editingId, onNameChange, onSkuChange, quantity, on
 
       <div>
         <label>Quantity: </label>
-        <input 
+        <input
           type="number"
           value={quantity}
+          disabled={editingId !== null}
           onChange={(event) => onQuantityChange(event.target.value)}
         />
+
+        {editingId !== null && (
+          <p className="hint">
+            Use stock movements to change quantity.
+          </p>
+        )}
       </div>
 
       <div>

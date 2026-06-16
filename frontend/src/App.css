@@ -66,3 +66,9 @@ td {
   color: red;
   font-weight: bold;
 }
+
+.hint {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 4px 0 0 64px;
+}

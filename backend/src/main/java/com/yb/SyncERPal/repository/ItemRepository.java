@@ -44,7 +44,6 @@ public class ItemRepository {
             if (existingItem.getId().equals(id)) {
                 existingItem.setName(item.getName());
                 existingItem.setSku(item.getSku());
-                existingItem.setQuantity(item.getQuantity());
                 existingItem.setLowStockThreshold(item.getLowStockThreshold());
 
                 return existingItem;

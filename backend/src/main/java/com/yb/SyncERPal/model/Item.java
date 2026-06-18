@@ -1,8 +1,17 @@
 package com.yb.SyncERPal.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String sku;
     private Integer quantity;
@@ -47,6 +56,10 @@ public class Item {
 
     public void setLowStockThreshold(Integer lowStockThreshold) {
         this.lowStockThreshold = lowStockThreshold;
+    }
+
+    public Item() {
+
     }
 
     public Item(Long id, String name, String sku, Integer quantity, Integer lowStockThreshold) {

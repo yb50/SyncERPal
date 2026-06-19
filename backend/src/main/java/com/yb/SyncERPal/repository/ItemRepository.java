@@ -3,7 +3,6 @@ package com.yb.SyncERPal.repository;
 import com.yb.SyncERPal.model.Item;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

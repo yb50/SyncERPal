@@ -1,10 +1,19 @@
 package com.yb.SyncERPal.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class StockMovement {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long itemId;
     private String type;
     private Integer quantity;
@@ -51,15 +60,15 @@ public class StockMovement {
         this.note = note;
     }
 
-    public StockMovement() {
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public StockMovement() {
     }
 
     public StockMovement(Long id, Long itemId, String type, Integer quantity, String note, LocalDateTime createdAt) {

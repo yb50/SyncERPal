@@ -9,69 +9,59 @@ import java.util.List;
 @Repository
 public class ItemRepository {
 
-    private final List<Item> items = new ArrayList<>();
+    private final ItemJpaRepository itemJpaRepository;
 
-    public ItemRepository() {
-        items.add(new Item(1L, "USB Cable", "USB-001", 50, 10));
-        items.add(new Item(2L, "Keyboard", "KEY-001", 20, 5));
+    public ItemRepository(ItemJpaRepository itemJpaRepository) {
+        this.itemJpaRepository = itemJpaRepository;
     }
 
     public List<Item> findAll() {
-        return items;
+        return itemJpaRepository.findAll();
     }
 
     public Item findItem(Long id) {
-        for (Item item : items) {
-            if (item.getId().equals(id)) {
-                return item;
-            }
-        }
-
-        return null;
+        return itemJpaRepository.findById(id).orElse(null);
     }
 
     public Item save(Item item) {
-        Long newId = (long) (items.size() + 1);
-
-        item.setId(newId);
-        items.add(item);
-
-        return item;
+        return itemJpaRepository.save(item);
     }
 
     public Item updateItem(Long id, Item item) {
-        for (Item existingItem : items) {
-            if (existingItem.getId().equals(id)) {
-                existingItem.setName(item.getName());
-                existingItem.setSku(item.getSku());
-                existingItem.setLowStockThreshold(item.getLowStockThreshold());
+        Item existingItem = findItem(id);
 
-                return existingItem;
-            }
+        if (existingItem == null) {
+            return null;
         }
 
-        return null;
+        existingItem.setName(item.getName());
+        existingItem.setSku(item.getSku());
+        existingItem.setLowStockThreshold(item.getLowStockThreshold());
+
+        return itemJpaRepository.save(existingItem);
     }
 
     public Item deleteItem(Long id) {
-        for (Item existingItem : items) {
-            if (existingItem.getId().equals(id)) {
-                items.remove(existingItem);
-                return existingItem;
-            }
+        Item existingItem = findItem(id);
+
+        if (existingItem == null) {
+            return null;
         }
 
-        return null;
+        itemJpaRepository.delete(existingItem);
+
+        return existingItem;
     }
 
     public Item updateQuantity(Long id, Integer newQuantity) {
-        for (Item existingItem : items) {
-            if (existingItem.getId().equals(id)) {
-                existingItem.setQuantity(newQuantity);
+        Item existingItem = findItem(id);
 
-                return existingItem;
-            }
+        if (existingItem == null) {
+            return null;
         }
-        return null;
+
+        existingItem.setQuantity(newQuantity);
+
+        return itemJpaRepository.save(existingItem);
     }
 }

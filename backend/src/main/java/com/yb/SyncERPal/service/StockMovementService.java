@@ -5,6 +5,7 @@ import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class StockMovementService {
         }
     }
 
+    @Transactional
     public StockMovement createStockMovement(StockMovement stockMovement) {
         validateStockMovement(stockMovement);
 

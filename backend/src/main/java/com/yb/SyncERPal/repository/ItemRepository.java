@@ -63,4 +63,8 @@ public class ItemRepository {
 
         return itemJpaRepository.save(existingItem);
     }
+
+    public boolean existsBySku(String sku) {
+        return itemJpaRepository.existsBySku(sku);
+    }
 }

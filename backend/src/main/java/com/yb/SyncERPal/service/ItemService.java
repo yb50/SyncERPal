@@ -44,11 +44,27 @@ public class ItemService {
     public Item createItem(Item item) {
         validateItem(item);
 
+        if (itemRepository.existsBySku(item.getSku())) {
+            throw new IllegalArgumentException("Item SKU already exists.");
+        }
+
         return itemRepository.save(item);
     }
 
     public Item updateItem(Long id, Item item) {
         validateItem(item);
+
+        Item existingItem = itemRepository.findItem(id);
+
+        if (existingItem == null) {
+            return null;
+        }
+
+        boolean skuChanged = !existingItem.getSku().equals(item.getSku());
+
+        if (skuChanged && itemRepository.existsBySku(item.getSku())) {
+            throw new IllegalArgumentException("Item SKU already exists.");
+        }
 
         return itemRepository.updateItem(id, item);
     }

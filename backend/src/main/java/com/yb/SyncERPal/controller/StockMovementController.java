@@ -18,8 +18,14 @@ public class StockMovementController {
     }
 
     @GetMapping("/stock-movements")
-    public List<StockMovement> getAllStockMovements() {
-        return stockMovementService.getAllStockMovements();
+    public List<StockMovement> getStockMovements(
+            @RequestParam(required = false) Long itemId
+    ) {
+        if (itemId == null) {
+            return stockMovementService.getAllStockMovements();
+        }
+
+        return stockMovementService.getStockMovementsByItemId(itemId);
     }
 
     @PostMapping("/stock-movements")

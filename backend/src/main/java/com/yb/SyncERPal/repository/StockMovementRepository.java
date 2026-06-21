@@ -16,7 +16,11 @@ public class StockMovementRepository {
     }
 
     public List<StockMovement> findAll() {
-        return stockMovementJpaRepository.findAll();
+        return stockMovementJpaRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public List<StockMovement> findByItemId(Long itemId) {
+        return stockMovementJpaRepository.findByItemIdOrderByCreatedAtDesc(itemId);
     }
 
     public StockMovement save(StockMovement stockMovement) {

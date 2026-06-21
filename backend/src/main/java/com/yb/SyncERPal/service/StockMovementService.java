@@ -27,6 +27,10 @@ public class StockMovementService {
         return stockMovementRepository.findAll();
     }
 
+    public List<StockMovement> getStockMovementsByItemId(Long itemId) {
+        return stockMovementRepository.findByItemId(itemId);
+    }
+
     private void validateStockMovement(StockMovement stockMovement) {
         if (stockMovement.getItemId() == null) {
             throw new IllegalArgumentException("Item id is required.");

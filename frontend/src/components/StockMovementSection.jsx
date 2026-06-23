@@ -8,10 +8,12 @@ function StockMovementSection({
   movementType,
   movementQuantity,
   movementNote,
+  movementFilterItemId,
   setMovementItemId,
   setMovementType,
   setMovementQuantity,
   setMovementNote,
+  changeMovementFilterItemId,
   saveStockMovement,
   setError,
 }) {
@@ -45,6 +47,31 @@ function StockMovementSection({
       />
 
       <h2>Stock Movements</h2>
+
+      <div>
+        <label>Filter by item: </label>
+
+        <select
+          value={movementFilterItemId}
+          onChange={(event) => {
+            changeMovementFilterItemId(event.target.value)
+              .then(() => {
+                setError("");
+              })
+              .catch((error) => {
+                setError(error.message);
+              });
+          }}
+        >
+          <option value="">All items</option>
+
+          {items.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name} ({item.sku})
+            </option>
+          ))}
+        </select>
+      </div>
 
       <StockMovementTable
         stockMovements={stockMovements}

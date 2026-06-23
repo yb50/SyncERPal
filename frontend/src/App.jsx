@@ -32,12 +32,14 @@ function App() {
     movementType,
     movementQuantity,
     movementNote,
+    movementFilterItemId,
     setMovementItemId,
     setMovementType,
     setMovementQuantity,
     setMovementNote,
     fetchStockMovements,
     saveStockMovement,
+    changeMovementFilterItemId,
   } = useStockMovements(fetchItems);
 
   const [error, setError] = useState("");
@@ -79,10 +81,12 @@ function App() {
         movementType={movementType}
         movementQuantity={movementQuantity}
         movementNote={movementNote}
+        movementFilterItemId={movementFilterItemId}
         setMovementItemId={setMovementItemId}
         setMovementType={setMovementType}
         setMovementQuantity={setMovementQuantity}
         setMovementNote={setMovementNote}
+        changeMovementFilterItemId={changeMovementFilterItemId}
         saveStockMovement={saveStockMovement}
         setError={setError}
       />

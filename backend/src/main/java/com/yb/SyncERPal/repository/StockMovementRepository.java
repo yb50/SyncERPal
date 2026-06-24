@@ -28,4 +28,8 @@ public class StockMovementRepository {
 
         return stockMovementJpaRepository.save(stockMovement);
     }
+
+    public boolean existsByItemId(Long itemId) {
+        return stockMovementJpaRepository.existsByItemId(itemId);
+    }
 }

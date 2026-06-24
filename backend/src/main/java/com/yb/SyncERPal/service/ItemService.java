@@ -2,6 +2,7 @@ package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.repository.ItemRepository;
+import com.yb.SyncERPal.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +11,14 @@ import java.util.List;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final StockMovementRepository stockMovementRepository;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(
+            ItemRepository itemRepository,
+            StockMovementRepository stockMovementRepository
+    ) {
         this.itemRepository = itemRepository;
+        this.stockMovementRepository = stockMovementRepository;
     }
 
     public List<Item> getAllItems() {
@@ -70,6 +76,16 @@ public class ItemService {
     }
 
     public Item deleteItem(Long id) {
+        Item existingItem = itemRepository.findItem(id);
+
+        if (existingItem == null) {
+            return null;
+        }
+
+        if (stockMovementRepository.existsByItemId(id)) {
+            throw new IllegalStateException("Cannot delete item with stock movement history");
+        }
+
         return itemRepository.deleteItem(id);
     }
 }

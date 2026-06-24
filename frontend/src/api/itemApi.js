@@ -56,7 +56,9 @@ export function deleteItem(id) {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Failed to delete item.");
+        return response.text().then((message) => {
+          throw new Error(message || "Failed to delete item.");
+        });
       }
 
       return response.json();

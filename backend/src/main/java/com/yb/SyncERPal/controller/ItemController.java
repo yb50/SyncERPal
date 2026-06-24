@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.service.ItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,12 +71,16 @@ public class ItemController {
     public ResponseEntity<?> deleteItem(
             @PathVariable Long id
     ) {
-        Item deletedItem = itemService.deleteItem(id);
+        try {
+            Item deletedItem = itemService.deleteItem(id);
 
-        if (deletedItem == null) {
-            return ResponseEntity.notFound().build();
+            if (deletedItem == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(deletedItem);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
-
-        return ResponseEntity.ok(deletedItem);
     }
 }

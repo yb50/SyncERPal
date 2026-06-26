@@ -40,4 +40,9 @@ public class StockMovementController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/items/{id}/stock-movements")
+    public List<StockMovement> getStockMovementsForItem(@PathVariable Long id) {
+        return stockMovementService.getStockMovementsByItemId(id);
+    }
 }

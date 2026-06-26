@@ -1,4 +1,14 @@
 function ItemTable({items, onEdit, onDelete}) {
+  function formatDateTime(dateTimeText) {
+    if (!dateTimeText) {
+      return "";
+    }
+
+    const date = new Date(dateTimeText);
+
+    return date.toLocaleString();
+  }
+
   return (
     <table>
       <thead>
@@ -9,6 +19,8 @@ function ItemTable({items, onEdit, onDelete}) {
           <th>Quantity</th>
           <th>Low Stock Threshold</th>
           <th>Status</th>
+          <th>Created At</th>
+          <th>Updated At</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -34,6 +46,8 @@ function ItemTable({items, onEdit, onDelete}) {
               <td>{item.quantity}</td>
               <td>{item.lowStockThreshold}</td>
               <td className={statusClassName}>{stockStatus}</td>
+              <td>{formatDateTime(item.createdAt)}</td>
+              <td>{formatDateTime(item.updatedAt)}</td>
               <td>
                 <button onClick={() => onEdit(item)}>Edit</button>
                 <button onClick={() => onDelete(item.id)}>Delete</button>

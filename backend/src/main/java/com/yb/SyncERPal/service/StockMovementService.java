@@ -2,6 +2,7 @@ package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.model.StockMovement;
+import com.yb.SyncERPal.model.StockMovementType;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -31,26 +32,6 @@ public class StockMovementService {
         return stockMovementRepository.findByItemId(itemId);
     }
 
-    private void validateStockMovement(StockMovement stockMovement) {
-        if (stockMovement.getItemId() == null) {
-            throw new IllegalArgumentException("Item id is required.");
-        }
-
-        if (stockMovement.getType() == null || stockMovement.getType().isBlank()) {
-            throw new IllegalArgumentException("Movement type is required");
-        }
-
-        if (!stockMovement.getType().equals("IN") &&
-                !stockMovement.getType().equals("OUT") &&
-                !stockMovement.getType().equals("ADJUSTMENT")) {
-            throw new IllegalArgumentException("Movement type must be IN, OUT, ADJUSTMENT.");
-        }
-
-        if (stockMovement.getQuantity() == null || stockMovement.getQuantity() <= 0) {
-            throw new IllegalArgumentException("Movement quantity must be greater than 0.");
-        }
-    }
-
     @Transactional
     public StockMovement createStockMovement(StockMovement stockMovement) {
         validateStockMovement(stockMovement);
@@ -63,11 +44,11 @@ public class StockMovementService {
 
         Integer newQuantity = item.getQuantity();
 
-        if (stockMovement.getType().equals("IN")) {
+        if (stockMovement.getType() == StockMovementType.IN) {
             newQuantity = item.getQuantity() + stockMovement.getQuantity();
-        } else if (stockMovement.getType().equals("OUT")) {
+        } else if (stockMovement.getType() == StockMovementType.OUT) {
             newQuantity = item.getQuantity() - stockMovement.getQuantity();
-        } else if (stockMovement.getType().equals("ADJUSTMENT")) {
+        } else if (stockMovement.getType() == StockMovementType.ADJUSTMENT) {
             newQuantity = stockMovement.getQuantity();
         }
 
@@ -78,5 +59,19 @@ public class StockMovementService {
         itemRepository.updateQuantity(item.getId(), newQuantity);
 
         return stockMovementRepository.save(stockMovement);
+    }
+
+    private void validateStockMovement(StockMovement stockMovement) {
+        if (stockMovement.getItemId() == null) {
+            throw new IllegalArgumentException("Item id is required.");
+        }
+
+        if (stockMovement.getType() == null) {
+            throw new IllegalArgumentException("Movement type is required");
+        }
+
+        if (stockMovement.getQuantity() == null || stockMovement.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Movement quantity must be greater than 0.");
+        }
     }
 }

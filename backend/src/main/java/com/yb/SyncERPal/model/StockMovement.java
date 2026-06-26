@@ -1,9 +1,6 @@
 package com.yb.SyncERPal.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +12,10 @@ public class StockMovement {
     private Long id;
 
     private Long itemId;
-    private String type;
+
+    @Enumerated(EnumType.STRING)
+    private StockMovementType type;
+
     private Integer quantity;
     private String note;
     private LocalDateTime createdAt;
@@ -36,11 +36,11 @@ public class StockMovement {
         this.itemId = itemId;
     }
 
-    public String getType() {
+    public StockMovementType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(StockMovementType type) {
         this.type = type;
     }
 
@@ -71,7 +71,7 @@ public class StockMovement {
     public StockMovement() {
     }
 
-    public StockMovement(Long id, Long itemId, String type, Integer quantity, String note, LocalDateTime createdAt) {
+    public StockMovement(Long id, Long itemId, StockMovementType type, Integer quantity, String note, LocalDateTime createdAt) {
         this.id = id;
         this.itemId = itemId;
         this.type = type;

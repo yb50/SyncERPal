@@ -38,6 +38,7 @@ function App() {
     setMovementQuantity,
     setMovementNote,
     fetchStockMovements,
+    fetchStockMovementsForItem,
     saveStockMovement,
     changeMovementFilterItemId,
   } = useStockMovements(fetchItems);
@@ -71,6 +72,7 @@ function App() {
         removeItem={removeItem}
         startEditItem={startEditItem}
         clearItemForm={clearItemForm}
+        fetchStockMovementsForItem={fetchStockMovementsForItem}
         setError={setError}
       />
 

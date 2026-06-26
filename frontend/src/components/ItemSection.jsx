@@ -17,6 +17,7 @@ function ItemSection({
   removeItem,
   startEditItem,
   clearItemForm,
+  fetchStockMovementsForItem,
   setError,
 }) {
   function handleSubmit(event) {
@@ -50,6 +51,16 @@ function ItemSection({
     setError("");
   }
 
+  function handleViewHistory(itemId) {
+    fetchStockMovementsForItem(itemId)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
   return (
     <>
       <h2>Add Item</h2>
@@ -78,6 +89,7 @@ function ItemSection({
           items={items}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onViewHistory={handleViewHistory}
         />
       )}
     </>

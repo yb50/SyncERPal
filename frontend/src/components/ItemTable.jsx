@@ -1,4 +1,4 @@
-function ItemTable({items, onEdit, onDelete}) {
+function ItemTable({items, onEdit, onDelete, onViewHistory}) {
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
       return "";
@@ -49,6 +49,9 @@ function ItemTable({items, onEdit, onDelete}) {
               <td>{formatDateTime(item.createdAt)}</td>
               <td>{formatDateTime(item.updatedAt)}</td>
               <td>
+                <button onClick={() => onViewHistory(item.id)}>
+                  View History
+                </button>
                 <button onClick={() => onEdit(item)}>Edit</button>
                 <button onClick={() => onDelete(item.id)}>Delete</button>
               </td>

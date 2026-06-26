@@ -15,6 +15,17 @@ export function getStockMovements(itemId) {
   });
 }
 
+export function getStockMovementsForItem(itemId) {
+  return fetch(`${BASE_URL}/items/${itemId}/stock-movements`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to load item stock movements.");
+      }
+
+      return response.json();
+    })
+}
+
 export function createStockMovement(stockMovement) {
   return fetch(STOCK_MOVEMENTS_URL, {
     method: "POST",

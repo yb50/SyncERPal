@@ -5,6 +5,7 @@ import useItems from "./hooks/useItems";
 import useStockMovements from "./hooks/useStockMovements";
 import ItemSection from "./components/ItemSection";
 import StockMovementSection from "./components/StockMovementSection";
+import InventorySummary from "./components/InventorySummary";
 
 function App() {
   const {
@@ -53,6 +54,8 @@ function App() {
   return (
     <div className="app">
       <h1>SyncERPal</h1>
+
+      <InventorySummary items={items} />
 
       {error && <p className="error">{error}</p>}
 

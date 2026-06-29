@@ -88,4 +88,24 @@ public class ItemService {
 
         return itemRepository.deleteItem(id);
     }
+
+    public String exportItemsAsCsv() {
+        List<Item> items = itemRepository.findAll();
+
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("id,sku,name,quantity,lowStockThreshold,createdAt,updatedAt\n");
+
+        for (Item item : items) {
+            csv.append(item.getId()).append(",");
+            csv.append(item.getSku()).append(",");
+            csv.append(item.getName()).append(",");
+            csv.append(item.getQuantity()).append(",");
+            csv.append(item.getLowStockThreshold()).append(",");
+            csv.append(item.getCreatedAt()).append(",");
+            csv.append(item.getUpdatedAt()).append("\n");
+        }
+
+        return csv.toString();
+    }
 }

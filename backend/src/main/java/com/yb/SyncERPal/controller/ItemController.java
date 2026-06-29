@@ -2,7 +2,9 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.service.ItemService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,16 @@ public class ItemController {
         }
 
         return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/items/export")
+    public ResponseEntity<String> exportItems() {
+        String csv = itemService.exportItemsAsCsv();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=items.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csv);
     }
 
     @PostMapping("/items")

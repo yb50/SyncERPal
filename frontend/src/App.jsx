@@ -25,6 +25,7 @@ function App() {
     removeItem,
     startEditItem,
     clearItemForm,
+    exportItems,
   } = useItems();
 
   const {
@@ -77,6 +78,7 @@ function App() {
         clearItemForm={clearItemForm}
         fetchStockMovementsForItem={fetchStockMovementsForItem}
         setError={setError}
+        exportItems={exportItems}
       />
 
       <StockMovementSection

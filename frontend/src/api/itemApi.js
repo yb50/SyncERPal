@@ -64,3 +64,7 @@ export function deleteItem(id) {
       return response.json();
     });
 }
+
+export function exportItemsCsv() {
+  window.location.href = `${ITEMS_URL}/export`;
+}

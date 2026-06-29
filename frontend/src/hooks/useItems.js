@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getItems, createItem, updateItem, deleteItem } from "../api/itemApi";
+import { getItems, createItem, updateItem, deleteItem, exportItemsCsv } from "../api/itemApi";
 
 function useItems() {
   const [items, setItems] = useState([]);
@@ -63,6 +63,10 @@ function useItems() {
     setLowStockThreshold("");
   }
 
+  function exportItems() {
+    exportItemsCsv();
+  }
+
   return {
     items,
     name,
@@ -80,6 +84,7 @@ function useItems() {
     removeItem,
     startEditItem,
     clearItemForm,
+    exportItems,
   };
 }
 

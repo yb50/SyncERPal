@@ -19,6 +19,7 @@ function ItemSection({
   clearItemForm,
   fetchStockMovementsForItem,
   setError,
+  exportItems,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -81,9 +82,13 @@ function ItemSection({
 
       <h2>Items</h2>
 
+      <button type="button" onClick={exportItems}>
+        Export Items CSV
+      </button>
+
       {loading && <p>Loading items...</p>}
       {!loading && items.length === 0 && <p>No items found</p>}
-
+      
       {!loading && items.length > 0 && (
         <ItemTable
           items={items}

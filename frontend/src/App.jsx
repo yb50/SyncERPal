@@ -43,6 +43,7 @@ function App() {
     fetchStockMovementsForItem,
     saveStockMovement,
     changeMovementFilterItemId,
+    exportStockMovements,
   } = useStockMovements(fetchItems);
 
   const [error, setError] = useState("");
@@ -96,6 +97,7 @@ function App() {
         changeMovementFilterItemId={changeMovementFilterItemId}
         saveStockMovement={saveStockMovement}
         setError={setError}
+        exportStockMovements={exportStockMovements}
       />
     </div>
   );

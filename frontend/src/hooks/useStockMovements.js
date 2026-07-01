@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getStockMovements, getStockMovementsForItem, createStockMovement } from "../api/stockMovementApi";
+import { getStockMovements, getStockMovementsForItem, createStockMovement, exportStockMovementsCsv } from "../api/stockMovementApi";
 
 function useStockMovements(fetchItems) {
   const [stockMovements, setStockMovements] = useState([]);
@@ -53,6 +53,10 @@ function useStockMovements(fetchItems) {
     setMovementNote("");
   }
 
+  function exportStockMovements() {
+    exportStockMovementsCsv();
+  }
+
   return {
     stockMovements,
     movementItemId,
@@ -68,7 +72,8 @@ function useStockMovements(fetchItems) {
     fetchStockMovementsForItem,
     saveStockMovement,
     clearStockMovementForm,
-    changeMovementFilterItemId
+    changeMovementFilterItemId,
+    exportStockMovements,
   };
 }
 

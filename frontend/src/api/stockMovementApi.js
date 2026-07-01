@@ -44,3 +44,7 @@ export function createStockMovement(stockMovement) {
       return response.json();
     })
 }
+
+export function exportStockMovementsCsv() {
+  window.location.href = `${STOCK_MOVEMENTS_URL}/export`;
+}

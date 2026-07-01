@@ -16,6 +16,7 @@ function StockMovementSection({
   changeMovementFilterItemId,
   saveStockMovement,
   setError,
+  exportStockMovements,
 }) {
   function handleStockMovementSubmit(event) {
     event.preventDefault();
@@ -47,6 +48,10 @@ function StockMovementSection({
       />
 
       <h2>Stock Movements</h2>
+
+      <button type="button" onClick={exportStockMovements}>
+        Export Stock Movements CSV
+      </button>
 
       <div>
         <label>Filter by item: </label>

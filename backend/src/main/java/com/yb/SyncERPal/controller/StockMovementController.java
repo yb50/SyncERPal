@@ -2,6 +2,8 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.service.StockMovementService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +46,15 @@ public class StockMovementController {
     @GetMapping("/items/{id}/stock-movements")
     public List<StockMovement> getStockMovementsForItem(@PathVariable Long id) {
         return stockMovementService.getStockMovementsByItemId(id);
+    }
+
+    @GetMapping("/stock-movements/export")
+    public ResponseEntity<String> exportStockMovements() {
+        String csv = stockMovementService.exportStockMovementsAsCsv();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=stock-movements.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csv);
     }
 }

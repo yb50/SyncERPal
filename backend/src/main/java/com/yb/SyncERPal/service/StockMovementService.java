@@ -74,4 +74,23 @@ public class StockMovementService {
             throw new IllegalArgumentException("Movement quantity must be greater than 0.");
         }
     }
+
+    public String exportStockMovementsAsCsv() {
+        List<StockMovement> stockMovements = stockMovementRepository.findAll();
+
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("id,itemId,type,quantity,note,createdAt\n");
+
+        for (StockMovement movement : stockMovements) {
+            csv.append(movement.getId()).append(",");
+            csv.append(movement.getItemId()).append(",");
+            csv.append(movement.getType()).append(",");
+            csv.append(movement.getQuantity()).append(",");
+            csv.append(movement.getNote()).append(",");
+            csv.append(movement.getCreatedAt()).append("\n");
+        }
+
+        return csv.toString();
+    }
 }

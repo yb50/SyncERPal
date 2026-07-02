@@ -87,10 +87,24 @@ public class StockMovementService {
             csv.append(movement.getItemId()).append(",");
             csv.append(movement.getType()).append(",");
             csv.append(movement.getQuantity()).append(",");
-            csv.append(movement.getNote()).append(",");
+            csv.append(escapeCsv(movement.getNote())).append(",");
             csv.append(movement.getCreatedAt()).append("\n");
         }
 
         return csv.toString();
+    }
+
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        String escapedValue = value.replace("\"", "\"\"");
+
+        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains("\n")) {
+            return "\"" + escapedValue + "\"";
+        }
+
+        return escapedValue;
     }
 }

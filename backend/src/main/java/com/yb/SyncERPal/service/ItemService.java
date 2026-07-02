@@ -98,8 +98,8 @@ public class ItemService {
 
         for (Item item : items) {
             csv.append(item.getId()).append(",");
-            csv.append(item.getSku()).append(",");
-            csv.append(item.getName()).append(",");
+            csv.append(escapeCsv(item.getSku())).append(",");
+            csv.append(escapeCsv(item.getName())).append(",");
             csv.append(item.getQuantity()).append(",");
             csv.append(item.getLowStockThreshold()).append(",");
             csv.append(item.getCreatedAt()).append(",");
@@ -107,5 +107,19 @@ public class ItemService {
         }
 
         return csv.toString();
+    }
+
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        String escapedValue = value.replace("\"", "\"\"");
+
+        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains("\n")) {
+            return "\"" + escapedValue + "\"";
+        }
+
+        return escapedValue;
     }
 }

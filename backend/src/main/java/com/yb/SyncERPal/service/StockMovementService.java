@@ -15,13 +15,16 @@ public class StockMovementService {
 
     private final StockMovementRepository stockMovementRepository;
     private final ItemRepository itemRepository;
+    private final AuditLogService auditLogService;
 
     public StockMovementService(
             StockMovementRepository stockMovementRepository,
-            ItemRepository itemRepository
+            ItemRepository itemRepository,
+            AuditLogService auditLogService
     ) {
         this.stockMovementRepository = stockMovementRepository;
         this.itemRepository = itemRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<StockMovement> getAllStockMovements() {
@@ -58,7 +61,18 @@ public class StockMovementService {
 
         itemRepository.updateQuantity(item.getId(), newQuantity);
 
-        return stockMovementRepository.save(stockMovement);
+        StockMovement savedStockMovement = stockMovementRepository.save(stockMovement);
+
+        auditLogService.createAuditLog(
+                "CREATE_STOCK_MOVEMENT",
+                "STOCK_MOVEMENT",
+                savedStockMovement.getId(),
+                savedStockMovement.getType() + " " +
+                        savedStockMovement.getQuantity() +
+                        " for item " + item.getSku()
+        );
+
+        return savedStockMovement;
     }
 
     private void validateStockMovement(StockMovement stockMovement) {

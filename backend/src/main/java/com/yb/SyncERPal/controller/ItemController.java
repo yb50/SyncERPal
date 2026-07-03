@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -56,6 +57,19 @@ public class ItemController {
             Item createdItem = itemService.createItem(item);
 
             return ResponseEntity.ok(createdItem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/items/import")
+    public ResponseEntity<?> importItems(
+            @RequestParam("file")MultipartFile file
+    ) {
+        try {
+            int importedCount = itemService.importItemsFromCsv(file);
+
+            return ResponseEntity.ok("imported " + importedCount + " items.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

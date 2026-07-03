@@ -3,8 +3,16 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -121,5 +129,75 @@ public class ItemService {
         }
 
         return escapedValue;
+    }
+
+    @Transactional
+    public int importItemsFromCsv(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("CSV file is required.");
+        }
+
+        int importedCount = 0;
+
+        try (
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)
+                );
+                CSVParser csvParser = CSVFormat.DEFAULT.builder()
+                        .setHeader()
+                        .setSkipHeaderRecord(true)
+                        .setTrim(true)
+                        .get()
+                        .parse(reader)
+        ) {
+            for (CSVRecord record : csvParser) {
+                Item item = new Item();
+
+                item.setSku(getRequiredText(record, "sku"));
+                item.setName(getRequiredText(record, "name"));
+                item.setQuantity(parseInteger(record, "quantity"));
+                item.setLowStockThreshold(parseInteger(record, "lowStockThreshold"));
+
+                createItem(item);
+
+                importedCount++;
+            }
+
+            return importedCount;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to import CSV: " + e.getMessage());
+        }
+    }
+
+    private String getRequiredText(CSVRecord record, String columnName) {
+        String value = record.get(columnName);
+
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Row " + record.getRecordNumber() + ": " + columnName + " is required."
+            );
+        }
+
+        return value;
+    }
+
+    private Integer parseInteger(CSVRecord record, String columnName) {
+        String value = record.get(columnName);
+
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Row " + record.getRecordNumber() + ": " + columnName + " is required."
+            );
+        }
+
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Row " + record.getRecordNumber() + ": " + columnName + " must be a number."
+            );
+        }
     }
 }

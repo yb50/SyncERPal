@@ -20,13 +20,16 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final StockMovementRepository stockMovementRepository;
+    private final AuditLogService auditLogService;
 
     public ItemService(
             ItemRepository itemRepository,
-            StockMovementRepository stockMovementRepository
+            StockMovementRepository stockMovementRepository,
+            AuditLogService auditLogService
     ) {
         this.itemRepository = itemRepository;
         this.stockMovementRepository = stockMovementRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<Item> getAllItems() {
@@ -62,7 +65,16 @@ public class ItemService {
             throw new IllegalArgumentException("Item SKU already exists.");
         }
 
-        return itemRepository.save(item);
+        Item savedItem = itemRepository.save(item);
+
+        auditLogService.createAuditLog(
+                "CREATE_ITEM",
+                "ITEM",
+                savedItem.getId(),
+                "Created item: " + savedItem.getSku()
+        );
+
+        return savedItem;
     }
 
     public Item updateItem(Long id, Item item) {
@@ -80,7 +92,16 @@ public class ItemService {
             throw new IllegalArgumentException("Item SKU already exists.");
         }
 
-        return itemRepository.updateItem(id, item);
+        Item updatedItem = itemRepository.updateItem(id, item);
+
+        auditLogService.createAuditLog(
+                "UPDATE_ITEM",
+                "ITEM",
+                updatedItem.getId(),
+                "Updated item: " + updatedItem.getSku()
+        );
+
+        return updatedItem;
     }
 
     public Item deleteItem(Long id) {
@@ -94,7 +115,16 @@ public class ItemService {
             throw new IllegalStateException("Cannot delete item with stock movement history");
         }
 
-        return itemRepository.deleteItem(id);
+        Item deletedItem = itemRepository.deleteItem(id);
+
+        auditLogService.createAuditLog(
+                "DELETE_ITEM",
+                "ITEM",
+                deletedItem.getId(),
+                "Deleted item: " + deletedItem.getSku()
+        );
+
+        return deletedItem;
     }
 
     public String exportItemsAsCsv() {

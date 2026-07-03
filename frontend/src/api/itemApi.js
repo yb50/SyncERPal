@@ -68,3 +68,21 @@ export function deleteItem(id) {
 export function exportItemsCsv() {
   window.location.href = `${ITEMS_URL}/export`;
 }
+
+export function importItemsCsv(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return fetch(`${ITEMS_URL}/import`, {
+    method: "POST",
+    body: formData,
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to import items.");
+      });
+    }
+
+    return response.text();
+  });
+}

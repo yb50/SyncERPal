@@ -16,6 +16,7 @@ function App() {
     lowStockThreshold,
     editingId,
     loading,
+    importFile,
     setName,
     setSku,
     setQuantity,
@@ -26,6 +27,8 @@ function App() {
     startEditItem,
     clearItemForm,
     exportItems,
+    setImportFile,
+    importItems,
   } = useItems();
 
   const {
@@ -69,6 +72,7 @@ function App() {
         lowStockThreshold={lowStockThreshold}
         editingId={editingId}
         loading={loading}
+        importFile={importFile}
         setName={setName}
         setSku={setSku}
         setQuantity={setQuantity}
@@ -80,6 +84,8 @@ function App() {
         fetchStockMovementsForItem={fetchStockMovementsForItem}
         setError={setError}
         exportItems={exportItems}
+        setImportFile={setImportFile}
+        importItems={importItems}
       />
 
       <StockMovementSection

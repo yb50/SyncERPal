@@ -9,6 +9,7 @@ function ItemSection({
   lowStockThreshold,
   editingId,
   loading,
+  importFile,
   setName,
   setSku,
   setQuantity,
@@ -20,6 +21,8 @@ function ItemSection({
   fetchStockMovementsForItem,
   setError,
   exportItems,
+  setImportFile,
+  importItems,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -62,6 +65,18 @@ function ItemSection({
       });
   }
 
+  function handleImportItems(event) {
+    event.preventDefault();
+
+    importItems()
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
   return (
     <>
       <h2>Add Item</h2>
@@ -85,6 +100,16 @@ function ItemSection({
       <button type="button" onClick={exportItems}>
         Export Items CSV
       </button>
+
+      <form onSubmit={handleImportItems}>
+        <input
+          type="file"
+          accept=".csv"
+          onChange={(event) => setImportFile(event.target.files[0])}
+        />
+
+        <button type="submit">Import Items CSV</button>
+      </form>
 
       {loading && <p>Loading items...</p>}
       {!loading && items.length === 0 && <p>No items found</p>}

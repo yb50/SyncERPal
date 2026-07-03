@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getItems, createItem, updateItem, deleteItem, exportItemsCsv } from "../api/itemApi";
+import { getItems, createItem, updateItem, deleteItem, exportItemsCsv, importItemsCsv } from "../api/itemApi";
 
 function useItems() {
   const [items, setItems] = useState([]);
@@ -9,6 +9,7 @@ function useItems() {
   const [lowStockThreshold, setLowStockThreshold] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [importFile, setImportFile] = useState(null);
 
   function fetchItems() {
     setLoading(true);
@@ -67,6 +68,17 @@ function useItems() {
     exportItemsCsv();
   }
 
+  function importItems() {
+    if (importFile === null) {
+      return Promise.reject(new Error("CSV file is required."));
+    }
+
+    return importItemsCsv(importFile).then(() => {
+      setImportFile(null);
+      fetchItems();
+    });
+  }
+
   return {
     items,
     name,
@@ -75,6 +87,7 @@ function useItems() {
     lowStockThreshold,
     editingId,
     loading,
+    importFile,
     setName,
     setSku,
     setQuantity,
@@ -85,6 +98,8 @@ function useItems() {
     startEditItem,
     clearItemForm,
     exportItems,
+    setImportFile,
+    importItems,
   };
 }
 

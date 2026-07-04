@@ -23,6 +23,7 @@ function AuditLogTable({ auditLogs }) {
           <th>Entity ID</th>
           <th>Message</th>
           <th>Created At</th>
+          <th>Performed By</th>
         </tr>
       </thead>
 
@@ -35,6 +36,7 @@ function AuditLogTable({ auditLogs }) {
             <td>{auditLog.entityId}</td>
             <td>{auditLog.message}</td>
             <td>{formatDateTime(auditLog.createdAt)}</td>
+            <td>{auditLog.performedBy}</td>
           </tr>
         ))}
       </tbody>

@@ -20,6 +20,7 @@ public class AuditLog {
     private Long entityId;
     private String message;
     private LocalDateTime createdAt;
+    private String performedBy;
 
     @PrePersist
     public void onCreate() {
@@ -74,13 +75,22 @@ public class AuditLog {
         this.createdAt = createdAt;
     }
 
+    public String getPerformedBy() {
+        return performedBy;
+    }
+
+    public void setPerformedBy(String performedBy) {
+        this.performedBy = performedBy;
+    }
+
     public AuditLog() {
     }
 
-    public AuditLog(String action, String entityType, Long entityId, String message) {
+    public AuditLog(String action, String entityType, Long entityId, String message, String performedBy) {
         this.action = action;
         this.entityType = entityType;
         this.entityId = entityId;
         this.message = message;
+        this.performedBy = performedBy;
     }
 }

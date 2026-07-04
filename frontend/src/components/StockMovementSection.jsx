@@ -14,6 +14,7 @@ function StockMovementSection({
   setMovementQuantity,
   setMovementNote,
   changeMovementFilterItemId,
+  fetchAuditLogs,
   saveStockMovement,
   setError,
   exportStockMovements,
@@ -24,6 +25,7 @@ function StockMovementSection({
     saveStockMovement()
       .then(() => {
         setError("");
+        fetchAuditLogs();
       })
       .catch((error) => {
         setError(error.message);

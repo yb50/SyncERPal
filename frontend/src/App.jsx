@@ -90,6 +90,7 @@ function App() {
         startEditItem={startEditItem}
         clearItemForm={clearItemForm}
         fetchStockMovementsForItem={fetchStockMovementsForItem}
+        fetchAuditLogs={fetchAuditLogs}
         setError={setError}
         exportItems={exportItems}
         setImportFile={setImportFile}
@@ -109,6 +110,7 @@ function App() {
         setMovementQuantity={setMovementQuantity}
         setMovementNote={setMovementNote}
         changeMovementFilterItemId={changeMovementFilterItemId}
+        fetchAuditLogs={fetchAuditLogs}
         saveStockMovement={saveStockMovement}
         setError={setError}
         exportStockMovements={exportStockMovements}

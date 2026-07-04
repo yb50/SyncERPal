@@ -19,6 +19,7 @@ function ItemSection({
   startEditItem,
   clearItemForm,
   fetchStockMovementsForItem,
+  fetchAuditLogs,
   setError,
   exportItems,
   setImportFile,
@@ -30,6 +31,7 @@ function ItemSection({
     saveItem()
       .then(() => {
         setError("");
+        fetchAuditLogs();
       })
       .catch((error) => {
         setError(error.message);
@@ -40,6 +42,7 @@ function ItemSection({
     removeItem(id)
       .then(() => {
         setError("");
+        fetchAuditLogs();
       })
       .catch((error) => {
         setError(error.message);

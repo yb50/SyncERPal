@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Backend
+/data/syncerpal.mv.db
+/data/syncerpal.trace.db

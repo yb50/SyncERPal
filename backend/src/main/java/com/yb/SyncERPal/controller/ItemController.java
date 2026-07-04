@@ -3,7 +3,6 @@ package com.yb.SyncERPal.controller;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,29 +49,21 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<?> createItem(
+    public ResponseEntity<Item> createItem(
             @RequestBody Item item
     ) {
-        try {
-            Item createdItem = itemService.createItem(item);
+        Item createdItem = itemService.createItem(item);
 
-            return ResponseEntity.ok(createdItem);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(createdItem);
     }
 
     @PostMapping("/items/import")
     public ResponseEntity<?> importItems(
             @RequestParam("file")MultipartFile file
     ) {
-        try {
-            int importedCount = itemService.importItemsFromCsv(file);
+        int importedCount = itemService.importItemsFromCsv(file);
 
-            return ResponseEntity.ok("imported " + importedCount + " items.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok("imported " + importedCount + " items.");
     }
 
     @PutMapping("/items/{id}")
@@ -80,33 +71,25 @@ public class ItemController {
             @PathVariable Long id,
             @RequestBody Item item
     ) {
-        try {
-            Item updatedItem = itemService.updateItem(id, item);
+        Item updatedItem = itemService.updateItem(id, item);
 
-            if (updatedItem == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(updatedItem);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        if (updatedItem == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(updatedItem);
     }
 
     @DeleteMapping("/items/{id}")
     public ResponseEntity<?> deleteItem(
             @PathVariable Long id
     ) {
-        try {
-            Item deletedItem = itemService.deleteItem(id);
+        Item deletedItem = itemService.deleteItem(id);
 
-            if (deletedItem == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(deletedItem);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        if (deletedItem == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(deletedItem);
     }
 }

@@ -34,13 +34,9 @@ public class StockMovementController {
     public ResponseEntity<?> createStockMovement(
             @RequestBody StockMovement stockMovement
     ) {
-        try {
-            StockMovement createdStockMovement = stockMovementService.createStockMovement(stockMovement);
+        StockMovement createdStockMovement = stockMovementService.createStockMovement(stockMovement);
 
-            return ResponseEntity.ok(createdStockMovement);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(createdStockMovement);
     }
 
     @GetMapping("/items/{id}/stock-movements")

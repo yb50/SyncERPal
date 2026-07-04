@@ -6,6 +6,8 @@ import useStockMovements from "./hooks/useStockMovements";
 import ItemSection from "./components/ItemSection";
 import StockMovementSection from "./components/StockMovementSection";
 import InventorySummary from "./components/InventorySummary";
+import useAuditLogs from "./hooks/useAuditLogs";
+import AuditLogTable from "./components/AuditLogTable";
 
 function App() {
   const {
@@ -49,11 +51,17 @@ function App() {
     exportStockMovements,
   } = useStockMovements(fetchItems);
 
+  const { 
+    auditLogs, 
+    fetchAuditLogs, 
+  } = useAuditLogs();
+
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
+    fetchAuditLogs();
   }, []);
 
   return (
@@ -105,6 +113,10 @@ function App() {
         setError={setError}
         exportStockMovements={exportStockMovements}
       />
+
+      <h2>Audit Logs</h2>
+
+      <AuditLogTable auditLogs={auditLogs} />
     </div>
   );
 }

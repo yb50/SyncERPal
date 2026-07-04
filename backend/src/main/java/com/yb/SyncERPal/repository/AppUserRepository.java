@@ -1,0 +1,24 @@
+package com.yb.SyncERPal.repository;
+
+import com.yb.SyncERPal.model.AppUser;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class AppUserRepository {
+
+    private final AppUserJpaRepository appUserJpaRepository;
+
+    public AppUserRepository(AppUserJpaRepository appUserJpaRepository) {
+        this.appUserJpaRepository = appUserJpaRepository;
+    }
+
+    public List<AppUser> findAll() {
+        return appUserJpaRepository.findAll();
+    }
+
+    public AppUser save(AppUser appUser) {
+        return appUserJpaRepository.save(appUser);
+    }
+}

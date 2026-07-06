@@ -21,4 +21,8 @@ public class AppUserRepository {
     public AppUser save(AppUser appUser) {
         return appUserJpaRepository.save(appUser);
     }
+
+    public boolean existsByUsername(String username) {
+        return appUserJpaRepository.existsByUsername(username);
+    }
 }

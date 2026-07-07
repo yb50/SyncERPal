@@ -8,6 +8,8 @@ import StockMovementSection from "./components/StockMovementSection";
 import InventorySummary from "./components/InventorySummary";
 import useAuditLogs from "./hooks/useAuditLogs";
 import AuditLogTable from "./components/AuditLogTable";
+import useUsers from "./hooks/useUsers";
+import UserSection from "./components/UserSection";
 
 function App() {
   const {
@@ -56,12 +58,23 @@ function App() {
     fetchAuditLogs, 
   } = useAuditLogs();
 
+  const {
+    users,
+    username,
+    role,
+    setUsername,
+    setRole,
+    fetchUsers,
+    saveUser,
+  } = useUsers();
+
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
     fetchAuditLogs();
+    fetchUsers();
   }, []);
 
   return (
@@ -114,6 +127,16 @@ function App() {
         saveStockMovement={saveStockMovement}
         setError={setError}
         exportStockMovements={exportStockMovements}
+      />
+
+      <UserSection
+        users={users}
+        username={username}
+        role={role}
+        setUsername={setUsername}
+        setRole={setRole}
+        saveUser={saveUser}
+        setError={setError}
       />
 
       <h2>Audit Logs</h2>

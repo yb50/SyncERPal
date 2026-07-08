@@ -31,12 +31,11 @@ public class StockMovementController {
     }
 
     @PostMapping("/stock-movements")
-    public ResponseEntity<?> createStockMovement(
-            @RequestBody StockMovement stockMovement
+    public StockMovement createStockMovement(
+            @RequestBody StockMovement stockMovement,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
     ) {
-        StockMovement createdStockMovement = stockMovementService.createStockMovement(stockMovement);
-
-        return ResponseEntity.ok(createdStockMovement);
+        return stockMovementService.createStockMovement(stockMovement, performedBy);
     }
 
     @GetMapping("/items/{id}/stock-movements")

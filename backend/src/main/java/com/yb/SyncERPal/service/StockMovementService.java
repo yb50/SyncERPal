@@ -35,8 +35,12 @@ public class StockMovementService {
         return stockMovementRepository.findByItemId(itemId);
     }
 
-    @Transactional
     public StockMovement createStockMovement(StockMovement stockMovement) {
+        return createStockMovement(stockMovement, "system");
+    }
+
+    @Transactional
+    public StockMovement createStockMovement(StockMovement stockMovement, String performedBy) {
         validateStockMovement(stockMovement);
 
         Item item = itemRepository.findItem(stockMovement.getItemId());
@@ -69,7 +73,8 @@ public class StockMovementService {
                 savedStockMovement.getId(),
                 savedStockMovement.getType() + " " +
                         savedStockMovement.getQuantity() +
-                        " for item " + item.getSku()
+                        " for item " + item.getSku(),
+                performedBy
         );
 
         return savedStockMovement;

@@ -59,6 +59,10 @@ public class ItemService {
     }
 
     public Item createItem(Item item) {
+        return createItem(item, "system");
+    }
+
+    public Item createItem(Item item, String performedBy) {
         validateItem(item);
 
         if (itemRepository.existsBySku(item.getSku())) {
@@ -71,13 +75,18 @@ public class ItemService {
                 "CREATE_ITEM",
                 "ITEM",
                 savedItem.getId(),
-                "Created item: " + savedItem.getSku()
+                "Created item: " + savedItem.getSku(),
+                performedBy
         );
 
         return savedItem;
     }
 
     public Item updateItem(Long id, Item item) {
+        return updateItem(id, item, "system");
+    }
+
+    public Item updateItem(Long id, Item item, String performedBy) {
         validateItem(item);
 
         Item existingItem = itemRepository.findItem(id);
@@ -98,13 +107,18 @@ public class ItemService {
                 "UPDATE_ITEM",
                 "ITEM",
                 updatedItem.getId(),
-                "Updated item: " + updatedItem.getSku()
+                "Updated item: " + updatedItem.getSku(),
+                performedBy
         );
 
         return updatedItem;
     }
 
     public Item deleteItem(Long id) {
+        return deleteItem(id, "system");
+    }
+
+    public Item deleteItem(Long id, String performedBy) {
         Item existingItem = itemRepository.findItem(id);
 
         if (existingItem == null) {
@@ -112,7 +126,7 @@ public class ItemService {
         }
 
         if (stockMovementRepository.existsByItemId(id)) {
-            throw new IllegalStateException("Cannot delete item with stock movement history");
+            throw new IllegalStateException("Cannot delete item with stock movement history.");
         }
 
         Item deletedItem = itemRepository.deleteItem(id);
@@ -121,7 +135,8 @@ public class ItemService {
                 "DELETE_ITEM",
                 "ITEM",
                 deletedItem.getId(),
-                "Deleted item: " + deletedItem.getSku()
+                "Deleted item: " + deletedItem.getSku(),
+                performedBy
         );
 
         return deletedItem;

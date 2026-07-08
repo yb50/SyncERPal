@@ -50,9 +50,10 @@ public class ItemController {
 
     @PostMapping("/items")
     public ResponseEntity<Item> createItem(
-            @RequestBody Item item
+            @RequestBody Item item,
+            @RequestHeader(value = "X-user", defaultValue = "system") String performedBy
     ) {
-        Item createdItem = itemService.createItem(item);
+        Item createdItem = itemService.createItem(item, performedBy);
 
         return ResponseEntity.ok(createdItem);
     }
@@ -69,9 +70,10 @@ public class ItemController {
     @PutMapping("/items/{id}")
     public ResponseEntity<?> updateItem(
             @PathVariable Long id,
-            @RequestBody Item item
+            @RequestBody Item item,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
     ) {
-        Item updatedItem = itemService.updateItem(id, item);
+        Item updatedItem = itemService.updateItem(id, item, performedBy);
 
         if (updatedItem == null) {
             return ResponseEntity.notFound().build();
@@ -82,9 +84,10 @@ public class ItemController {
 
     @DeleteMapping("/items/{id}")
     public ResponseEntity<?> deleteItem(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
     ) {
-        Item deletedItem = itemService.deleteItem(id);
+        Item deletedItem = itemService.deleteItem(id, performedBy);
 
         if (deletedItem == null) {
             return ResponseEntity.notFound().build();

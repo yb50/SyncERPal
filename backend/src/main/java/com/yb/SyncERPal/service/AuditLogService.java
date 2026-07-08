@@ -20,7 +20,21 @@ public class AuditLogService {
     }
 
     public AuditLog createAuditLog(String action, String entityType, Long entityId, String message) {
-        AuditLog auditLog = new AuditLog(action, entityType, entityId, message, "system");
+        return createAuditLog(action, entityType, entityId, message, "system");
+    }
+
+    public AuditLog createAuditLog(
+            String action,
+            String entityType,
+            Long entityId,
+            String message,
+            String performedBy
+    ) {
+        if (performedBy == null || performedBy.isBlank()) {
+            performedBy = "system";
+        }
+
+        AuditLog auditLog = new AuditLog(action, entityType, entityId, message, performedBy);
 
         return auditLogRepository.save(auditLog);
     }

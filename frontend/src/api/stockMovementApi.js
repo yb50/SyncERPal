@@ -26,23 +26,23 @@ export function getStockMovementsForItem(itemId) {
     })
 }
 
-export function createStockMovement(stockMovement) {
+export function createStockMovement(stockMovement, performedBy) {
   return fetch(STOCK_MOVEMENTS_URL, {
     method: "POST",
     headers: {
-      "Content-type": "application/json",
+      "Content-Type": "application/json",
+      "X-User": performedBy,
     },
     body: JSON.stringify(stockMovement),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((message) => {
-          throw new Error(message);
-        });
-      }
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to create stock movement.");
+      });
+    }
 
-      return response.json();
-    })
+    return response.json();
+  });
 }
 
 export function exportStockMovementsCsv() {

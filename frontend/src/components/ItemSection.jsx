@@ -24,11 +24,12 @@ function ItemSection({
   exportItems,
   setImportFile,
   importItems,
+  currentUsername,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
 
-    saveItem()
+    saveItem(currentUsername)
       .then(() => {
         setError("");
         fetchAuditLogs();
@@ -39,7 +40,7 @@ function ItemSection({
   }
 
   function handleDelete(id) {
-    removeItem(id)
+    removeItem(id, currentUsername)
       .then(() => {
         setError("");
         fetchAuditLogs();

@@ -12,57 +12,59 @@ export function getItems() {
     });
 }
 
-export function createItem(item) {
+export function createItem(item, performedBy) {
   return fetch(ITEMS_URL, {
     method: "POST",
     headers: {
-      "Content-type": "application/json",
+      "Content-Type": "application/json",
+      "X-User": performedBy,
     },
     body: JSON.stringify(item),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((message) => {
-          throw new Error(message);
-        });
-      }
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to create item.");
+      });
+    }
 
-      return response.json();
-    });
+    return response.json();
+  });
 }
 
-export function updateItem(id, item) {
+export function updateItem(id, item, performedBy) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "PUT",
     headers: {
-      "Content-type": "application/json",
+      "Content-Type": "application/json",
+      "X-User": performedBy,
     },
     body: JSON.stringify(item),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((message) => {
-          throw new Error(message);
-        });
-      }
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to update item.");
+      });
+    }
 
-      return response.json();
-    });
+    return response.json();
+  });
 }
 
-export function deleteItem(id) {
+export function deleteItem(id, performedBy) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "DELETE",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((message) => {
-          throw new Error(message || "Failed to delete item.");
-        });
-      }
+    headers: {
+      "X-User": performedBy,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to delete item.");
+      });
+    }
 
-      return response.json();
-    });
+    return response.json();
+  });
 }
 
 export function exportItemsCsv() {

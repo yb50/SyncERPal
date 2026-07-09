@@ -23,7 +23,7 @@ function useItems() {
       });
   }
 
-  function saveItem() {
+  function saveItem(performedBy) {
     const item = {
       name: name,
       sku:sku,
@@ -31,10 +31,9 @@ function useItems() {
       lowStockThreshold: Number(lowStockThreshold),
     };
 
-    const request = 
-      editingId === null
-        ? createItem(item)
-        : updateItem(editingId, item);
+    const request = editingId === null
+      ? createItem(item, performedBy)
+      : updateItem(editingId, item, performedBy);
 
     return request.then(() => {
       clearItemForm();
@@ -42,10 +41,8 @@ function useItems() {
     });
   }
 
-  function removeItem(id) {
-    return deleteItem(id).then(() => {
-      fetchItems();
-    });
+  function removeItem(id, performedBy) {
+    return deleteItem(id, performedBy).then(fetchItems);
   }
 
   function startEditItem(item) {

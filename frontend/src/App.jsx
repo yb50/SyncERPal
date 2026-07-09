@@ -69,6 +69,7 @@ function App() {
   } = useUsers();
 
   const [error, setError] = useState("");
+  const [currentUsername, setCurrentUsername] = useState("system");
 
   useEffect(() => {
     fetchItems();
@@ -80,6 +81,22 @@ function App() {
   return (
     <div className="app">
       <h1>SyncERPal</h1>
+
+      <div>
+        <label>Current user: </label>
+        <select
+          value={currentUsername}
+          onChange={(event) => setCurrentUsername(event.target.value)}
+        >
+          <option value="system">system</option>
+
+          {users.map((user) => (
+            <option key={user.id} value={user.username}>
+              {user.username} ({user.role})
+            </option>
+          ))}
+        </select>
+      </div>
 
       <InventorySummary items={items} />
 
@@ -94,6 +111,7 @@ function App() {
         editingId={editingId}
         loading={loading}
         importFile={importFile}
+        currentUsername={currentUsername}
         setName={setName}
         setSku={setSku}
         setQuantity={setQuantity}
@@ -118,6 +136,7 @@ function App() {
         movementQuantity={movementQuantity}
         movementNote={movementNote}
         movementFilterItemId={movementFilterItemId}
+        currentUsername={currentUsername}
         setMovementItemId={setMovementItemId}
         setMovementType={setMovementType}
         setMovementQuantity={setMovementQuantity}

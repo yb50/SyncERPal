@@ -18,11 +18,12 @@ function StockMovementSection({
   saveStockMovement,
   setError,
   exportStockMovements,
+  currentUsername,
 }) {
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
-    saveStockMovement()
+    saveStockMovement(currentUsername)
       .then(() => {
         setError("");
         fetchAuditLogs();

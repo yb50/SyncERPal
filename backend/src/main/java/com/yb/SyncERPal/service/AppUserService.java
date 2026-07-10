@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,21 @@ public class AppUserService {
         }
 
         return appUserRepository.save(appUser);
+    }
+
+    public AppUser getUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+
+    public void requireManagerOrAdmin(String username) {
+        AppUser appUser = getUserByUsername(username);
+
+        if (appUser == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+
+        if (appUser.getRole() != UserRole.ADMIN && appUser.getRole() != UserRole.MANAGER) {
+            throw new IllegalStateException("Only ADMIN or MANAGER users can perform this action.");
+        }
     }
 }

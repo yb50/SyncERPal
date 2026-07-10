@@ -21,15 +21,18 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final StockMovementRepository stockMovementRepository;
     private final AuditLogService auditLogService;
+    private final AppUserService appUserService;
 
     public ItemService(
             ItemRepository itemRepository,
             StockMovementRepository stockMovementRepository,
-            AuditLogService auditLogService
+            AuditLogService auditLogService,
+            AppUserService appUserService
     ) {
         this.itemRepository = itemRepository;
         this.stockMovementRepository = stockMovementRepository;
         this.auditLogService = auditLogService;
+        this.appUserService = appUserService;
     }
 
     public List<Item> getAllItems() {
@@ -119,6 +122,8 @@ public class ItemService {
     }
 
     public Item deleteItem(Long id, String performedBy) {
+        appUserService.requireManagerOrAdmin(performedBy);
+
         Item existingItem = itemRepository.findItem(id);
 
         if (existingItem == null) {

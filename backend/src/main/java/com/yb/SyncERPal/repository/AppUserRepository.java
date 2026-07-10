@@ -25,4 +25,8 @@ public class AppUserRepository {
     public boolean existsByUsername(String username) {
         return appUserJpaRepository.existsByUsername(username);
     }
+
+    public AppUser findByUsername(String username) {
+        return appUserJpaRepository.findByUsername(username).orElse(null);
+    }
 }

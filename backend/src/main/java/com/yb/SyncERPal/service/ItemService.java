@@ -66,6 +66,8 @@ public class ItemService {
     }
 
     public Item createItem(Item item, String performedBy) {
+        appUserService.requireManagerOrAdmin(performedBy);
+
         validateItem(item);
 
         if (itemRepository.existsBySku(item.getSku())) {
@@ -89,7 +91,10 @@ public class ItemService {
         return updateItem(id, item, "system");
     }
 
-    public Item updateItem(Long id, Item item, String performedBy) {
+    public Item updateItem(Long id, Item item, String performedBy)
+    {
+        appUserService.requireManagerOrAdmin(performedBy);
+
         validateItem(item);
 
         Item existingItem = itemRepository.findItem(id);

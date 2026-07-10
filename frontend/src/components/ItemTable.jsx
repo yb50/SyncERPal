@@ -1,4 +1,4 @@
-function ItemTable({items, onEdit, onDelete, onViewHistory}) {
+function ItemTable({ items, onEdit, onDelete, onViewHistory, canManageItems }) {
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
       return "";
@@ -52,8 +52,14 @@ function ItemTable({items, onEdit, onDelete, onViewHistory}) {
                 <button onClick={() => onViewHistory(item.id)}>
                   View History
                 </button>
-                <button onClick={() => onEdit(item)}>Edit</button>
-                <button onClick={() => onDelete(item.id)}>Delete</button>
+                
+                <button onClick={() => onEdit(item)} disabled={!canManageItems}>
+                  Edit
+                </button>
+                
+                <button onClick={() => onDelete(item.id)} disabled={!canManageItems}>
+                  Delete
+                </button>
               </td>
             </tr>
           );

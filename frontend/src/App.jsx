@@ -71,6 +71,10 @@ function App() {
   const [error, setError] = useState("");
   const [currentUsername, setCurrentUsername] = useState("system");
 
+  const currentUser = users.find((user) => user.username === currentUsername);
+
+  const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
+
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -96,6 +100,10 @@ function App() {
             </option>
           ))}
         </select>
+
+        <p>
+          Current role: {currentUser ? currentUser.role : "No app user selected"}
+        </p>
       </div>
 
       <InventorySummary items={items} />
@@ -112,6 +120,7 @@ function App() {
         loading={loading}
         importFile={importFile}
         currentUsername={currentUsername}
+        canManageItems={canManageItems}
         setName={setName}
         setSku={setSku}
         setQuantity={setQuantity}

@@ -25,6 +25,7 @@ function ItemSection({
   setImportFile,
   importItems,
   currentUsername,
+  canManageItems,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -85,6 +86,12 @@ function ItemSection({
     <>
       <h2>Add Item</h2>
 
+      {!canManageItems && (
+        <p className="hint">
+          Only ADMIN and MANAGER users can create, edit, delete, or import items.
+        </p>
+      )}
+
       <ItemForm
         name={name}
         sku={sku}
@@ -95,6 +102,7 @@ function ItemSection({
         onSkuChange={setSku}
         onQuantityChange={setQuantity}
         onLowStockThreshold={setLowStockThreshold}
+        canManageItems={canManageItems}
         onSubmit={handleSubmit}
         onCancelEdit={handleCancelEdit}
       />
@@ -112,7 +120,9 @@ function ItemSection({
           onChange={(event) => setImportFile(event.target.files[0])}
         />
 
-        <button type="submit">Import Items CSV</button>
+        <button type="submit" disabled={!canManageItems}>
+          Import Items CSV
+        </button>
       </form>
 
       {loading && <p>Loading items...</p>}
@@ -121,6 +131,7 @@ function ItemSection({
       {!loading && items.length > 0 && (
         <ItemTable
           items={items}
+          canManageItems={canManageItems}
           onEdit={handleEdit}
           onDelete={handleDelete}
           onViewHistory={handleViewHistory}

@@ -29,4 +29,8 @@ public class AppUserRepository {
     public AppUser findByUsername(String username) {
         return appUserJpaRepository.findByUsername(username).orElse(null);
     }
+
+    public long countUsers() {
+        return appUserJpaRepository.count();
+    }
 }

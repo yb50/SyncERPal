@@ -23,8 +23,9 @@ public class AppUserController {
 
     @PostMapping("/users")
     public AppUser createUser(
-            @RequestBody AppUser appUser
+            @RequestBody AppUser appUser,
+            @RequestHeader(value = "X-user", defaultValue = "system") String performedBy
     ) {
-        return appUserService.createUser(appUser);
+        return appUserService.createUser(appUser, performedBy);
     }
 }

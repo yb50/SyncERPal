@@ -31,6 +31,14 @@ public class AppUserService {
     }
 
     public AppUser createUser(AppUser appUser) {
+        return createUser(appUser, "system");
+    }
+
+    public AppUser createUser(AppUser appUser, String performedBy) {
+        if (appUserRepository.countUsers() > 0) {
+            requireAdmin(performedBy);
+        }
+
         validateUser(appUser);
 
         if (appUserRepository.existsByUsername(appUser.getUsername())) {
@@ -53,6 +61,18 @@ public class AppUserService {
 
         if (appUser.getRole() != UserRole.ADMIN && appUser.getRole() != UserRole.MANAGER) {
             throw new IllegalStateException("Only ADMIN or MANAGER users can perform this action.");
+        }
+    }
+
+    public void requireAdmin(String username) {
+        AppUser appUser = getUserByUsername(username);
+
+        if (appUser == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+
+        if (appUser.getRole() != UserRole.ADMIN) {
+            throw new IllegalStateException("Only ADMIN users can perform this action.");
         }
     }
 }

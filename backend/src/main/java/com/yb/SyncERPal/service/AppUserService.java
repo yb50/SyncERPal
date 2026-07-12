@@ -11,9 +11,14 @@ import java.util.List;
 public class AppUserService {
 
     private final AppUserRepository appUserRepository;
+    private final AuditLogService auditLogService;
 
-    public AppUserService(AppUserRepository appUserRepository) {
+    public AppUserService(
+            AppUserRepository appUserRepository,
+            AuditLogService auditLogService
+    ) {
         this.appUserRepository = appUserRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<AppUser> getAllUsers() {
@@ -45,7 +50,17 @@ public class AppUserService {
             throw new IllegalArgumentException("Username already exists.");
         }
 
-        return appUserRepository.save(appUser);
+        AppUser savedUser = appUserRepository.save(appUser);
+
+        auditLogService.createAuditLog(
+                "CREATE_USER",
+                "USER",
+                savedUser.getId(),
+                "Created user: " + savedUser.getUsername() + " with role " + savedUser.getRole(),
+                performedBy
+        );
+
+        return savedUser;
     }
 
     public AppUser getUserByUsername(String username) {

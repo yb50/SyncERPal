@@ -10,6 +10,7 @@ function UserSection({
   saveUser,
   currentUsername,
   canManageUsers,
+  fetchAuditLogs,
   setError,
 }) {
   function handleSubmit(event) {
@@ -18,6 +19,7 @@ function UserSection({
     saveUser(currentUsername)
       .then(() => {
         setError("");
+        fetchAuditLogs();
       })
       .catch((error) => {
         setError(error.message);

@@ -168,6 +168,7 @@ function App() {
         saveUser={saveUser}
         currentUsername={currentUsername}
         canManageUsers={canManageUsers}
+        fetchAuditLogs={fetchAuditLogs}
         setError={setError}
       />
 

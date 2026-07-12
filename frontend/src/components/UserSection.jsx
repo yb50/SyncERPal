@@ -8,12 +8,14 @@ function UserSection({
   setUsername,
   setRole,
   saveUser,
+  currentUsername,
+  canManageUsers,
   setError,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
 
-    saveUser()
+    saveUser(currentUsername)
       .then(() => {
         setError("");
       })
@@ -26,12 +28,17 @@ function UserSection({
     <>
       <h2>Add User</h2>
 
+      {!canManageUsers && (
+        <p className="hint">Only ADMIN users can create new users.</p>
+      )}
+
       <UserForm
         username={username}
         role={role}
         onUsernameChange={setUsername}
         onRoleChange={setRole}
         onSubmit={handleSubmit}
+        canManageUsers={canManageUsers}
       />
 
       <h2>Users</h2>

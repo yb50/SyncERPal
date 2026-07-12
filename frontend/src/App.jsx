@@ -75,6 +75,8 @@ function App() {
 
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
 
+  const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
+
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -164,6 +166,8 @@ function App() {
         setUsername={setUsername}
         setRole={setRole}
         saveUser={saveUser}
+        currentUsername={currentUsername}
+        canManageUsers={canManageUsers}
         setError={setError}
       />
 

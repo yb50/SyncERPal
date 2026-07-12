@@ -1,4 +1,4 @@
-function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit }) {
+function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit, canManageUsers }) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -7,6 +7,7 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit }) 
           type="text"
           value={username}
           onChange={(event) => onUsernameChange(event.target.value)}
+          disabled={!canManageUsers}
         />
       </div>
 
@@ -15,6 +16,7 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit }) 
         <select
           value={role}
           onChange={(event) => onRoleChange(event.target.value)}
+          disabled={!canManageUsers}
         >
           <option value="ADMIN">ADMIN</option>
           <option value="MANAGER">MANAGER</option>
@@ -22,7 +24,7 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit }) 
         </select>
       </div>
 
-      <button type="submit">Add User</button>
+      <button type="submit" disabled={!canManageUsers}>Add User</button>
     </form>
   );
 }

@@ -11,11 +11,12 @@ export function getUsers() {
   });
 }
 
-export function createUser(user) {
+export function createUser(user, performedBy) {
   return fetch(USERS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-User" : performedBy,
     },
     body: JSON.stringify(user),
   }).then((response) => {

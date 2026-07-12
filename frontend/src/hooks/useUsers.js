@@ -12,13 +12,13 @@ function useUsers() {
     });
   }
 
-  function saveUser() {
+  function saveUser(performedBy) {
     const user = {
       username: username,
       role: role,
     };
 
-    return createUser(user).then(() => {
+    return createUser(user, performedBy).then(() => {
       setUsername("");
       setRole("WORKER");
       fetchUsers();

@@ -90,4 +90,12 @@ public class AppUserService {
             throw new IllegalStateException("Only ADMIN users can perform this action.");
         }
     }
+
+    public void requireExistingUser(String username) {
+        AppUser appUser = getUserByUsername(username);
+
+        if (appUser == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+    }
 }

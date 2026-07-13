@@ -16,15 +16,18 @@ public class StockMovementService {
     private final StockMovementRepository stockMovementRepository;
     private final ItemRepository itemRepository;
     private final AuditLogService auditLogService;
+    private final AppUserService appUserService;
 
     public StockMovementService(
             StockMovementRepository stockMovementRepository,
             ItemRepository itemRepository,
-            AuditLogService auditLogService
+            AuditLogService auditLogService,
+            AppUserService appUserService
     ) {
         this.stockMovementRepository = stockMovementRepository;
         this.itemRepository = itemRepository;
         this.auditLogService = auditLogService;
+        this.appUserService = appUserService;
     }
 
     public List<StockMovement> getAllStockMovements() {
@@ -41,6 +44,8 @@ public class StockMovementService {
 
     @Transactional
     public StockMovement createStockMovement(StockMovement stockMovement, String performedBy) {
+        appUserService.requireExistingUser(performedBy);
+
         validateStockMovement(stockMovement);
 
         Item item = itemRepository.findItem(stockMovement.getItemId());

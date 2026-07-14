@@ -9,6 +9,7 @@ function StockMovementForm({
   onMovementQuantityChange,
   onMovementNoteChange,
   onSubmit,
+  canCreateStockMovements,
 }) {
   return (
     <form onSubmit={onSubmit}>
@@ -17,6 +18,7 @@ function StockMovementForm({
         <select
           value={movementItemId}
           onChange={(event) => onMovementItemIdChange(event.target.value)}
+          disabled={!canCreateStockMovements}
         >
           <option value="">Select item</option>
 
@@ -33,6 +35,7 @@ function StockMovementForm({
         <select
           value={movementType}
           onChange={(event) => onMovementTypeChange(event.target.value)}
+          disabled={!canCreateStockMovements}
         >
           <option value={"IN"}>IN</option>
           <option value={"OUT"}>OUT</option>
@@ -46,6 +49,7 @@ function StockMovementForm({
           type="number"
           value={movementQuantity}
           onChange={(event) => onMovementQuantityChange(event.target.value)}
+          disabled={!canCreateStockMovements}
         />
       </div>
 
@@ -55,10 +59,13 @@ function StockMovementForm({
           type="text"
           value={movementNote}
           onChange={(event) => onMovementNoteChange(event.target.value)}
+          disabled={!canCreateStockMovements}
         />
       </div>
 
-      <button type="submit">Add Movement</button>
+      <button type="submit" disabled={!canCreateStockMovements}>
+        Add Movement
+      </button>
     </form>
   );
 }

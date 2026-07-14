@@ -77,6 +77,8 @@ function App() {
 
   const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
 
+  const canCreateStockMovements = currentUser != null;
+
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -148,6 +150,7 @@ function App() {
         movementNote={movementNote}
         movementFilterItemId={movementFilterItemId}
         currentUsername={currentUsername}
+        canCreateStockMovements={canCreateStockMovements}
         setMovementItemId={setMovementItemId}
         setMovementType={setMovementType}
         setMovementQuantity={setMovementQuantity}

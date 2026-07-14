@@ -15,6 +15,7 @@ function StockMovementSection({
   setMovementNote,
   changeMovementFilterItemId,
   fetchAuditLogs,
+  canCreateStockMovements,
   saveStockMovement,
   setError,
   exportStockMovements,
@@ -37,6 +38,12 @@ function StockMovementSection({
     <>
       <h2>Add Stock Movement</h2>
 
+      {!canCreateStockMovements && (
+        <p className="hint">
+          Select a real app user before creating stock movements.
+        </p>
+      )}
+
       <StockMovementForm
         items={items}
         movementItemId={movementItemId}
@@ -48,6 +55,7 @@ function StockMovementSection({
         onMovementQuantityChange={setMovementQuantity}
         onMovementNoteChange={setMovementNote}
         onSubmit={handleStockMovementSubmit}
+        canCreateStockMovements={canCreateStockMovements}
       />
 
       <h2>Stock Movements</h2>

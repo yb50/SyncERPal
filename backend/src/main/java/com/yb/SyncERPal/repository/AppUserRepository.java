@@ -33,4 +33,8 @@ public class AppUserRepository {
     public long countUsers() {
         return appUserJpaRepository.count();
     }
+
+    public AppUser findById(Long id) {
+        return appUserJpaRepository.findById(id).orElse(null);
+    }
 }

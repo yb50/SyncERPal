@@ -98,4 +98,34 @@ public class AppUserService {
             throw new IllegalArgumentException("User does not exist.");
         }
     }
+
+    public AppUser updateUserRole(Long id, UserRole role, String performedBy) {
+        requireAdmin(performedBy);
+
+        if (role == null) {
+            throw new IllegalArgumentException("User role is required.");
+        }
+
+        AppUser appUser = appUserRepository.findById(id);
+
+        if (appUser == null) {
+            return null;
+        }
+
+        UserRole oldRole = appUser.getRole();
+
+        appUser.setRole(role);
+
+        AppUser updatedUser = appUserRepository.save(appUser);
+
+        auditLogService.createAuditLog(
+                "UPDATE_USER_ROLE",
+                "USER",
+                updatedUser.getId(),
+                "Updated user role: " + updatedUser.getUsername() + " from " + oldRole + " to " + updatedUser.getRole(),
+                performedBy
+        );
+
+        return updatedUser;
+    }
 }

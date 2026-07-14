@@ -65,12 +65,12 @@ function useItems() {
     exportItemsCsv();
   }
 
-  function importItems() {
+  function importItems(performedBy) {
     if (importFile === null) {
       return Promise.reject(new Error("CSV file is required."));
     }
 
-    return importItemsCsv(importFile).then(() => {
+    return importItemsCsv(importFile, performedBy).then(() => {
       setImportFile(null);
       fetchItems();
     });

@@ -59,10 +59,11 @@ public class ItemController {
     }
 
     @PostMapping("/items/import")
-    public ResponseEntity<?> importItems(
-            @RequestParam("file")MultipartFile file
+    public ResponseEntity<String> importItems(
+            @RequestParam("file")MultipartFile file,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedby
     ) {
-        int importedCount = itemService.importItemsFromCsv(file);
+        int importedCount = itemService.importItemsFromCsv(file, performedby);
 
         return ResponseEntity.ok("imported " + importedCount + " items.");
     }

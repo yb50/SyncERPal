@@ -73,7 +73,7 @@ function ItemSection({
   function handleImportItems(event) {
     event.preventDefault();
 
-    importItems()
+    importItems(currentUsername)
       .then(() => {
         setError("");
       })

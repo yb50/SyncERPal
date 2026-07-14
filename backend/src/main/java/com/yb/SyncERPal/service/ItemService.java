@@ -187,7 +187,9 @@ public class ItemService {
     }
 
     @Transactional
-    public int importItemsFromCsv(MultipartFile file) {
+    public int importItemsFromCsv(MultipartFile file, String performedBy) {
+        appUserService.requireManagerOrAdmin(performedBy);
+
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("CSV file is required.");
         }
@@ -213,7 +215,7 @@ public class ItemService {
                 item.setQuantity(parseInteger(record, "quantity"));
                 item.setLowStockThreshold(parseInteger(record, "lowStockThreshold"));
 
-                createItem(item);
+                createItem(item, performedBy);
 
                 importedCount++;
             }

@@ -71,12 +71,15 @@ export function exportItemsCsv() {
   window.location.href = `${ITEMS_URL}/export`;
 }
 
-export function importItemsCsv(file) {
+export function importItemsCsv(file, performedBy) {
   const formData = new FormData();
   formData.append("file", file);
 
   return fetch(`${ITEMS_URL}/import`, {
     method: "POST",
+    headers: {
+      "X-User": performedBy,
+    },
     body: formData,
   }).then((response) => {
     if (!response.ok) {

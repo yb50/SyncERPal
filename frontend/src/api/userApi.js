@@ -29,3 +29,22 @@ export function createUser(user, performedBy) {
     return response.json();
   });
 }
+
+export function updateUserRole(userId, role, performedBy) {
+  return fetch(`${USERS_URL}/${userId}/role`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-User": performedBy,
+    },
+    body: JSON.stringify({ role: role }),
+  }).then((response) => {
+     if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to update user role.");
+      });
+     }
+
+     return response.json();
+  })
+}

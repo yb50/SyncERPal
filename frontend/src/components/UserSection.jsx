@@ -12,11 +12,23 @@ function UserSection({
   canManageUsers,
   fetchAuditLogs,
   setError,
+  changeUserRole,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
 
     saveUser(currentUsername)
+      .then(() => {
+        setError("");
+        fetchAuditLogs();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
+  function handleRoleChange(userId, newRole) {
+    changeUserRole(userId, newRole, currentUsername)
       .then(() => {
         setError("");
         fetchAuditLogs();
@@ -45,7 +57,11 @@ function UserSection({
 
       <h2>Users</h2>
 
-      <UserTable users={users} />
+      <UserTable 
+        users={users}
+        canManageUsers={canManageUsers} 
+        onRoleChange={handleRoleChange}
+      />
     </>
   );
 }

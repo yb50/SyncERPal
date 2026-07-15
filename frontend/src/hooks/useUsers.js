@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUsers, createUser } from "../api/userApi";
+import { getUsers, createUser, updateUserRole } from "../api/userApi";
 
 function useUsers() {
   const [users, setUsers] = useState([]);
@@ -25,6 +25,12 @@ function useUsers() {
     });
   }
 
+  function changeUserRole(userId, role, performedBy) {
+    return updateUserRole(userId, role, performedBy).then(() => {
+      fetchUsers();
+    });
+  }
+
   return {
     users,
     username,
@@ -33,6 +39,7 @@ function useUsers() {
     setRole,
     fetchUsers,
     saveUser,
+    changeUserRole,
   };
 }
 

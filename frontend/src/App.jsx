@@ -66,6 +66,7 @@ function App() {
     setRole,
     fetchUsers,
     saveUser,
+    changeUserRole,
   } = useUsers();
 
   const [error, setError] = useState("");
@@ -173,6 +174,8 @@ function App() {
         canManageUsers={canManageUsers}
         fetchAuditLogs={fetchAuditLogs}
         setError={setError}
+        changeUserRole={changeUserRole}
+        fetchAuditLogs={fetchAuditLogs}
       />
 
       <h2>Audit Logs</h2>

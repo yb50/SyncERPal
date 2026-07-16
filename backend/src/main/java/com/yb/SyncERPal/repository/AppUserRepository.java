@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.UserRole;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,5 +37,9 @@ public class AppUserRepository {
 
     public AppUser findById(Long id) {
         return appUserJpaRepository.findById(id).orElse(null);
+    }
+
+    public long countByRole(UserRole role) {
+        return appUserJpaRepository.countByRole(role);
     }
 }

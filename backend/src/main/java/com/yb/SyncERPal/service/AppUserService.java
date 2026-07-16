@@ -114,6 +114,14 @@ public class AppUserService {
 
         UserRole oldRole = appUser.getRole();
 
+        if (oldRole == UserRole.ADMIN && role != UserRole.ADMIN) {
+            long adminCount = appUserRepository.countByRole(UserRole.ADMIN);
+
+            if (adminCount <= 1) {
+                throw new IllegalStateException("At least one ADMIN user is required.");
+            }
+        }
+
         appUser.setRole(role);
 
         AppUser updatedUser = appUserRepository.save(appUser);

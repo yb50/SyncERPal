@@ -42,4 +42,8 @@ public class AppUserRepository {
     public long countByRole(UserRole role) {
         return appUserJpaRepository.countByRole(role);
     }
+
+    public void delete(AppUser appUser) {
+        appUserJpaRepository.delete(appUser);
+    }
 }

@@ -45,4 +45,18 @@ public class AppUserController {
 
         return ResponseEntity.ok(updatedUser);
     }
+
+    @DeleteMapping("users/{id}")
+    public ResponseEntity<AppUser> deleteUser(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+    ) {
+        AppUser deletedUser = appUserService.deleteUser(id, performedBy);
+
+        if (deletedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(deletedUser);
+    }
 }

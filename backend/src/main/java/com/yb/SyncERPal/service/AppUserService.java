@@ -3,6 +3,7 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -135,5 +136,40 @@ public class AppUserService {
         );
 
         return updatedUser;
+    }
+
+    @Transactional
+    public AppUser deleteUser(Long id, String performedBy) {
+        requireAdmin(performedBy);
+
+        AppUser appUser = appUserRepository.findById(id);
+
+        if (appUser == null) {
+            return null;
+        }
+
+        if (appUser.getUsername().equals(performedBy)) {
+            throw new IllegalStateException("You cannot delete your own user account.");
+        }
+
+        if (appUser.getRole() == UserRole.ADMIN) {
+            long adminCount = appUserRepository.countByRole(UserRole.ADMIN);
+
+            if (adminCount <= 1) {
+                throw new IllegalStateException("At least one ADMIN user is required.");
+            }
+        }
+
+        appUserRepository.delete(appUser);
+
+        auditLogService.createAuditLog(
+                "DELETE_USER",
+                "USER",
+                appUser.getId(),
+                "Deleted user: " + appUser.getUsername() + " with role " + appUser.getRole(),
+                performedBy
+        );
+
+        return appUser;
     }
 }

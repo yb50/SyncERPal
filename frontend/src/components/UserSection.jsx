@@ -13,6 +13,7 @@ function UserSection({
   fetchAuditLogs,
   setError,
   changeUserRole,
+  removeUser,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -29,6 +30,17 @@ function UserSection({
 
   function handleRoleChange(userId, newRole) {
     changeUserRole(userId, newRole, currentUsername)
+      .then(() => {
+        setError("");
+        fetchAuditLogs();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
+  function handleDeleteUser(userId) {
+    removeUser(userId, currentUsername)
       .then(() => {
         setError("");
         fetchAuditLogs();
@@ -61,6 +73,8 @@ function UserSection({
         users={users}
         canManageUsers={canManageUsers} 
         onRoleChange={handleRoleChange}
+        onDeleteUser={handleDeleteUser}
+        currentUsername={currentUsername}
       />
     </>
   );

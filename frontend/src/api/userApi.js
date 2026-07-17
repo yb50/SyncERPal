@@ -48,3 +48,20 @@ export function updateUserRole(userId, role, performedBy) {
      return response.json();
   })
 }
+
+export function deleteUser(userId, performedBy) {
+  return fetch(`${USERS_URL}/${userId}`, {
+    method: "DELETE",
+    headers: {
+      "X-User": performedBy,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to delete user.");
+      });
+    }
+
+    return response.json();
+  });
+}

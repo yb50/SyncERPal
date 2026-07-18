@@ -76,6 +76,10 @@ function UserSection({
         onDeleteUser={handleDeleteUser}
         currentUsername={currentUsername}
       />
+
+      <p className="hint">
+        The last ADMIN user cannot be demoted or deleted.
+      </p>
     </>
   );
 }

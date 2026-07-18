@@ -3,6 +3,12 @@ function UserTable({ users, canManageUsers, onRoleChange, onDeleteUser, currentU
     return <p>No users found.</p>;
   }
 
+  const adminCount = users.filter((user) => user.role === "ADMIN").length;
+
+  function isLastAdmin(user) {
+    return user.role === "ADMIN" && adminCount <= 1;
+  }
+
   return (
     <table>
       <thead>
@@ -23,7 +29,7 @@ function UserTable({ users, canManageUsers, onRoleChange, onDeleteUser, currentU
               <select
                 value={user.role}
                 onChange={(event) => onRoleChange(user.id, event.target.value)}
-                disabled={!canManageUsers}
+                disabled={!canManageUsers || isLastAdmin(user)}
               >
                 <option value="ADMIN">ADMIN</option>
                 <option value="MANAGER">MANAGER</option>
@@ -33,7 +39,7 @@ function UserTable({ users, canManageUsers, onRoleChange, onDeleteUser, currentU
             <td>
               <button
                 onClick={() => onDeleteUser(user.id)}
-                disabled={!canManageUsers || user.username === currentUsername}
+                disabled={!canManageUsers || user.username === currentUsername || isLastAdmin(users)}
               >
                 Delete
               </button>

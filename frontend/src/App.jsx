@@ -10,6 +10,8 @@ import useAuditLogs from "./hooks/useAuditLogs";
 import AuditLogTable from "./components/AuditLogTable";
 import useUsers from "./hooks/useUsers";
 import UserSection from "./components/UserSection";
+import useLocations from "./hooks/useLocations";
+import LocationSection from "./components/LocationSection";
 
 function App() {
   const {
@@ -70,6 +72,16 @@ function App() {
     removeUser,
   } = useUsers();
 
+  const {
+    locations,
+    locationCode,
+    locationName,
+    setLocationCode,
+    setLocationName,
+    fetchLocations,
+    saveLocation,
+  } = useLocations();
+
   const [error, setError] = useState("");
   const [currentUsername, setCurrentUsername] = useState("system");
 
@@ -81,11 +93,14 @@ function App() {
 
   const canCreateStockMovements = currentUser != null;
 
+  const canManageLocations = canManageItems;
+
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
     fetchAuditLogs();
     fetchUsers();
+    fetchLocations();
   }, []);
 
   return (
@@ -141,6 +156,19 @@ function App() {
         exportItems={exportItems}
         setImportFile={setImportFile}
         importItems={importItems}
+      />
+
+      <LocationSection
+        locations={locations}
+        locationCode={locationCode}
+        locationName={locationName}
+        setLocationCode={setLocationCode}
+        setLocationName={setLocationName}
+        saveLocation={saveLocation}
+        currentUsername={currentUsername}
+        canManageLocations={canManageLocations}
+        fetchAuditLogs={fetchAuditLogs}
+        setError={setError}
       />
 
       <StockMovementSection

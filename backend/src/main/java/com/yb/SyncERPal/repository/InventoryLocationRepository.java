@@ -25,4 +25,8 @@ public class InventoryLocationRepository {
     public InventoryLocation save(InventoryLocation inventoryLocation) {
         return inventoryLocationJpaRepository.save(inventoryLocation);
     }
+
+    public InventoryLocation findById(Long id) {
+        return inventoryLocationJpaRepository.findById(id).orElse(null);
+    }
 }

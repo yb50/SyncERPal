@@ -1,8 +1,10 @@
 package com.yb.SyncERPal.service;
 
+import com.yb.SyncERPal.model.InventoryLocation;
 import com.yb.SyncERPal.model.Item;
 import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.model.StockMovementType;
+import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,20 @@ public class StockMovementService {
     private final ItemRepository itemRepository;
     private final AuditLogService auditLogService;
     private final AppUserService appUserService;
+    private final InventoryLocationRepository inventoryLocationRepository;
 
     public StockMovementService(
             StockMovementRepository stockMovementRepository,
             ItemRepository itemRepository,
             AuditLogService auditLogService,
-            AppUserService appUserService
+            AppUserService appUserService,
+            InventoryLocationRepository inventoryLocationRepository
     ) {
         this.stockMovementRepository = stockMovementRepository;
         this.itemRepository = itemRepository;
         this.auditLogService = auditLogService;
         this.appUserService = appUserService;
+        this.inventoryLocationRepository = inventoryLocationRepository;
     }
 
     public List<StockMovement> getAllStockMovements() {
@@ -42,6 +47,24 @@ public class StockMovementService {
         return createStockMovement(stockMovement, "system");
     }
 
+    private void validateStockMovement(StockMovement stockMovement) {
+        if (stockMovement.getItemId() == null) {
+            throw new IllegalArgumentException("Item id is required.");
+        }
+
+        if (stockMovement.getType() == null) {
+            throw new IllegalArgumentException("Movement type is required");
+        }
+
+        if (stockMovement.getQuantity() == null || stockMovement.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Movement quantity must be greater than 0.");
+        }
+
+        if (stockMovement.getLocationId() == null) {
+            throw new IllegalArgumentException("Location is required.");
+        }
+    }
+
     @Transactional
     public StockMovement createStockMovement(StockMovement stockMovement, String performedBy) {
         appUserService.requireExistingUser(performedBy);
@@ -52,6 +75,12 @@ public class StockMovementService {
 
         if (item == null) {
             throw new IllegalArgumentException("Item does not exist.");
+        }
+
+        InventoryLocation location = inventoryLocationRepository.findById(stockMovement.getLocationId());
+
+        if (location == null) {
+            throw new IllegalArgumentException("Location does not exist.");
         }
 
         Integer newQuantity = item.getQuantity();
@@ -78,25 +107,12 @@ public class StockMovementService {
                 savedStockMovement.getId(),
                 savedStockMovement.getType() + " " +
                         savedStockMovement.getQuantity() +
-                        " for item " + item.getSku(),
+                        " for item " + item.getSku() +
+                        " at location " + location.getCode(),
                 performedBy
         );
 
         return savedStockMovement;
-    }
-
-    private void validateStockMovement(StockMovement stockMovement) {
-        if (stockMovement.getItemId() == null) {
-            throw new IllegalArgumentException("Item id is required.");
-        }
-
-        if (stockMovement.getType() == null) {
-            throw new IllegalArgumentException("Movement type is required");
-        }
-
-        if (stockMovement.getQuantity() == null || stockMovement.getQuantity() <= 0) {
-            throw new IllegalArgumentException("Movement quantity must be greater than 0.");
-        }
     }
 
     public String exportStockMovementsAsCsv() {

@@ -19,6 +19,7 @@ public class StockMovement {
     private Integer quantity;
     private String note;
     private LocalDateTime createdAt;
+    private Long locationId;
 
     public Long getId() {
         return id;
@@ -66,6 +67,14 @@ public class StockMovement {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
     }
 
     public StockMovement() {

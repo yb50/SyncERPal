@@ -1,10 +1,13 @@
 function StockMovementForm({
   items,
+  locations,
   movementItemId,
+  movementLocationId,
   movementType,
   movementQuantity,
   movementNote,
   onMovementItemIdChange,
+  onLocationIdChange,
   onMovementTypeChange,
   onMovementQuantityChange,
   onMovementNoteChange,
@@ -25,6 +28,23 @@ function StockMovementForm({
           {items.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name} ({item.sku})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label>Location: </label>
+        <select
+          value={movementLocationId}
+          onChange={(event) => onLocationIdChange(event.target.value)}
+          disabled={!canCreateStockMovements}
+        >
+          <option value="">Select location</option>
+
+          {locations.map((location) => (
+            <option key={location.id} value={location.id}>
+              {location.code} - {location.name}
             </option>
           ))}
         </select>

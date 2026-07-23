@@ -1,4 +1,4 @@
-function StockMovementTable({ stockMovements, items }) {
+function StockMovementTable({ stockMovements, items, locations }) {
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
       return "";
@@ -8,6 +8,16 @@ function StockMovementTable({ stockMovements, items }) {
 
     return date.toLocaleString();
   }
+
+  function getLocationText(locationId) {
+    const location = locations.find((location) => location.id === locationId);
+
+    if (!location) {
+      return locationId ? `Location ${locationId}` : "No location";
+    }
+
+    return `${location.code} - ${location.name}`;
+  }
   
   return (
     <table>
@@ -15,6 +25,7 @@ function StockMovementTable({ stockMovements, items }) {
         <tr>
           <th>ID</th>
           <th>Item</th>
+          <th>Location</th>
           <th>Type</th>
           <th>Quantity</th>
           <th>Note</th>
@@ -32,6 +43,7 @@ function StockMovementTable({ stockMovements, items }) {
               <td>
                 {item ? `${item.name} (${item.sku})` : `Item ${movement.itemId}`}
               </td>
+              <td>{getLocationText(movement.locationId)}</td>
               <td>{movement.type}</td>
               <td>{movement.quantity}</td>
               <td>{movement.note}</td>

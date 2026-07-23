@@ -3,13 +3,16 @@ import StockMovementTable from "./StockMovementTable";
 
 function StockMovementSection({
   items,
+  locations,
   stockMovements,
   movementItemId,
+  movementLocationId,
   movementType,
   movementQuantity,
   movementNote,
   movementFilterItemId,
   setMovementItemId,
+  setMovementLocationId,
   setMovementType,
   setMovementQuantity,
   setMovementNote,
@@ -46,11 +49,14 @@ function StockMovementSection({
 
       <StockMovementForm
         items={items}
+        locations={locations}
         movementItemId={movementItemId}
+        movementLocationId={movementLocationId}
         movementType={movementType}
         movementQuantity={movementQuantity}
         movementNote={movementNote}
         onMovementItemIdChange={setMovementItemId}
+        onLocationIdChange={setMovementLocationId}
         onMovementTypeChange={setMovementType}
         onMovementQuantityChange={setMovementQuantity}
         onMovementNoteChange={setMovementNote}
@@ -92,6 +98,7 @@ function StockMovementSection({
       <StockMovementTable
         stockMovements={stockMovements}
         items={items}
+        locations={locations}
       />
     </>
   );

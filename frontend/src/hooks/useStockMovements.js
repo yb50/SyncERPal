@@ -8,6 +8,7 @@ function useStockMovements(fetchItems) {
   const [movementQuantity, setMovementQuantity] = useState("");
   const [movementNote, setMovementNote] = useState("");
   const [movementFilterItemId, setMovementFilterItemId] = useState("");
+  const [movementLocationId, setMovementLocationId] = useState("");
 
   function fetchStockMovements(itemId = movementFilterItemId) {
     return getStockMovements(itemId)
@@ -34,6 +35,7 @@ function useStockMovements(fetchItems) {
   function saveStockMovement(performedBy) {
     const stockMovement = {
       itemId: Number(movementItemId),
+      locationId: Number(movementLocationId),
       type: movementType,
       quantity: Number(movementQuantity),
       note: movementNote,
@@ -48,6 +50,7 @@ function useStockMovements(fetchItems) {
 
   function clearStockMovementForm() {
     setMovementItemId("");
+    setMovementLocationId("");
     setMovementType("IN");
     setMovementQuantity("");
     setMovementNote("");
@@ -60,11 +63,13 @@ function useStockMovements(fetchItems) {
   return {
     stockMovements,
     movementItemId,
+    movementLocationId,
     movementType,
     movementQuantity,
     movementNote,
     movementFilterItemId,
     setMovementItemId,
+    setMovementLocationId,
     setMovementType,
     setMovementQuantity,
     setMovementNote,

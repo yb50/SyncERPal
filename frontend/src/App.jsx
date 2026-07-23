@@ -40,11 +40,13 @@ function App() {
   const {
     stockMovements,
     movementItemId,
+    movementLocationId,
     movementType,
     movementQuantity,
     movementNote,
     movementFilterItemId,
     setMovementItemId,
+    setMovementLocationId,
     setMovementType,
     setMovementQuantity,
     setMovementNote,
@@ -173,8 +175,10 @@ function App() {
 
       <StockMovementSection
         items={items}
+        locations={locations}
         stockMovements={stockMovements}
         movementItemId={movementItemId}
+        movementLocationId={movementLocationId}
         movementType={movementType}
         movementQuantity={movementQuantity}
         movementNote={movementNote}
@@ -182,6 +186,7 @@ function App() {
         currentUsername={currentUsername}
         canCreateStockMovements={canCreateStockMovements}
         setMovementItemId={setMovementItemId}
+        setMovementLocationId={setMovementLocationId}
         setMovementType={setMovementType}
         setMovementQuantity={setMovementQuantity}
         setMovementNote={setMovementNote}

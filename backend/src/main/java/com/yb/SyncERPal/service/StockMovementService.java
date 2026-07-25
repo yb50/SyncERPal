@@ -1,9 +1,6 @@
 package com.yb.SyncERPal.service;
 
-import com.yb.SyncERPal.model.InventoryLocation;
-import com.yb.SyncERPal.model.Item;
-import com.yb.SyncERPal.model.StockMovement;
-import com.yb.SyncERPal.model.StockMovementType;
+import com.yb.SyncERPal.model.*;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
@@ -20,19 +17,22 @@ public class StockMovementService {
     private final AuditLogService auditLogService;
     private final AppUserService appUserService;
     private final InventoryLocationRepository inventoryLocationRepository;
+    private final InventoryBalanceService inventoryBalanceService;
 
     public StockMovementService(
             StockMovementRepository stockMovementRepository,
             ItemRepository itemRepository,
             AuditLogService auditLogService,
             AppUserService appUserService,
-            InventoryLocationRepository inventoryLocationRepository
+            InventoryLocationRepository inventoryLocationRepository,
+            InventoryBalanceService inventoryBalanceService
     ) {
         this.stockMovementRepository = stockMovementRepository;
         this.itemRepository = itemRepository;
         this.auditLogService = auditLogService;
         this.appUserService = appUserService;
         this.inventoryLocationRepository = inventoryLocationRepository;
+        this.inventoryBalanceService = inventoryBalanceService;
     }
 
     public List<StockMovement> getAllStockMovements() {
@@ -83,21 +83,36 @@ public class StockMovementService {
             throw new IllegalArgumentException("Location does not exist.");
         }
 
-        Integer newQuantity = item.getQuantity();
+        InventoryBalance inventoryBalance =
+                inventoryBalanceService.getOrCreateBalance(
+                        stockMovement.getItemId(),
+                        stockMovement.getLocationId()
+                );
+
+        Integer newLocationQuantity = inventoryBalance.getQuantity();
 
         if (stockMovement.getType() == StockMovementType.IN) {
-            newQuantity = item.getQuantity() + stockMovement.getQuantity();
+            newLocationQuantity = inventoryBalance.getQuantity() + stockMovement.getQuantity();
         } else if (stockMovement.getType() == StockMovementType.OUT) {
-            newQuantity = item.getQuantity() - stockMovement.getQuantity();
+            newLocationQuantity = inventoryBalance.getQuantity() - stockMovement.getQuantity();
         } else if (stockMovement.getType() == StockMovementType.ADJUSTMENT) {
-            newQuantity = stockMovement.getQuantity();
+            newLocationQuantity = stockMovement.getQuantity();
         }
 
-        if (newQuantity < 0) {
-            throw new IllegalArgumentException("Item quantity cannot go below 0.");
+        if (newLocationQuantity < 0) {
+            throw new IllegalArgumentException("Location quantity cannot go below 0.");
         }
 
-        itemRepository.updateQuantity(item.getId(), newQuantity);
+        inventoryBalanceService.updateBalance(
+                stockMovement.getItemId(),
+                stockMovement.getLocationId(),
+                newLocationQuantity
+        );
+
+        Integer newTotalItemQuantity =
+                inventoryBalanceService.getTotalQuantityForItem(stockMovement.getItemId());
+
+        itemRepository.updateQuantity(item.getId(), newTotalItemQuantity);
 
         StockMovement savedStockMovement = stockMovementRepository.save(stockMovement);
 

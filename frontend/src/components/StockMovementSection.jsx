@@ -23,6 +23,7 @@ function StockMovementSection({
   setError,
   exportStockMovements,
   currentUsername,
+  fetchInventoryBalances,
 }) {
   function handleStockMovementSubmit(event) {
     event.preventDefault();
@@ -31,6 +32,7 @@ function StockMovementSection({
       .then(() => {
         setError("");
         fetchAuditLogs();
+        fetchInventoryBalances();
       })
       .catch((error) => {
         setError(error.message);

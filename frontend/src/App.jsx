@@ -12,6 +12,8 @@ import useUsers from "./hooks/useUsers";
 import UserSection from "./components/UserSection";
 import useLocations from "./hooks/useLocations";
 import LocationSection from "./components/LocationSection";
+import useInventoryBalances from "./hooks/useInventoryBalances";
+import InventoryBalanceSection from "./components/InventoryBalanceSection";
 
 function App() {
   const {
@@ -84,6 +86,11 @@ function App() {
     saveLocation,
   } = useLocations();
 
+  const {
+    inventoryBalances, 
+    fetchInventoryBalances
+  } = useInventoryBalances();
+
   const [error, setError] = useState("");
   const [currentUsername, setCurrentUsername] = useState("system");
 
@@ -103,6 +110,7 @@ function App() {
     fetchAuditLogs();
     fetchUsers();
     fetchLocations();
+    fetchInventoryBalances();
   }, []);
 
   return (
@@ -173,6 +181,12 @@ function App() {
         setError={setError}
       />
 
+      <InventoryBalanceSection 
+        inventoryBalances={inventoryBalances}
+        items={items}
+        locations={locations}
+      />
+
       <StockMovementSection
         items={items}
         locations={locations}
@@ -195,6 +209,7 @@ function App() {
         saveStockMovement={saveStockMovement}
         setError={setError}
         exportStockMovements={exportStockMovements}
+        fetchInventoryBalances={fetchInventoryBalances}
       />
 
       <UserSection

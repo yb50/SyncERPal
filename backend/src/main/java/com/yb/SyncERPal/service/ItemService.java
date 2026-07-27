@@ -214,7 +214,7 @@ public class ItemService {
 
                 item.setSku(getRequiredText(record, "sku"));
                 item.setName(getRequiredText(record, "name"));
-                item.setQuantity(parseInteger(record, "quantity"));
+                item.setQuantity(0);
                 item.setLowStockThreshold(parseInteger(record, "lowStockThreshold"));
 
                 createItem(item, performedBy);

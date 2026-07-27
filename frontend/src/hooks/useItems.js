@@ -27,7 +27,7 @@ function useItems() {
     const item = {
       name: name,
       sku:sku,
-      quantity: Number(quantity),
+      quantity: 0,
       lowStockThreshold: Number(lowStockThreshold),
     };
 

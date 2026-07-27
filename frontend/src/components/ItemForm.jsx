@@ -27,12 +27,12 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
           type="number"
           value={quantity}
           onChange={(event) => onQuantityChange(event.target.value)}
-          disabled={!canManageItems || editingId !== null}
+          disabled
         />
 
         {editingId !== null && (
           <p className="hint">
-            Use stock movements to change quantity.
+            Quantity is controlled by stock movements.
           </p>
         )}
       </div>

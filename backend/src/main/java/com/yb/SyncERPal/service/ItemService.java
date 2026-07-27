@@ -68,6 +68,8 @@ public class ItemService {
     public Item createItem(Item item, String performedBy) {
         appUserService.requireManagerOrAdmin(performedBy);
 
+        item.setQuantity(0);
+
         validateItem(item);
 
         if (itemRepository.existsBySku(item.getSku())) {

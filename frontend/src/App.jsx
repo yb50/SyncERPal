@@ -14,6 +14,8 @@ import useLocations from "./hooks/useLocations";
 import LocationSection from "./components/LocationSection";
 import useInventoryBalances from "./hooks/useInventoryBalances";
 import InventoryBalanceSection from "./components/InventoryBalanceSection";
+import useStockTransfers from "./hooks/useStockTransfers";
+import StockTransferSection from "./components/StockTransferSection";
 
 function App() {
   const {
@@ -91,6 +93,20 @@ function App() {
     fetchInventoryBalances
   } = useInventoryBalances();
 
+  const {
+    transferItemId,
+    fromLocationId,
+    toLocationId,
+    transferQuantity,
+    transferNote,
+    setTransferItemId,
+    setFromLocationId,
+    setToLocationId,
+    setTransferQuantity,
+    setTransferNote,
+    saveStockTransfer,
+  } = useStockTransfers();
+
   const [error, setError] = useState("");
   const [currentUsername, setCurrentUsername] = useState("system");
 
@@ -103,6 +119,8 @@ function App() {
   const canCreateStockMovements = currentUser != null;
 
   const canManageLocations = canManageItems;
+
+  const canTransferStock = currentUser != null;
 
   useEffect(() => {
     fetchItems();
@@ -185,6 +203,28 @@ function App() {
         inventoryBalances={inventoryBalances}
         items={items}
         locations={locations}
+      />
+
+      <StockTransferSection
+        items={items}
+        locations={locations}
+        transferItemId={transferItemId}
+        fromLocationId={fromLocationId}
+        toLocationId={toLocationId}
+        transferQuantity={transferQuantity}
+        transferNote={transferNote}
+        setTransferItemId={setTransferItemId}
+        setFromLocationId={setFromLocationId}
+        setToLocationId={setToLocationId}
+        setTransferQuantity={setTransferQuantity}
+        setTransferNote={setTransferNote}
+        saveStockTransfer={saveStockTransfer}
+        currentUsername={currentUsername}
+        canTransferStock={canTransferStock}
+        fetchItems={fetchItems}
+        fetchInventoryBalances={fetchInventoryBalances}
+        fetchAuditLogs={fetchAuditLogs}
+        setError={setError}
       />
 
       <StockMovementSection

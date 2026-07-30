@@ -3,11 +3,15 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.InventoryBalance;
 import com.yb.SyncERPal.model.InventoryLocation;
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.StockTransfer;
 import com.yb.SyncERPal.model.StockTransferRequest;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
+import com.yb.SyncERPal.repository.StockTransferRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StockTransferService {
@@ -16,6 +20,7 @@ public class StockTransferService {
     private final ItemRepository itemRepository;
     private final InventoryLocationRepository inventoryLocationRepository;
     private final InventoryBalanceService inventoryBalanceService;
+    private final StockTransferRepository stockTransferRepository;
     private final AuditLogService auditLogService;
 
     public StockTransferService(
@@ -23,12 +28,14 @@ public class StockTransferService {
             ItemRepository itemRepository,
             InventoryLocationRepository inventoryLocationRepository,
             InventoryBalanceService inventoryBalanceService,
+            StockTransferRepository stockTransferRepository,
             AuditLogService auditLogService
     ) {
         this.appUserService = appUserService;
         this.itemRepository = itemRepository;
         this.inventoryLocationRepository = inventoryLocationRepository;
         this.inventoryBalanceService = inventoryBalanceService;
+        this.stockTransferRepository = stockTransferRepository;
         this.auditLogService = auditLogService;
     }
 
@@ -54,8 +61,12 @@ public class StockTransferService {
         }
     }
 
+    public List<StockTransfer> getAllStockTransfers() {
+        return stockTransferRepository.findAll();
+    }
+
     @Transactional
-    public void transferStock(StockTransferRequest request, String performedBy) {
+    public StockTransfer transferStock(StockTransferRequest request, String performedBy) {
         appUserService.requireExistingUser(performedBy);
 
         validateTransferRequest(request);
@@ -117,15 +128,28 @@ public class StockTransferService {
 
         itemRepository.updateQuantity(item.getId(), newTotalItemQuantity);
 
+        StockTransfer stockTransfer = new StockTransfer(
+                request.getItemId(),
+                request.getFromLocationId(),
+                request.getToLocationId(),
+                request.getQuantity(),
+                request.getNote(),
+                performedBy
+        );
+
+        StockTransfer savedStockTransfer = stockTransferRepository.save(stockTransfer);
+
         auditLogService.createAuditLog(
                 "TRANSFER_STOCK",
                 "STOCK_TRANSFER",
-                item.getId(),
+                savedStockTransfer.getId(),
                 "Transferred " + request.getQuantity() +
                         " of item " + item.getSku() +
                         " from " + fromLocation.getCode() +
                         " to " + toLocation.getCode(),
                 performedBy
         );
+
+        return savedStockTransfer;
     }
 }

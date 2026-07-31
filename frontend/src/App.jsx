@@ -89,8 +89,9 @@ function App() {
   } = useLocations();
 
   const {
-    inventoryBalances, 
-    fetchInventoryBalances
+    inventoryBalances,
+    fetchInventoryBalances,
+    exportInventoryBalances,
   } = useInventoryBalances();
 
   const {
@@ -207,6 +208,7 @@ function App() {
         inventoryBalances={inventoryBalances}
         items={items}
         locations={locations}
+        exportInventoryBalances={exportInventoryBalances}
       />
 
       <StockTransferSection

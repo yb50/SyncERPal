@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getInventoryBalances } from "../api/inventoryBalanceApi";
+import { getInventoryBalances, exportInventoryBalancesCsv } from "../api/inventoryBalanceApi";
 
 function useInventoryBalances() {
   const [inventoryBalances, setInventoryBalances] = useState([]);
@@ -10,9 +10,14 @@ function useInventoryBalances() {
     });
   }
 
+  function exportInventoryBalances() {
+    exportInventoryBalancesCsv();
+  }
+
   return {
     inventoryBalances,
     fetchInventoryBalances,
+    exportInventoryBalances,
   };
 }
 

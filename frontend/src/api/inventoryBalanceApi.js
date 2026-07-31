@@ -10,3 +10,7 @@ export function getInventoryBalances() {
     return response.json();
   });
 }
+
+export function exportInventoryBalancesCsv() {
+  window.location.href = `${INVENTORY_BALANCES_URL}/export`;
+}

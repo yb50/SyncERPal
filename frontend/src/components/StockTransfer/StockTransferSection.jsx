@@ -1,4 +1,5 @@
 import StockTransferForm from "./StockTransferForm";
+import StockTransferTable from "./StockTransferTable";
 
 function StockTransferSection({
   items,
@@ -20,6 +21,7 @@ function StockTransferSection({
   fetchInventoryBalances,
   fetchAuditLogs,
   setError,
+  stockTransfers,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -59,6 +61,14 @@ function StockTransferSection({
         onTransferNoteChange={setTransferNote}
         onSubmit={handleSubmit}
         canTransferStock={canTransferStock}
+      />
+
+      <h2>Stock Transfer History</h2>
+
+      <StockTransferTable 
+        stockTransfers={stockTransfers}
+        items={items}
+        locations={locations}
       />
     </>
   );

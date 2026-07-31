@@ -1,6 +1,16 @@
 const BASE_URL = "http://localhost:8080";
 const STOCK_TRANSFERS_URL = `${BASE_URL}/stock-transfers`;
 
+export function getStockTransfers() {
+  return fetch(STOCK_TRANSFERS_URL).then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to load stock transfers.");
+    }
+
+    return response.json();
+  });
+}
+
 export function createStockTransfer(stockTransfer, performedBy) {
   return fetch(STOCK_TRANSFERS_URL, {
     method: "POST",
@@ -16,6 +26,6 @@ export function createStockTransfer(stockTransfer, performedBy) {
       });
     }
 
-    return response.text();
+    return response.json();
   });
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createStockTransfer } from "../api/stockTransferApi";
+import { getStockTransfers, createStockTransfer } from "../api/stockTransferApi";
 
 function useStockTransfers() {
   const [transferItemId, setTransferItemId] = useState("");
@@ -7,6 +7,7 @@ function useStockTransfers() {
   const [toLocationId, setToLocationId] = useState("");
   const [transferQuantity, setTransferQuantity] = useState("");
   const [transferNote, setTransferNote] = useState("");
+  const [stockTransfers, setStockTransfers] = useState([]);
 
   function clearStockTransferForm() {
     setTransferItemId("");
@@ -14,6 +15,12 @@ function useStockTransfers() {
     setToLocationId("");
     setTransferQuantity("");
     setTransferNote("");
+  }
+
+  function fetchStockTransfers() {
+    return getStockTransfers().then((data) => {
+      setStockTransfers(data);
+    });
   }
 
   function saveStockTransfer(performedBy) {
@@ -27,6 +34,7 @@ function useStockTransfers() {
 
     return createStockTransfer(stockTransfer, performedBy).then(() => {
       clearStockTransferForm();
+      fetchStockTransfers();
     });
   }
 
@@ -36,12 +44,14 @@ function useStockTransfers() {
     toLocationId,
     transferQuantity,
     transferNote,
+    stockTransfers,
     setTransferItemId,
     setFromLocationId,
     setToLocationId,
     setTransferQuantity,
     setTransferNote,
     saveStockTransfer,
+    fetchStockTransfers,
   };
 }
 

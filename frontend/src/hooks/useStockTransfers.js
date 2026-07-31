@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getStockTransfers, createStockTransfer } from "../api/stockTransferApi";
+import { getStockTransfers, createStockTransfer, exportStockTransfersCsv } from "../api/stockTransferApi";
 
 function useStockTransfers() {
   const [transferItemId, setTransferItemId] = useState("");
@@ -38,6 +38,10 @@ function useStockTransfers() {
     });
   }
 
+  function exportStockTransfers() {
+    exportStockTransfersCsv();
+  }
+
   return {
     transferItemId,
     fromLocationId,
@@ -52,6 +56,7 @@ function useStockTransfers() {
     setTransferNote,
     saveStockTransfer,
     fetchStockTransfers,
+    exportStockTransfers,
   };
 }
 

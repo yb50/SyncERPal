@@ -29,3 +29,7 @@ export function createStockTransfer(stockTransfer, performedBy) {
     return response.json();
   });
 }
+
+export function exportStockTransfersCsv() {
+  window.location.href = `${STOCK_TRANSFERS_URL}/export`;
+}

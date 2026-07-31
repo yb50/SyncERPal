@@ -152,4 +152,37 @@ public class StockTransferService {
 
         return savedStockTransfer;
     }
+
+    public String exportStockTransfersAsCsv() {
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("id,itemId,fromLocationId,toLocationId,quantity,note,performedBy,createdAt\n");
+
+        for (StockTransfer stockTransfer : getAllStockTransfers()) {
+            csv.append(stockTransfer.getId()).append(",");
+            csv.append(stockTransfer.getItemId()).append(",");
+            csv.append(stockTransfer.getFromLocationId()).append(",");
+            csv.append(stockTransfer.getToLocationId()).append(",");
+            csv.append(stockTransfer.getQuantity()).append(",");
+            csv.append(escapeCsv(stockTransfer.getNote())).append(",");
+            csv.append(escapeCsv(stockTransfer.getPerformedBy())).append(",");
+            csv.append(stockTransfer.getCreatedAt()).append("\n");
+        }
+
+        return csv.toString();
+    }
+
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        String escapedValue = value.replace("\"", "\"\"");
+
+        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains("\n")) {
+            return "\"" + escapedValue + "\"";
+        }
+
+        return escapedValue;
+    }
 }

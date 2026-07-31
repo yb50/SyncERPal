@@ -22,6 +22,7 @@ function StockTransferSection({
   fetchAuditLogs,
   setError,
   stockTransfers,
+  exportStockTransfers,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -64,6 +65,10 @@ function StockTransferSection({
       />
 
       <h2>Stock Transfer History</h2>
+
+      <button type="button" onClick={exportStockTransfers}>
+        Export Stock Transfers CSV
+      </button>
 
       <StockTransferTable 
         stockTransfers={stockTransfers}

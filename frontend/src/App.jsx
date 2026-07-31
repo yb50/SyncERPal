@@ -100,6 +100,7 @@ function App() {
     transferQuantity,
     transferNote,
     stockTransfers,
+    exportStockTransfers,
     setTransferItemId,
     setFromLocationId,
     setToLocationId,
@@ -229,6 +230,7 @@ function App() {
         fetchAuditLogs={fetchAuditLogs}
         setError={setError}
         stockTransfers={stockTransfers}
+        exportStockTransfers={exportStockTransfers}
       />
 
       <StockMovementSection

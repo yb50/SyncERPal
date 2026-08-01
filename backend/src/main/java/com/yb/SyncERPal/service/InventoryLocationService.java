@@ -23,6 +23,16 @@ public class InventoryLocationService {
         this.auditLogService = auditLogService;
     }
 
+    private void validateLocation(InventoryLocation inventoryLocation) {
+        if (inventoryLocation.getCode() == null || inventoryLocation.getCode().isBlank()) {
+            throw new IllegalArgumentException("Location code is required.");
+        }
+
+        if (inventoryLocation.getName() == null || inventoryLocation.getName().isBlank()) {
+            throw new IllegalArgumentException("Location name is required.");
+        }
+    }
+
     public List<InventoryLocation> getAllLocations() {
         return inventoryLocationRepository.findAll();
     }
@@ -49,13 +59,43 @@ public class InventoryLocationService {
         return savedLocation;
     }
 
-    private void validateLocation(InventoryLocation inventoryLocation) {
-        if (inventoryLocation.getCode() == null || inventoryLocation.getCode().isBlank()) {
-            throw new IllegalArgumentException("Location code is required.");
+    public InventoryLocation updateLocation(
+            Long id,
+            InventoryLocation inventoryLocation,
+            String performedBy
+    ) {
+        appUserService.requireManagerOrAdmin(performedBy);
+
+        validateLocation(inventoryLocation);
+
+        InventoryLocation existingLocation = inventoryLocationRepository.findById(id);
+
+        if (existingLocation == null) {
+            return null;
         }
 
-        if (inventoryLocation.getName() == null || inventoryLocation.getName().isBlank()) {
-            throw new IllegalArgumentException("Location name is required.");
+        boolean codeChanged = !existingLocation.getCode().equals(inventoryLocation.getCode());
+
+        if (codeChanged && inventoryLocationRepository.existsByCode(inventoryLocation.getCode())) {
+            throw new IllegalArgumentException("Location code already exists.");
         }
+
+        String oldCode = existingLocation.getCode();
+        String oldName = existingLocation.getName();
+
+        existingLocation.setCode(inventoryLocation.getCode());
+        existingLocation.setName(inventoryLocation.getName());
+
+        InventoryLocation updatedLocation = inventoryLocationRepository.save(existingLocation);
+
+        auditLogService.createAuditLog(
+                "UPDATE_LOCATION",
+                "LOCATION",
+                updatedLocation.getId(),
+                "Updated location from " + oldCode + " - " + oldName + " to " + updatedLocation.getCode() + " - " + updatedLocation.getName(),
+                performedBy
+        );
+
+        return updatedLocation;
     }
 }

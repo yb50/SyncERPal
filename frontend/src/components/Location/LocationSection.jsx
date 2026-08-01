@@ -5,9 +5,12 @@ function LocationSection({
   locations,
   locationCode,
   locationName,
+  editingLocationId,
   setLocationCode,
   setLocationName,
   saveLocation,
+  startEditLocation,
+  clearLocationForm,
   currentUsername,
   canManageLocations,
   fetchAuditLogs,
@@ -26,28 +29,44 @@ function LocationSection({
       });
   }
 
+  function handleEdit(location) {
+    startEditLocation(location);
+    setError("");
+  }
+
+  function handleCancelEdit() {
+    clearLocationForm();
+    setError("");
+  }
+
   return (
     <>
-      <h2>Add Location</h2>
+      <h2>{editingLocationId === null ? "Add Location" : "Edit Location"}</h2>
 
       {!canManageLocations && (
         <p className="hint">
-          Only ADMIN and MANAGER users can create locations.
+          Only ADMIN and MANAGER users can create or edit locations.
         </p>
       )}
 
       <LocationForm
         locationCode={locationCode}
         locationName={locationName}
+        editingLocationId={editingLocationId}
         onLocationCodeChange={setLocationCode}
         onLocationNameChange={setLocationName}
         onSubmit={handleSubmit}
+        onCancelEdit={handleCancelEdit}
         canManageLocations={canManageLocations}
       />
 
       <h2>Locations</h2>
 
-      <LocationTable locations={locations} />
+      <LocationTable
+        locations={locations}
+        onEdit={handleEdit}
+        canManageLocations={canManageLocations}
+      />
     </>
   );
 }

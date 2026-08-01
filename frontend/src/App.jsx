@@ -82,10 +82,13 @@ function App() {
     locations,
     locationCode,
     locationName,
+    editingLocationId,
     setLocationCode,
     setLocationName,
     fetchLocations,
     saveLocation,
+    startEditLocation,
+    clearLocationForm,
   } = useLocations();
 
   const {
@@ -195,9 +198,12 @@ function App() {
         locations={locations}
         locationCode={locationCode}
         locationName={locationName}
+        editingLocationId={editingLocationId}
         setLocationCode={setLocationCode}
         setLocationName={setLocationName}
         saveLocation={saveLocation}
+        startEditLocation={startEditLocation}
+        clearLocationForm={clearLocationForm}
         currentUsername={currentUsername}
         canManageLocations={canManageLocations}
         fetchAuditLogs={fetchAuditLogs}

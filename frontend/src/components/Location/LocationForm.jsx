@@ -1,9 +1,11 @@
 function LocationForm({
   locationCode,
   locationName,
+  editingLocationId,
   onLocationCodeChange,
   onLocationNameChange,
   onSubmit,
+  onCancelEdit,
   canManageLocations,
 }) {
   return (
@@ -29,8 +31,14 @@ function LocationForm({
       </div>
 
       <button type="submit" disabled={!canManageLocations}>
-        Add Location
+        {editingLocationId === null ? "Add Location" : "Update Location"}
       </button>
+
+      {editingLocationId !== null && (
+        <button type="button" onClick={onCancelEdit}>
+          Cancel
+        </button>
+      )}
     </form>
   );
 }

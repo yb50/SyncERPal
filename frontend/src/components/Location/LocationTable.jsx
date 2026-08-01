@@ -1,4 +1,4 @@
-function LocationTable({ locations }) {
+function LocationTable({ locations, onEdit, canManageLocations }) {
   if (locations.length === 0) {
     return <p>No locations found.</p>;
   }
@@ -10,6 +10,7 @@ function LocationTable({ locations }) {
           <th>ID</th>
           <th>Code</th>
           <th>Name</th>
+          <th>Actions</th>
         </tr>
       </thead>
 
@@ -19,6 +20,15 @@ function LocationTable({ locations }) {
             <td>{location.id}</td>
             <td>{location.code}</td>
             <td>{location.name}</td>
+            <td>
+              <button
+                type="button"
+                onClick={() => onEdit(location)}
+                disabled={!canManageLocations}
+              >
+                Edit
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>

@@ -8,4 +8,6 @@ import java.util.List;
 public interface StockTransferJpaRepository extends JpaRepository<StockTransfer, Long> {
 
     List<StockTransfer> findAllByOrderByCreatedAtDesc();
+
+    boolean existsByFromLocationIdOrToLocationId(Long fromLocationId, Long toLocationId);
 }

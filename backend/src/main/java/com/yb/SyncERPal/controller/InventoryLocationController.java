@@ -45,4 +45,19 @@ public class InventoryLocationController {
 
         return ResponseEntity.ok(updatedLocation);
     }
+
+    @DeleteMapping("/locations/{id}")
+    public ResponseEntity<InventoryLocation> deleteLocation(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+    ) {
+        InventoryLocation deletedLocation =
+                inventoryLocationService.deleteLocation(id, performedBy);
+
+        if (deletedLocation == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(deletedLocation);
+    }
 }

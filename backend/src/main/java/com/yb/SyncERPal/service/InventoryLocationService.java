@@ -1,7 +1,10 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.InventoryLocation;
+import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
+import com.yb.SyncERPal.repository.StockMovementRepository;
+import com.yb.SyncERPal.repository.StockTransferRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,15 +15,24 @@ public class InventoryLocationService {
     private final InventoryLocationRepository inventoryLocationRepository;
     private final AppUserService appUserService;
     private final AuditLogService auditLogService;
+    private final InventoryBalanceRepository inventoryBalanceRepository;
+    private final StockMovementRepository stockMovementRepository;
+    private final StockTransferRepository stockTransferRepository;
 
     public InventoryLocationService(
             InventoryLocationRepository inventoryLocationRepository,
             AppUserService appUserService,
-            AuditLogService auditLogService
+            AuditLogService auditLogService,
+            InventoryBalanceRepository inventoryBalanceRepository,
+            StockMovementRepository stockMovementRepository,
+            StockTransferRepository stockTransferRepository
     ) {
         this.inventoryLocationRepository = inventoryLocationRepository;
         this.appUserService = appUserService;
         this.auditLogService = auditLogService;
+        this.inventoryBalanceRepository = inventoryBalanceRepository;
+        this.stockMovementRepository = stockMovementRepository;
+        this.stockTransferRepository = stockTransferRepository;
     }
 
     private void validateLocation(InventoryLocation inventoryLocation) {
@@ -97,5 +109,39 @@ public class InventoryLocationService {
         );
 
         return updatedLocation;
+    }
+
+    public InventoryLocation deleteLocation(Long id, String performedBy) {
+        appUserService.requireManagerOrAdmin(performedBy);
+
+        InventoryLocation existingLocation = inventoryLocationRepository.findById(id);
+
+        if (existingLocation == null) {
+            return null;
+        }
+
+        if (inventoryBalanceRepository.existsByLocationId(id)) {
+            throw new IllegalStateException("Cannot delete location with inventory balances.");
+        }
+
+        if (stockMovementRepository.existsByLocationId(id)) {
+            throw new IllegalStateException("Cannot delete location with stock movement history.");
+        }
+
+        if (stockTransferRepository.existsByLocationId(id)) {
+            throw new IllegalStateException("Cannot delete location with stock transfer history.");
+        }
+
+        inventoryLocationRepository.delete(existingLocation);
+
+        auditLogService.createAuditLog(
+                "DELETE_LOCATION",
+                "LOCATION",
+                existingLocation.getId(),
+                "Deleted location: " + existingLocation.getCode(),
+                performedBy
+        );
+
+        return existingLocation;
     }
 }

@@ -32,4 +32,8 @@ public class StockMovementRepository {
     public boolean existsByItemId(Long itemId) {
         return stockMovementJpaRepository.existsByItemId(itemId);
     }
+
+    public boolean existsByLocationId(Long locationId) {
+        return stockMovementJpaRepository.existsByLocationId(locationId);
+    }
 }

@@ -11,4 +11,6 @@ public interface StockMovementJpaRepository extends JpaRepository<StockMovement,
     List<StockMovement> findAllByOrderByCreatedAtDesc();
 
     boolean existsByItemId(Long itemId);
+
+    boolean existsByLocationId(Long locationId);
 }

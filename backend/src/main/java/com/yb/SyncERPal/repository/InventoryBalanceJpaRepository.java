@@ -13,4 +13,6 @@ public interface InventoryBalanceJpaRepository extends JpaRepository<InventoryBa
     Optional<InventoryBalance> findByItemIdAndLocationId(Long itemId, Long locationId);
 
     List<InventoryBalance> findByItemId(Long itemId);
+
+    boolean existsByLocationId(Long locationId);
 }

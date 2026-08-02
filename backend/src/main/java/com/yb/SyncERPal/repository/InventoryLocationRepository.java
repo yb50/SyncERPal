@@ -29,4 +29,8 @@ public class InventoryLocationRepository {
     public InventoryLocation findById(Long id) {
         return inventoryLocationJpaRepository.findById(id).orElse(null);
     }
+
+    public void delete(InventoryLocation inventoryLocation) {
+        inventoryLocationJpaRepository.delete(inventoryLocation);
+    }
 }

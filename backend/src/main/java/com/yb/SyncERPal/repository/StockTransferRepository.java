@@ -21,4 +21,10 @@ public class StockTransferRepository {
     public StockTransfer save(StockTransfer stockTransfer) {
         return stockTransferJpaRepository.save(stockTransfer);
     }
+
+    public boolean existsByLocationId(Long locationId) {
+        return stockTransferJpaRepository.existsByFromLocationIdOrToLocationId(locationId, locationId);
+    }
+
+
 }

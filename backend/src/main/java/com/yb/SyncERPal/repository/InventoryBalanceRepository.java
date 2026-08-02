@@ -31,4 +31,8 @@ public class InventoryBalanceRepository {
     public InventoryBalance save(InventoryBalance inventoryBalance) {
         return inventoryBalanceJpaRepository.save(inventoryBalance);
     }
+
+    public boolean existsByLocationId(Long locationId) {
+        return inventoryBalanceJpaRepository.existsByLocationId(locationId);
+    }
 }

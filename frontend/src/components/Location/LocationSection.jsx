@@ -15,6 +15,7 @@ function LocationSection({
   canManageLocations,
   fetchAuditLogs,
   setError,
+  removeLocation,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -37,6 +38,17 @@ function LocationSection({
   function handleCancelEdit() {
     clearLocationForm();
     setError("");
+  }
+
+  function handleDelete(locationId) {
+    removeLocation(locationId, currentUsername)
+      .then(() => {
+        setError("");
+        fetchAuditLogs();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   }
 
   return (
@@ -65,6 +77,7 @@ function LocationSection({
       <LocationTable
         locations={locations}
         onEdit={handleEdit}
+        onDelete={handleDelete}
         canManageLocations={canManageLocations}
       />
     </>

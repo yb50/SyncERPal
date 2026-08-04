@@ -48,3 +48,20 @@ export function updateLocation(locationId, location, performedBy) {
     return response.json();
   });
 }
+
+export function deleteLocation(locationId, performedBy) {
+  return fetch(`${LOCATIONS_URL}/${locationId}`, {
+    method: "DELETE",
+    headers: {
+      "X-User": performedBy,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to delete location.");
+      });
+    }
+
+    return response.json();
+  });
+}

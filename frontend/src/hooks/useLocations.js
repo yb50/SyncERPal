@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getLocations, createLocation, updateLocation } from "../api/locationApi";
+import { getLocations, createLocation, updateLocation, deleteLocation } from "../api/locationApi";
 
 function useLocations() {
   const [locations, setLocations] = useState([]);
@@ -42,6 +42,12 @@ function useLocations() {
     });
   }
 
+  function removeLocation(locationId, performedBy) {
+    return deleteLocation(locationId, performedBy).then(() => {
+      fetchLocations();
+    });
+  }
+
   return {
     locations,
     locationCode,
@@ -53,6 +59,7 @@ function useLocations() {
     saveLocation,
     startEditLocation,
     clearLocationForm,
+    removeLocation,
   };
 }
 

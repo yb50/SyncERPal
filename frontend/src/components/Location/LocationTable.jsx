@@ -1,4 +1,4 @@
-function LocationTable({ locations, onEdit, canManageLocations }) {
+function LocationTable({ locations, onEdit, onDelete, canManageLocations }) {
   if (locations.length === 0) {
     return <p>No locations found.</p>;
   }
@@ -27,6 +27,14 @@ function LocationTable({ locations, onEdit, canManageLocations }) {
                 disabled={!canManageLocations}
               >
                 Edit
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onDelete(location.id)}
+                disabled={!canManageLocations}
+              >
+                Delete
               </button>
             </td>
           </tr>

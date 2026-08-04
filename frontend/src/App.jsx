@@ -89,6 +89,7 @@ function App() {
     saveLocation,
     startEditLocation,
     clearLocationForm,
+    removeLocation,
   } = useLocations();
 
   const {
@@ -208,6 +209,7 @@ function App() {
         canManageLocations={canManageLocations}
         fetchAuditLogs={fetchAuditLogs}
         setError={setError}
+        removeLocation={removeLocation}
       />
 
       <InventoryBalanceSection 

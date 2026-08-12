@@ -1,12 +1,56 @@
-function ItemTable({ items, onEdit, onDelete, onViewHistory, canManageItems }) {
+function ItemTable({ 
+  items, 
+  stockMovements,
+  inventoryBalances,
+  stockTransfers,
+  onEdit, 
+  onDelete, 
+  onViewHistory, 
+  canManageItems 
+}) {
+  function getStatus(item) {
+    if (item.quantity === 0) {
+      return {
+        text: "Out of stock",
+        className: "status-out",
+      };
+    }
+
+    if (item.quantity <= item.lowStockThreshold) {
+      return {
+        text: "Low stock",
+        className: "status-low",
+      };
+    }
+
+    return {
+      text: "OK",
+      className: "status-ok",
+    }
+  }
+
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
       return "";
     }
 
-    const date = new Date(dateTimeText);
+    return new Date(dateTimeText).toLocaleString();
+  }
 
-    return date.toLocaleString();
+  function hasInventoryHistory(itemId) {
+    const hasStockMovements = stockMovements.some(
+      (stockMovement) => stockMovement.itemId === itemId
+    );
+
+    const hasInventoryBalances = inventoryBalances.some(
+      (inventoryBalance) => inventoryBalance.itemId === itemId
+    );
+
+    const hasStockTransfers = stockTransfers.some(
+      (stockTransfer) => stockTransfer.itemId === itemId
+    );
+
+    return hasStockMovements || hasInventoryBalances || hasStockTransfers;
   }
 
   return (
@@ -27,16 +71,8 @@ function ItemTable({ items, onEdit, onDelete, onViewHistory, canManageItems }) {
 
       <tbody>
         {items.map((item) => {
-          let stockStatus = "OK";
-          let statusClassName = "status-ok";
-
-          if (item.quantity === 0) {
-            stockStatus = "Out of stock";
-            statusClassName = "status-out";
-          } else if (item.quantity <= item.lowStockThreshold) {
-            stockStatus = "Low stock";
-            statusClassName = "status-low";
-          }
+          const status = getStatus(item);
+          const itemHasInventoryHistory = hasInventoryHistory(item.id);
 
           return (
             <tr key={item.id}>
@@ -45,20 +81,31 @@ function ItemTable({ items, onEdit, onDelete, onViewHistory, canManageItems }) {
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>{item.lowStockThreshold}</td>
-              <td className={statusClassName}>{stockStatus}</td>
+              <td className={status.className}>{status.text}</td>
               <td>{formatDateTime(item.createdAt)}</td>
               <td>{formatDateTime(item.updatedAt)}</td>
               <td>
-                <button onClick={() => onViewHistory(item.id)}>
-                  View History
-                </button>
-                
-                <button onClick={() => onEdit(item)} disabled={!canManageItems}>
+                <button
+                  type="button"
+                  onClick={() => onEdit(item)}
+                  disabled={!canManageItems}
+                >
                   Edit
                 </button>
                 
-                <button onClick={() => onDelete(item.id)} disabled={!canManageItems}>
+                <button
+                  type="button" 
+                  onClick={() => onDelete(item.id)} 
+                  disabled={!canManageItems || itemHasInventoryHistory}
+                >
                   Delete
+                </button>
+
+                <button
+                  type="button" 
+                  onClick={() => onViewHistory(item.id)}
+                >
+                  View History
                 </button>
               </td>
             </tr>

@@ -3,6 +3,9 @@ import ItemTable from "./ItemTable";
 
 function ItemSection({
   items,
+  stockMovements,
+  inventoryBalances,
+  stockTransfers,
   name,
   sku,
   quantity,
@@ -128,9 +131,16 @@ function ItemSection({
       {loading && <p>Loading items...</p>}
       {!loading && items.length === 0 && <p>No items found</p>}
       
+      <p className="hint">
+        Items with inventory history cannot be deleted.
+      </p>
+
       {!loading && items.length > 0 && (
         <ItemTable
           items={items}
+          stockMovements={stockMovements}
+          inventoryBalances={inventoryBalances}
+          stockTransfers={stockTransfers}
           canManageItems={canManageItems}
           onEdit={handleEdit}
           onDelete={handleDelete}

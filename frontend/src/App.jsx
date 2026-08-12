@@ -179,6 +179,9 @@ function App() {
         importFile={importFile}
         currentUsername={currentUsername}
         canManageItems={canManageItems}
+        stockMovements={stockMovements}
+        inventoryBalances={inventoryBalances}
+        stockTransfers={stockTransfers}
         setName={setName}
         setSku={setSku}
         setQuantity={setQuantity}

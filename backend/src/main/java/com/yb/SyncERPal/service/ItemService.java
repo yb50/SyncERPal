@@ -1,8 +1,10 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
+import com.yb.SyncERPal.repository.StockTransferRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -22,17 +24,23 @@ public class ItemService {
     private final StockMovementRepository stockMovementRepository;
     private final AuditLogService auditLogService;
     private final AppUserService appUserService;
+    private final InventoryBalanceRepository inventoryBalanceRepository;
+    private final StockTransferRepository stockTransferRepository;
 
     public ItemService(
             ItemRepository itemRepository,
             StockMovementRepository stockMovementRepository,
             AuditLogService auditLogService,
-            AppUserService appUserService
+            AppUserService appUserService,
+            InventoryBalanceRepository inventoryBalanceRepository,
+            StockTransferRepository stockTransferRepository
     ) {
         this.itemRepository = itemRepository;
         this.stockMovementRepository = stockMovementRepository;
         this.auditLogService = auditLogService;
         this.appUserService = appUserService;
+        this.inventoryBalanceRepository = inventoryBalanceRepository;
+        this.stockTransferRepository = stockTransferRepository;
     }
 
     public List<Item> getAllItems() {
@@ -139,6 +147,14 @@ public class ItemService {
 
         if (stockMovementRepository.existsByItemId(id)) {
             throw new IllegalStateException("Cannot delete item with stock movement history.");
+        }
+
+        if (inventoryBalanceRepository.existsByItemId(id)) {
+            throw new IllegalStateException("Cannot delete item with inventory balances.");
+        }
+
+        if (stockTransferRepository.existsByItemId(id)) {
+            throw new IllegalStateException("Cannot delete item with inventory balances.");
         }
 
         Item deletedItem = itemRepository.deleteItem(id);

@@ -10,4 +10,6 @@ public interface StockTransferJpaRepository extends JpaRepository<StockTransfer,
     List<StockTransfer> findAllByOrderByCreatedAtDesc();
 
     boolean existsByFromLocationIdOrToLocationId(Long fromLocationId, Long toLocationId);
+
+    boolean existsByItemId(Long itemId);
 }

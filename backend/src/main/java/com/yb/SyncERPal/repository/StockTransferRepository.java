@@ -26,5 +26,7 @@ public class StockTransferRepository {
         return stockTransferJpaRepository.existsByFromLocationIdOrToLocationId(locationId, locationId);
     }
 
-
+    public boolean existsByItemId(Long itemId) {
+        return stockTransferJpaRepository.existsByItemId(itemId);
+    }
 }

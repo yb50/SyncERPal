@@ -35,4 +35,8 @@ public class InventoryBalanceRepository {
     public boolean existsByLocationId(Long locationId) {
         return inventoryBalanceJpaRepository.existsByLocationId(locationId);
     }
+
+    public boolean existsByItemId(Long itemId) {
+        return inventoryBalanceJpaRepository.existsByItemId(itemId);
+    }
 }

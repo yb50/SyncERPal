@@ -1,4 +1,9 @@
-function InventoryBalanceTable({ inventoryBalances, items, locations }) {
+function InventoryBalanceTable({ 
+  inventoryBalances, 
+  items, 
+  locations,
+  emptyMessage = "No inventory balances found.", 
+}) {
   function getItemText(itemId) {
     const item = items.find((item) => item.id === itemId);
     
@@ -20,7 +25,7 @@ function InventoryBalanceTable({ inventoryBalances, items, locations }) {
   }
 
   if (inventoryBalances.length === 0) {
-    return <p>No inventory balances found.</p>
+    return <p>{emptyMessage}</p>
   }
 
   return (

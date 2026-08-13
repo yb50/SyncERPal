@@ -202,6 +202,9 @@ function App() {
         locations={locations}
         locationCode={locationCode}
         locationName={locationName}
+        stockMovements={stockMovements}
+        inventoryBalances={inventoryBalances}
+        stockTransfers={stockTransfers}
         editingLocationId={editingLocationId}
         setLocationCode={setLocationCode}
         setLocationName={setLocationName}

@@ -5,6 +5,9 @@ function LocationSection({
   locations,
   locationCode,
   locationName,
+  stockMovements,
+  inventoryBalances,
+  stockTransfers,
   editingLocationId,
   setLocationCode,
   setLocationName,
@@ -74,8 +77,15 @@ function LocationSection({
 
       <h2>Locations</h2>
 
+      <p className="hint">
+        Locations with inventory history cannot be deleted.
+      </p>
+
       <LocationTable
         locations={locations}
+        stockMovements={stockMovements}
+        inventoryBalances={inventoryBalances}
+        stockTransfers={stockTransfers}
         onEdit={handleEdit}
         onDelete={handleDelete}
         canManageLocations={canManageLocations}

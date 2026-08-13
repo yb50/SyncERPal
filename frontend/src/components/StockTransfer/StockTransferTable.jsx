@@ -1,4 +1,9 @@
-function StockTransferTable({ stockTransfers, items, locations }) {
+function StockTransferTable({
+  stockTransfers,
+  items,
+  locations,
+  emptyMessage = "No stock transfers found.",
+}) {
   function getItemText(itemId) {
     const item = items.find((item) => item.id === itemId);
 
@@ -28,7 +33,7 @@ function StockTransferTable({ stockTransfers, items, locations }) {
   }
 
   if (stockTransfers.length === 0) {
-    return <p>No stock transfers found.</p>;
+    return <p>{emptyMessage}</p>;
   }
 
   return (

@@ -1,4 +1,9 @@
-function StockMovementTable({ stockMovements, items, locations }) {
+function StockMovementTable({
+  stockMovements,
+  items,
+  locations,
+  emptyMessage = "No stock movements found.",
+}) {
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
       return "";
@@ -18,7 +23,11 @@ function StockMovementTable({ stockMovements, items, locations }) {
 
     return `${location.code} - ${location.name}`;
   }
-  
+
+  if (stockMovements.length === 0) {
+    return <p>{emptyMessage}</p>;
+  }
+
   return (
     <table>
       <thead>
@@ -41,7 +50,9 @@ function StockMovementTable({ stockMovements, items, locations }) {
             <tr key={movement.id}>
               <td>{movement.id}</td>
               <td>
-                {item ? `${item.name} (${item.sku})` : `Item ${movement.itemId}`}
+                {item
+                  ? `${item.name} (${item.sku})`
+                  : `Item ${movement.itemId}`}
               </td>
               <td>{getLocationText(movement.locationId)}</td>
               <td>{movement.type}</td>
@@ -53,7 +64,7 @@ function StockMovementTable({ stockMovements, items, locations }) {
         })}
       </tbody>
     </table>
-  )
+  );
 }
 
 export default StockMovementTable;

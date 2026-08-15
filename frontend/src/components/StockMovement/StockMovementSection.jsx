@@ -1,3 +1,4 @@
+import { useState } from "react";
 import StockMovementForm from "./StockMovementForm";
 import StockMovementTable from "./StockMovementTable";
 
@@ -25,6 +26,21 @@ function StockMovementSection({
   currentUsername,
   fetchInventoryBalances,
 }) {
+  const [selectedLocationId, setSelectedLocationId] = useState("");
+  const [selectedMovementType, setSelectedMovementType] = useState("");
+
+  const filteredStockMovements = stockMovements.filter((stockMovement) => {
+    const matchesLocation =
+      selectedLocationId === "" ||
+      String(stockMovement.locationId) === selectedLocationId;
+
+    const matchesType =
+      selectedMovementType === "" ||
+      stockMovement.type === selectedMovementType;
+
+    return matchesLocation && matchesType;
+  });
+
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
@@ -33,6 +49,29 @@ function StockMovementSection({
         setError("");
         fetchAuditLogs();
         fetchInventoryBalances();
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
+  function handleItemFilterChange(itemId) {
+    changeMovementFilterItemId(itemId)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
+  function clearFilters() {
+    setSelectedLocationId("");
+    setSelectedMovementType("");
+
+    changeMovementFilterItemId("")
+      .then(() => {
+        setError("");
       })
       .catch((error) => {
         setError(error.message);
@@ -77,15 +116,7 @@ function StockMovementSection({
 
         <select
           value={movementFilterItemId}
-          onChange={(event) => {
-            changeMovementFilterItemId(event.target.value)
-              .then(() => {
-                setError("");
-              })
-              .catch((error) => {
-                setError(error.message);
-              });
-          }}
+          onChange={(event) => handleItemFilterChange(event.target.value)}
         >
           <option value="">All items</option>
 
@@ -97,10 +128,46 @@ function StockMovementSection({
         </select>
       </div>
 
+      <div>
+        <label>Filter by location: </label>
+
+        <select
+          value={selectedLocationId}
+          onChange={(event) => setSelectedLocationId(event.target.value)}
+        >
+          <option value="">All locations</option>
+
+          {locations.map((location) => (
+            <option key={location.id} value={location.id}>
+              {location.code} - {location.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label>Filter by type: </label>
+
+        <select
+          value={selectedMovementType}
+          onChange={(event) => setSelectedMovementType(event.target.value)}
+        >
+          <option value="">All types</option>
+          <option value="IN">IN</option>
+          <option value="OUT">OUT</option>
+          <option value="ADJUSTMENT">ADJUSTMENT</option>
+        </select>
+      </div>
+
+      <button type="button" onClick={clearFilters}>
+        Clear Movement Filters
+      </button>
+
       <StockMovementTable
-        stockMovements={stockMovements}
+        stockMovements={filteredStockMovements}
         items={items}
         locations={locations}
+        emptyMessage="No stock movements match the selected filters."
       />
     </>
   );

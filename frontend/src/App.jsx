@@ -16,6 +16,7 @@ import useInventoryBalances from "./hooks/useInventoryBalances";
 import InventoryBalanceSection from "./components/InventoryBalance/InventoryBalanceSection";
 import useStockTransfers from "./hooks/useStockTransfers";
 import StockTransferSection from "./components/StockTransfer/StockTransferSection";
+import LowStockSection from "./components/LowStock/LowStockSection";
 
 function App() {
   const {
@@ -173,6 +174,8 @@ function App() {
         users={users}
         auditLogs={auditLogs}
       />
+
+      <LowStockSection items={items} />
 
       {error && <p className="error">{error}</p>}
 

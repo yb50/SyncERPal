@@ -44,6 +44,14 @@ function LocationSection({
   }
 
   function handleDelete(locationId) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this location?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     removeLocation(locationId, currentUsername)
       .then(() => {
         setError("");

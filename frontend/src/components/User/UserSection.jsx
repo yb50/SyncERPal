@@ -40,6 +40,14 @@ function UserSection({
   }
 
   function handleDeleteUser(userId) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     removeUser(userId, currentUsername)
       .then(() => {
         setError("");

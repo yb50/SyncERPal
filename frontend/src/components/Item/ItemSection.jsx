@@ -44,6 +44,14 @@ function ItemSection({
   }
 
   function handleDelete(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     removeItem(id, currentUsername)
       .then(() => {
         setError("");

@@ -7,7 +7,7 @@ import ItemSection from "./components/Item/ItemSection";
 import StockMovementSection from "./components/StockMovement/StockMovementSection";
 import InventorySummary from "./components/InventorySummary";
 import useAuditLogs from "./hooks/useAuditLogs";
-import AuditLogTable from "./components/AuditLogTable";
+import AuditLogSection from "./components/AuditLog/AuditLogSection";
 import useUsers from "./hooks/useUsers";
 import UserSection from "./components/User/UserSection";
 import useLocations from "./hooks/useLocations";
@@ -290,9 +290,7 @@ function App() {
         removeUser={removeUser}
       />
 
-      <h2>Audit Logs</h2>
-
-      <AuditLogTable auditLogs={auditLogs} />
+      <AuditLogSection auditLogs={auditLogs} />
     </div>
   );
 }

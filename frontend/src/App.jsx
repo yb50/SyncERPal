@@ -164,7 +164,15 @@ function App() {
         </p>
       </div>
 
-      <InventorySummary items={items} />
+      <InventorySummary
+        items={items}
+        locations={locations}
+        inventoryBalances={inventoryBalances}
+        stockMovements={stockMovements}
+        stockTransfers={stockTransfers}
+        users={users}
+        auditLogs={auditLogs}
+      />
 
       {error && <p className="error">{error}</p>}
 

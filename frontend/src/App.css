@@ -72,3 +72,35 @@ td {
   color: #666;
   margin: 4px 0 0 64px;
 }
+
+/* Dashboard */
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  border: 1px solid #ccc;
+  padding: 12px;
+  min-width: 140px;
+}
+
+.summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.summary-card p {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.summary-recent {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 24px;
+}

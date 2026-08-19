@@ -25,6 +25,7 @@ function StockMovementSection({
   exportStockMovements,
   currentUsername,
   fetchInventoryBalances,
+  setSuccessMessage,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState("");
   const [selectedMovementType, setSelectedMovementType] = useState("");
@@ -47,10 +48,12 @@ function StockMovementSection({
     saveStockMovement(currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("Stock movement created successfully.");
         fetchAuditLogs();
         fetchInventoryBalances();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }

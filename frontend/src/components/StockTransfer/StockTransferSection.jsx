@@ -57,11 +57,13 @@ function StockTransferSection({
     saveStockTransfer(currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("Stock transfer completed successfully.");
         fetchItems();
         fetchInventoryBalances();
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }

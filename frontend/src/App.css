@@ -104,3 +104,12 @@ td {
   padding: 12px;
   margin-bottom: 24px;
 }
+
+/* Success Messages */
+
+.success {
+  color: #1f7a1f;
+  border: 1px solid #1f7a1f;
+  padding: 8px;
+  margin: 12px 0;
+}

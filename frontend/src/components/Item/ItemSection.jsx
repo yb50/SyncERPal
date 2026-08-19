@@ -29,16 +29,25 @@ function ItemSection({
   importItems,
   currentUsername,
   canManageItems,
+  setSuccessMessage,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
 
+    setSuccessMessage("");
+
     saveItem(currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage(
+          editingId === null
+            ? "Item created successfully."
+            : "Item updated successfully."
+        );
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }
@@ -52,12 +61,16 @@ function ItemSection({
       return;
     }
 
+    setSuccessMessage("");
+
     removeItem(id, currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("Item deleted successfully");
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }

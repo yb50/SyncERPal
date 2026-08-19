@@ -117,6 +117,7 @@ function App() {
   } = useStockTransfers();
 
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [currentUsername, setCurrentUsername] = useState("system");
 
   const currentUser = users.find((user) => user.username === currentUsername);
@@ -178,6 +179,7 @@ function App() {
       <LowStockSection items={items} />
 
       {error && <p className="error">{error}</p>}
+      {successMessage && <p className="success">{successMessage}</p>}
 
       <ItemSection
         items={items}
@@ -207,6 +209,7 @@ function App() {
         exportItems={exportItems}
         setImportFile={setImportFile}
         importItems={importItems}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <LocationSection
@@ -227,6 +230,7 @@ function App() {
         fetchAuditLogs={fetchAuditLogs}
         setError={setError}
         removeLocation={removeLocation}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <InventoryBalanceSection 
@@ -258,6 +262,7 @@ function App() {
         setError={setError}
         stockTransfers={stockTransfers}
         exportStockTransfers={exportStockTransfers}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <StockMovementSection
@@ -283,6 +288,7 @@ function App() {
         setError={setError}
         exportStockMovements={exportStockMovements}
         fetchInventoryBalances={fetchInventoryBalances}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <UserSection
@@ -299,6 +305,7 @@ function App() {
         changeUserRole={changeUserRole}
         fetchAuditLogs={fetchAuditLogs}
         removeUser={removeUser}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <AuditLogSection auditLogs={auditLogs} />

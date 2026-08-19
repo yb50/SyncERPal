@@ -14,6 +14,7 @@ function UserSection({
   setError,
   changeUserRole,
   removeUser,
+  setSuccessMessage,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -21,9 +22,11 @@ function UserSection({
     saveUser(currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("User created successfully.");
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }
@@ -32,9 +35,11 @@ function UserSection({
     changeUserRole(userId, newRole, currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("User role updated successfully.");
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }
@@ -51,9 +56,11 @@ function UserSection({
     removeUser(userId, currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("User deleted successfully.");
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }

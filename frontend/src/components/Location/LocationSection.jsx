@@ -19,16 +19,25 @@ function LocationSection({
   fetchAuditLogs,
   setError,
   removeLocation,
+  setSuccessMessage,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
 
+    setSuccessMessage("");
+
     saveLocation(currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage(
+          editingLocationId === null
+            ? "Location created successfully."
+            : "Location updated successfully."
+        );
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }
@@ -52,12 +61,16 @@ function LocationSection({
       return;
     }
 
+    setSuccessMessage("");
+
     removeLocation(locationId, currentUsername)
       .then(() => {
         setError("");
+        setSuccessMessage("Location deleted successfully.");
         fetchAuditLogs();
       })
       .catch((error) => {
+        setSuccessMessage("");
         setError(error.message);
       });
   }

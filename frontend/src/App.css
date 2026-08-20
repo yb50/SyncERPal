@@ -51,7 +51,29 @@ td {
   font-weight: bold;
 }
 
+/* Dashboard Navigation */
+
+.section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+}
+
+.section-nav a {
+  text-decoration: none;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+}
+
+section {
+  margin-top: 32px;
+}
+
 /* Low Stock Threshold */
+
 .status-ok {
   color: green;
   font-weight: bold;

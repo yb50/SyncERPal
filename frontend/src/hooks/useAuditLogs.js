@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getAuditLogs } from "../api/auditLogApi";
+import { exportAuditLogsCsv, getAuditLogs } from "../api/auditLogApi";
 
 function useAuditLogs() {
   const [auditLogs, setAuditLogs] = useState([]);
@@ -10,9 +10,14 @@ function useAuditLogs() {
     });
   }
 
+  function exportAuditLogs() {
+    exportAuditLogsCsv();
+  }
+
   return {
     auditLogs,
     fetchAuditLogs,
+    exportAuditLogs,
   };
 }
 

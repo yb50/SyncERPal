@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuditLogTable from "./AuditLogTable";
 
-function AuditLogSection({ auditLogs }) {
+function AuditLogSection({ auditLogs, exportAuditLogs }) {
   const [selectedAction, setSelectedAction] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [selectedPerformedBy, setSelectedPerformedBy] = useState("");
@@ -34,6 +34,10 @@ function AuditLogSection({ auditLogs }) {
   return (
     <>
       <h2>Audit Logs</h2>
+
+      <button type="button" onClick={exportAuditLogs}>
+        Export Audit Logs CSV
+      </button>
 
       <div>
         <label>Filter by action: </label>

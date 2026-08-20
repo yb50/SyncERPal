@@ -65,6 +65,7 @@ function App() {
   const { 
     auditLogs, 
     fetchAuditLogs, 
+    exportAuditLogs,
   } = useAuditLogs();
 
   const {
@@ -303,12 +304,14 @@ function App() {
         fetchAuditLogs={fetchAuditLogs}
         setError={setError}
         changeUserRole={changeUserRole}
-        fetchAuditLogs={fetchAuditLogs}
         removeUser={removeUser}
         setSuccessMessage={setSuccessMessage}
       />
 
-      <AuditLogSection auditLogs={auditLogs} />
+      <AuditLogSection 
+        auditLogs={auditLogs} 
+        exportAuditLogs={exportAuditLogs}
+      />
     </div>
   );
 }

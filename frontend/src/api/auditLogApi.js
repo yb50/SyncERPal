@@ -10,3 +10,7 @@ export function getAuditLogs() {
     return response.json();
   });
 }
+
+export function exportAuditLogsCsv() {
+  window.location.href = `${AUDIT_LOGS_URL}/export`;
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getItems, createItem, updateItem, deleteItem, exportItemsCsv, importItemsCsv } from "../api/itemApi";
+import { getItems, createItem, updateItem, deleteItem, exportItemsCsv, importItemsCsv, exportLowStockItemsCsv } from "../api/itemApi";
 
 function useItems() {
   const [items, setItems] = useState([]);
@@ -76,6 +76,10 @@ function useItems() {
     });
   }
 
+  function exportLowStockItems() {
+    exportLowStockItemsCsv();
+  }
+
   return {
     items,
     name,
@@ -97,6 +101,7 @@ function useItems() {
     exportItems,
     setImportFile,
     importItems,
+    exportLowStockItems,
   };
 }
 

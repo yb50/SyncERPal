@@ -190,6 +190,36 @@ public class ItemService {
         return csv.toString();
     }
 
+    public String exportLowStockItemsAsCsv() {
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("id,sku,name,quantity,lowStockThreshold,status,createdAt,updatedAt\n");
+
+        for (Item item : getAllItems()) {
+            boolean isOutOfStock = item.getQuantity() == 0;
+            boolean isLowStock =
+                    item.getQuantity() > 0 &&
+                            item.getQuantity() <= item.getLowStockThreshold();
+
+            if (!isOutOfStock && !isLowStock) {
+                continue;
+            }
+
+            String status = isOutOfStock ? "Out of stock" : "Low stock";
+
+            csv.append(item.getId()).append(",");
+            csv.append(escapeCsv(item.getSku())).append(",");
+            csv.append(escapeCsv(item.getName())).append(",");
+            csv.append(item.getQuantity()).append(",");
+            csv.append(item.getLowStockThreshold()).append(",");
+            csv.append(escapeCsv(status)).append(",");
+            csv.append(item.getCreatedAt()).append(",");
+            csv.append(item.getUpdatedAt()).append("\n");
+        }
+
+        return csv.toString();
+    }
+
     private String escapeCsv(String value) {
         if (value == null) {
             return "";

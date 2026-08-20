@@ -40,6 +40,7 @@ function App() {
     exportItems,
     setImportFile,
     importItems,
+    exportLowStockItems,
   } = useItems();
 
   const {
@@ -122,15 +123,10 @@ function App() {
   const [currentUsername, setCurrentUsername] = useState("system");
 
   const currentUser = users.find((user) => user.username === currentUsername);
-
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
-
   const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
-
   const canCreateStockMovements = currentUser != null;
-
   const canManageLocations = canManageItems;
-
   const canTransferStock = currentUser != null;
 
   useEffect(() => {
@@ -177,7 +173,10 @@ function App() {
         auditLogs={auditLogs}
       />
 
-      <LowStockSection items={items} />
+      <LowStockSection 
+        items={items} 
+        exportLowStockItems={exportLowStockItems}
+      />
 
       {error && <p className="error">{error}</p>}
       {successMessage && <p className="success">{successMessage}</p>}

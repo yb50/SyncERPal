@@ -91,3 +91,7 @@ export function importItemsCsv(file, performedBy) {
     return response.text();
   });
 }
+
+export function exportLowStockItemsCsv() {
+  window.location.href = `${ITEMS_URL}/low-stock/export`;
+}

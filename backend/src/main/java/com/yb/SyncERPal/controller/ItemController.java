@@ -96,4 +96,14 @@ public class ItemController {
 
         return ResponseEntity.ok(deletedItem);
     }
+
+    @GetMapping("/items/low-stock/export")
+    public ResponseEntity<String> exportLowStockItems() {
+        String csv = itemService.exportLowStockItemsAsCsv();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=low-stock-items.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csv);
+    }
 }

@@ -6,7 +6,8 @@ function ItemTable({
   onEdit, 
   onDelete, 
   onViewHistory, 
-  canManageItems 
+  canManageItems,
+  emptyMessage = "No items found.",
 }) {
   function getStatus(item) {
     if (item.quantity === 0) {
@@ -51,6 +52,10 @@ function ItemTable({
     );
 
     return hasStockMovements || hasInventoryBalances || hasStockTransfers;
+  }
+
+  if (items.length === 0) {
+    return <p>{emptyMessage}</p>
   }
 
   return (

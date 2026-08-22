@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+import { BASE_URL } from "./config";
 const ITEMS_URL = `${BASE_URL}/items`;
 
 export function getItems() {

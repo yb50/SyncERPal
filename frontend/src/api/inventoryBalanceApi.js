@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+import { BASE_URL } from "./config";
 const INVENTORY_BALANCES_URL = `${BASE_URL}/inventory-balances`;
 
 export function getInventoryBalances() {

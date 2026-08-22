@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+import { BASE_URL } from "./config";
 const STOCK_TRANSFERS_URL = `${BASE_URL}/stock-transfers`;
 
 export function getStockTransfers() {

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+import { BASE_URL } from "./config";
 const AUDIT_LOGS_URL = `${BASE_URL}/audit-logs`;
 
 export function getAuditLogs() {

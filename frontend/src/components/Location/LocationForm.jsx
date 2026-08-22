@@ -17,6 +17,7 @@ function LocationForm({
           value={locationCode}
           onChange={(event) => onLocationCodeChange(event.target.value)}
           disabled={!canManageLocations}
+          required
         />
       </div>
 
@@ -27,6 +28,7 @@ function LocationForm({
           value={locationName}
           onChange={(event) => onLocationNameChange(event.target.value)}
           disabled={!canManageLocations}
+          required
         />
       </div>
 

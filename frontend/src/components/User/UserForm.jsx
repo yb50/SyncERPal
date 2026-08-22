@@ -8,6 +8,7 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit, ca
           value={username}
           onChange={(event) => onUsernameChange(event.target.value)}
           disabled={!canManageUsers}
+          required
         />
       </div>
 
@@ -17,6 +18,7 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit, ca
           value={role}
           onChange={(event) => onRoleChange(event.target.value)}
           disabled={!canManageUsers}
+          required
         >
           <option value="ADMIN">ADMIN</option>
           <option value="MANAGER">MANAGER</option>

@@ -22,6 +22,7 @@ function StockMovementForm({
           value={movementItemId}
           onChange={(event) => onMovementItemIdChange(event.target.value)}
           disabled={!canCreateStockMovements}
+          required
         >
           <option value="">Select item</option>
 
@@ -39,6 +40,7 @@ function StockMovementForm({
           value={movementLocationId}
           onChange={(event) => onLocationIdChange(event.target.value)}
           disabled={!canCreateStockMovements}
+          required
         >
           <option value="">Select location</option>
 
@@ -56,6 +58,7 @@ function StockMovementForm({
           value={movementType}
           onChange={(event) => onMovementTypeChange(event.target.value)}
           disabled={!canCreateStockMovements}
+          required
         >
           <option value={"IN"}>IN</option>
           <option value={"OUT"}>OUT</option>
@@ -70,6 +73,8 @@ function StockMovementForm({
           value={movementQuantity}
           onChange={(event) => onMovementQuantityChange(event.target.value)}
           disabled={!canCreateStockMovements}
+          required
+          min="1"
         />
       </div>
 

@@ -22,6 +22,7 @@ function StockTransferForm({
           value={transferItemId}
           onChange={(event) => onTransferItemIdChange(event.target.value)}
           disabled={!canTransferStock}
+          required
         >
           <option value="">Select item</option>
 
@@ -39,6 +40,7 @@ function StockTransferForm({
           value={fromLocationId}
           onChange={(event) => onFromLocationIdChange(event.target.value)}
           disabled={!canTransferStock}
+          required
         >
           <option value="">Select source location</option>
 
@@ -56,6 +58,7 @@ function StockTransferForm({
           value={toLocationId}
           onChange={(event) => onToLocationIdChange(event.target.value)}
           disabled={!canTransferStock}
+          required
         >
           <option value="">Select destination location</option>
 
@@ -74,6 +77,8 @@ function StockTransferForm({
           value={transferQuantity}
           onChange={(event) => onTransferQuantityChange(event.target.value)}
           disabled={!canTransferStock}
+          required
+          min="1"
         />
       </div>
 

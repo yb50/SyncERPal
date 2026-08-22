@@ -8,6 +8,7 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
           value={name}
           onChange={(event) => onNameChange(event.target.value)}
           disabled={!canManageItems}
+          required
         />
       </div>
 
@@ -18,6 +19,7 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
           value={sku}
           onChange={(event) => onSkuChange(event.target.value)}
           disabled={!canManageItems}
+          required
         />
       </div>
 
@@ -28,6 +30,7 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
           value={quantity}
           onChange={(event) => onQuantityChange(event.target.value)}
           disabled
+          min="0"
         />
 
         {editingId !== null && (
@@ -44,6 +47,8 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
           value={lowStockThreshold}
           onChange={(event) => onLowStockThreshold(event.target.value)}
           disabled={!canManageItems}
+          required
+          min="0"
         />
       </div>
 

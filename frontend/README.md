@@ -1,16 +1,164 @@
-# React + Vite
+# SyncERPal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SyncERPal is an ERP-lite inventory management app built with Spring Boot and React.
 
-Currently, two official plugins are available:
+The project focuses on small-business inventory workflows such as item management, stock movements, stock transfers, per-location inventory balances, role-based permissions, audit logs, and CSV reporting.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+### Backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Java
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- H2 Database
+- Maven
 
-## Expanding the ESLint configuration
+### Frontend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React
+- Vite
+- JavaScript
+- CSS
+
+## Main Features
+
+### Item Management
+
+- Create, edit, delete, and search items
+- Low-stock thresholds
+- Movement-controlled item quantities
+- Item CSV export/import
+- Low-stock CSV report
+- Safe deletion rules for items with inventory history
+
+### Location Management
+
+- Create, edit, delete, and search inventory locations
+- Safe deletion rules for locations with inventory history
+
+### Stock Movements
+
+- Record IN, OUT, and ADJUSTMENT movements
+- Attach movements to items and locations
+- Automatically update per-location inventory balances
+- Automatically update total item quantity
+- Filter stock movement history
+- Export stock movement history as CSV
+
+### Stock Transfers
+
+- Transfer stock between locations
+- Validate source stock availability
+- Store transfer history
+- Filter stock transfer history
+- Export stock transfer history as CSV
+
+### Inventory Balances
+
+- Track item quantities per location
+- Filter balances by item and location
+- Export current inventory balances as CSV
+
+### Users and Roles
+
+- Basic app users with ADMIN, MANAGER, and WORKER roles
+- ADMIN can manage users and roles
+- ADMIN and MANAGER can manage items and locations
+- WORKER can create stock movements and transfers
+- Last ADMIN protection
+- Self-delete protection
+
+### Audit Logs
+
+- Track important system actions
+- Record who performed each action
+- Filter audit logs by action, entity type, and actor
+- Export audit logs as CSV
+
+### Dashboard and Reports
+
+- Dashboard summary cards
+- Latest activity display
+- Low-stock report
+- CSV exports for reports and history tables
+
+## Example Roles
+
+| Role | Permissions |
+|---|---|
+| ADMIN | Manage users, items, locations, stock movements, and transfers |
+| MANAGER | Manage items, locations, stock movements, and transfers |
+| WORKER | Create stock movements and transfers |
+
+## Local Setup
+
+### Backend
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+Backend runs on:
+
+```text
+http://localhost:8080
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+## Environment Variables
+
+The frontend API base URL can be configured with:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+See `.env.example`.
+
+## Database
+
+The project uses H2 for local development.
+
+Local database files are ignored by Git:
+
+```text
+syncerpal.mv.db
+syncerpal.trace.db
+```
+
+## Notes
+
+This project uses a simplified header-based user system with `X-User` for portfolio/demo purposes.
+
+Example:
+
+```text
+X-User: admin
+```
+
+Real authentication with Spring Security is planned as a possible future improvement.
+
+## Future Improvements
+
+- Real login and authentication with Spring Security
+- Better UI styling and layout
+- Pagination for large tables
+- More advanced reports
+- Deployment setup
+- Database migration with PostgreSQL

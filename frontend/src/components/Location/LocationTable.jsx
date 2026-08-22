@@ -6,6 +6,7 @@ function LocationTable({
   onEdit,
   onDelete,
   canManageLocations,
+  emptyMessage = "No locations found.",
 }) {
   function hasInventoryHistory(locationId) {
     const hasInventoryBalances = inventoryBalances.some(
@@ -26,7 +27,7 @@ function LocationTable({
   }
 
   if (locations.length === 0) {
-    return <p>No locations found.</p>;
+    return <p>{emptyMessage}</p>;
   }
 
   return (

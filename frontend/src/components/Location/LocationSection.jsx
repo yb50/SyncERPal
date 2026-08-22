@@ -1,3 +1,4 @@
+import { useState } from "react";
 import LocationForm from "./LocationForm";
 import LocationTable from "./LocationTable";
 
@@ -21,6 +22,8 @@ function LocationSection({
   removeLocation,
   setSuccessMessage,
 }) {
+  const [locationSearchText, setLocationSearchText] = useState("");
+
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -75,6 +78,20 @@ function LocationSection({
       });
   }
 
+  const filteredLocations = locations.filter((location) => {
+    const searchText = locationSearchText.toLowerCase();
+
+    return (
+      locationSearchText === "" ||
+      location.code.toLowerCase().includes(searchText) ||
+      location.name.toLowerCase().includes(searchText)
+    );
+  });
+
+  function clearLocationFilters() {
+    setLocationSearchText("");
+  }
+
   return (
     <>
       <h2>{editingLocationId === null ? "Add Location" : "Edit Location"}</h2>
@@ -102,14 +119,29 @@ function LocationSection({
         Locations with inventory history cannot be deleted.
       </p>
 
+      <div>
+        <label>Search locations: </label>
+        <input 
+          type="text"
+          value={locationSearchText}
+          onChange={(event) => setLocationSearchText(event.target.value)}
+          placeholder="Search by code or name"
+        />
+      </div>
+
+      <button type="button" onClick={clearLocationFilters}>
+        Clear Location Filters
+      </button>
+
       <LocationTable
-        locations={locations}
+        locations={filteredLocations}
         stockMovements={stockMovements}
         inventoryBalances={inventoryBalances}
         stockTransfers={stockTransfers}
         onEdit={handleEdit}
         onDelete={handleDelete}
         canManageLocations={canManageLocations}
+        emptyMessage="No locations match the selected filters."
       />
     </>
   );

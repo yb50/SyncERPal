@@ -1,12 +1,18 @@
-function UserTable({ users, canManageUsers, onRoleChange, onDeleteUser, currentUsername }) {
-  if (users.length === 0) {
-    return <p>No users found.</p>;
-  }
-
-  const adminCount = users.filter((user) => user.role === "ADMIN").length;
-
+function UserTable({
+  users,
+  adminCount,
+  canManageUsers,
+  onRoleChange,
+  onDeleteUser,
+  currentUsername,
+  emptyMessage = "No users found.",
+}) {
   function isLastAdmin(user) {
     return user.role === "ADMIN" && adminCount <= 1;
+  }
+
+  if (users.length === 0) {
+    return <p>{emptyMessage}</p>;
   }
 
   return (
@@ -38,8 +44,13 @@ function UserTable({ users, canManageUsers, onRoleChange, onDeleteUser, currentU
             </td>
             <td>
               <button
+                type="button"
                 onClick={() => onDeleteUser(user.id)}
-                disabled={!canManageUsers || user.username === currentUsername || isLastAdmin(users)}
+                disabled={
+                  !canManageUsers ||
+                  user.username === currentUsername ||
+                  isLastAdmin(user)
+                }
               >
                 Delete
               </button>

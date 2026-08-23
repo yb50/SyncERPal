@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AuditLogTable from "./AuditLogTable";
+import PaginationControls from "../PaginationControls";
 
 function AuditLogSection({ auditLogs, exportAuditLogs }) {
   const [selectedAction, setSelectedAction] = useState("");
@@ -145,29 +146,12 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
         emptyMessage="No audit logs match the selected filters."
       />
 
-      {filteredAuditLogs.length > 0 && (
-        <div className="pagination">
-          <button
-            type="button"
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-
-          <span>
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            type="button"
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPreviousPage={goToPreviousPage}
+        onNextPage={goToNextPage}
+      />
     </>
   );
 }

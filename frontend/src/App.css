@@ -1,101 +1,136 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+* {
+  box-sizing: border-box;
 }
 
-.app {
-  max-width: 900px;
-  margin: 40px auto;
+body {
+  margin: 0;
+  background: #f5f6f8;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+h2 {
+  margin-top: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+section {
+  background: #fff;
+  border: 1px solid #ddd;
   padding: 20px;
+  margin-top: 24px;
+  border-radius: 8px;
+}
+
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin: 16px 0 24px;
+  border-radius: 8px;
+}
+
+.section-nav a {
+  color: #222;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: #f8f8f8;
+}
+
+.section-nav a:hover {
+  background: #eee;
 }
 
 form {
-  margin-bottom: 24px;
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+  margin-bottom: 20px;
 }
 
-form div {
-  margin-bottom: 12px;
+form div,
+section>div {
+  margin-bottom: 10px;
 }
 
 label {
-  display: inline-block;
-  width: 60px;
+  font-weight: bold;
 }
 
-input {
-  padding: 6px;
-  width: 220px;
+input,
+select {
+  padding: 8px;
+  margin-left: 6px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
 }
 
 button {
-  margin-right: 8px;
-  padding: 6px 10px;
+  padding: 8px 12px;
+  margin: 4px 6px 4px 0;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #f1f1f1;
   cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #e3e3e3;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 12px;
+  background: #fff;
 }
 
 th,
 td {
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  vertical-align: top;
 }
 
-.error {
-  color: red;
-  font-weight: bold;
+th {
+  background: #f0f1f3;
 }
 
-/* Dashboard Navigation */
-
-.section-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 16px 0;
-  padding: 12px;
-  border: 1px solid #ccc;
+tr:nth-child(even) {
+  background: #fafafa;
 }
-
-.section-nav a {
-  text-decoration: none;
-  border: 1px solid #ccc;
-  padding: 6px 10px;
-}
-
-section {
-  margin-top: 32px;
-}
-
-/* Low Stock Threshold */
-
-.status-ok {
-  color: green;
-  font-weight: bold;
-}
-
-.status-low {
-  color: orange;
-  font-weight: bold;
-}
-
-.status-out {
-  color: red;
-  font-weight: bold;
-}
-
-.hint {
-  font-size: 0.9rem;
-  color: #666;
-  margin: 4px 0 0 64px;
-}
-
-/* Dashboard */
 
 .summary {
   display: flex;
@@ -105,33 +140,67 @@ section {
 }
 
 .summary-card {
-  border: 1px solid #ccc;
-  padding: 12px;
+  flex: 1;
   min-width: 140px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  padding: 14px;
+  border-radius: 6px;
 }
 
 .summary-card h3 {
-  margin-top: 0;
   margin-bottom: 8px;
+  font-size: 0.95rem;
 }
 
 .summary-card p {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: bold;
 }
 
 .summary-recent {
-  border: 1px solid #ccc;
-  padding: 12px;
-  margin-bottom: 24px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
 }
 
-/* Success Messages */
+.hint {
+  color: #555;
+  background: #f8f8f8;
+  border-left: 4px solid #aaa;
+  padding: 8px 10px;
+}
+
+.error {
+  color: #8a1f1f;
+  background: #fff0f0;
+  border: 1px solid #d99;
+  padding: 10px;
+  border-radius: 4px;
+}
 
 .success {
-  color: #1f7a1f;
-  border: 1px solid #1f7a1f;
-  padding: 8px;
-  margin: 12px 0;
+  color: #1f6b2a;
+  background: #effaf1;
+  border: 1px solid #8bc995;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.status-ok {
+  color: #1f6b2a;
+  font-weight: bold;
+}
+
+.status-low {
+  color: #9a6500;
+  font-weight: bold;
+}
+
+.status-out {
+  color: #9b1c1c;
+  font-weight: bold;
 }

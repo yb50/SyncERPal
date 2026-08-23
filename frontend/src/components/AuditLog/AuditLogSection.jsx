@@ -5,10 +5,17 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
   const [selectedAction, setSelectedAction] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [selectedPerformedBy, setSelectedPerformedBy] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 10;
 
   const actions = [...new Set(auditLogs.map((auditLog) => auditLog.action))];
-  const entityTypes = [...new Set(auditLogs.map((auditLog) => auditLog.entityType))];
-  const performedByUsers = [...new Set(auditLogs.map((auditLog) => auditLog.performedBy))];
+  const entityTypes = [
+    ...new Set(auditLogs.map((auditLog) => auditLog.entityType)),
+  ];
+  const performedByUsers = [
+    ...new Set(auditLogs.map((auditLog) => auditLog.performedBy)),
+  ];
 
   const filteredAuditLogs = auditLogs.filter((auditLog) => {
     const matchesAction =
@@ -25,10 +32,35 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
     return matchesAction && matchesEntityType && matchesPerformedBy;
   });
 
+  // + Pagination
+
+  const totalPages = Math.ceil(filteredAuditLogs.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedAuditLogs = filteredAuditLogs.slice(
+    startIndex,
+    startIndex + pageSize
+  );
+
+  function resetToFirstPage() {
+    setCurrentPage(1);
+  }
+  
+  function goToPreviousPage() {
+    setCurrentPage((page) => Math.max(page - 1, 1));
+  }
+  
+  function goToNextPage() {
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+  }
+
+  // - Pagination
+  
   function clearFilters() {
     setSelectedAction("");
     setSelectedEntityType("");
     setSelectedPerformedBy("");
+    setCurrentPage(1);
   }
 
   return (
@@ -44,7 +76,10 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
 
         <select
           value={selectedAction}
-          onChange={(event) => setSelectedAction(event.target.value)}
+          onChange={(event) => {
+            setSelectedAction(event.target.value);
+            resetToFirstPage();
+          }}
         >
           <option value="">All actions</option>
 
@@ -61,7 +96,10 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
 
         <select
           value={selectedEntityType}
-          onChange={(event) => setSelectedEntityType(event.target.value)}
+          onChange={(event) => {
+            setSelectedEntityType(event.target.value);
+            resetToFirstPage();
+          }}
         >
           <option value="">All entity types</option>
 
@@ -78,7 +116,10 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
 
         <select
           value={selectedPerformedBy}
-          onChange={(event) => setSelectedPerformedBy(event.target.value)}
+          onChange={(event) => {
+            setSelectedPerformedBy(event.target.value);
+            resetToFirstPage();
+          }}
         >
           <option value="">All users</option>
 
@@ -94,10 +135,39 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
         Clear Audit Filters
       </button>
 
+      <p className="table-summary">
+        Showing {paginatedAuditLogs.length} of {filteredAuditLogs.length} audit
+        logs
+      </p>
+
       <AuditLogTable
-        auditLogs={filteredAuditLogs}
+        auditLogs={paginatedAuditLogs}
         emptyMessage="No audit logs match the selected filters."
       />
+
+      {filteredAuditLogs.length > 0 && (
+        <div className="pagination">
+          <button
+            type="button"
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+
+          <span>
+            {currentPage} / {totalPages}
+          </span>
+
+          <button
+            type="button"
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
   );
 }

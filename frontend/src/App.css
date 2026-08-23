@@ -202,6 +202,8 @@ tr:nth-child(even) {
   border-radius: 4px;
 }
 
+/* Status */
+
 .status-ok {
   color: #1f6b2a;
   font-weight: bold;
@@ -214,5 +216,24 @@ tr:nth-child(even) {
 
 .status-out {
   color: #9b1c1c;
+  font-weight: bold;
+}
+
+/* Pagination */
+
+.table-summary {
+  color: #555;
+  font-size: 0.95rem;
+  margin-top: 12px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pagination span {
   font-weight: bold;
 }

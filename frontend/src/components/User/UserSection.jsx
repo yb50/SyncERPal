@@ -1,6 +1,7 @@
 import { useState } from "react";
 import UserForm from "./UserForm";
 import UserTable from "./UserTable";
+import PaginationControls from "../PaginationControls";
 
 function UserSection({
   users,
@@ -19,6 +20,9 @@ function UserSection({
 }) {
   const [userSearchText, setUserSearchText] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 10;
 
   const adminCount = users.filter((user) => user.role === "ADMIN").length;
 
@@ -36,9 +40,32 @@ function UserSection({
     return matchesSearch && matchesRole;
   });
 
+  // + Pagination
+
+  const totalPages = Math.ceil(filteredUsers.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
+
+  function resetToFirstPage() {
+    setCurrentPage(1);
+  }
+
+  function goToPreviousPage() {
+    setCurrentPage((page) => Math.max(page - 1, 1));
+  }
+
+  function goToNextPage() {
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+  }
+
+  // - Pagination
+
   function clearUserFilters() {
     setUserSearchText("");
     setSelectedRole("");
+    setCurrentPage(1);
   }
 
   function handleSubmit(event) {
@@ -124,7 +151,10 @@ function UserSection({
         <input
           type="text"
           value={userSearchText}
-          onChange={(event) => setUserSearchText(event.target.value)}
+          onChange={(event) => {
+            setUserSearchText(event.target.value);
+            resetToFirstPage();
+          }}
           placeholder="Search by username"
         />
       </div>
@@ -133,7 +163,10 @@ function UserSection({
         <label>Filter by role: </label>
         <select
           value={selectedRole}
-          onChange={(event) => setSelectedRole(event.target.value)}
+          onChange={(event) => {
+            setSelectedRole(event.target.value);
+            resetToFirstPage();
+          }}
         >
           <option value="">All roles</option>
           <option value="ADMIN">ADMIN</option>
@@ -146,14 +179,25 @@ function UserSection({
         Clear User Filters
       </button>
 
+      <p className="table-summary">
+        Showing {paginatedUsers.length} of {filteredUsers.length} users
+      </p>
+
       <UserTable
-        users={filteredUsers}
+        users={paginatedUsers}
         adminCount={adminCount}
         canManageUsers={canManageUsers}
         onRoleChange={handleRoleChange}
         onDeleteUser={handleDeleteUser}
         currentUsername={currentUsername}
         emptyMessage="No users match the selected filters."
+      />
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPreviousPage={goToPreviousPage}
+        onNextPage={goToNextPage}
       />
     </>
   );

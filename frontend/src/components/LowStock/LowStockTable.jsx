@@ -1,4 +1,7 @@
-function LowStockTable({ items }) {
+function LowStockTable({
+  items,
+  emptyMessage = "No low-stock or out-of-stock items found.",
+}) {
   function getStatus(item) {
     if (item.quantity === 0) {
       return "Out of stock";
@@ -8,7 +11,7 @@ function LowStockTable({ items }) {
   }
 
   if (items.length === 0) {
-    return <p>No low-stock or out-of-stock items found.</p>
+    return <p>{emptyMessage}</p>;
   }
 
   return (

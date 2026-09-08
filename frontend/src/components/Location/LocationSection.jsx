@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LocationForm from "./LocationForm";
 import LocationTable from "./LocationTable";
+import PaginationControls from "../PaginationControls";
 
 function LocationSection({
   locations,
@@ -23,6 +24,9 @@ function LocationSection({
   setSuccessMessage,
 }) {
   const [locationSearchText, setLocationSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 10;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -88,8 +92,34 @@ function LocationSection({
     );
   });
 
+  // + Pagination
+
+  const totalPages = Math.ceil(filteredLocations.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+
+  const paginatedLocations = filteredLocations.slice(
+    startIndex,
+    startIndex + pageSize
+  );
+
+  function resetToFirstPage() {
+    setCurrentPage(1);
+  }
+
+  function goToPreviousPage() {
+    setCurrentPage((page) => Math.max(page - 1, 1));
+  }
+
+  function goToNextPage() {
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+  }
+
+  // - Pagination
+
   function clearLocationFilters() {
     setLocationSearchText("");
+    setCurrentPage(1);
   }
 
   return (
@@ -121,10 +151,13 @@ function LocationSection({
 
       <div>
         <label>Search locations: </label>
-        <input 
+        <input
           type="text"
           value={locationSearchText}
-          onChange={(event) => setLocationSearchText(event.target.value)}
+          onChange={(event) => {
+            setLocationSearchText(event.target.value);
+            resetToFirstPage();
+          }}
           placeholder="Search by code or name"
         />
       </div>
@@ -133,8 +166,12 @@ function LocationSection({
         Clear Location Filters
       </button>
 
+      <p className="table-summary">
+        Showing {paginatedLocations.length} of {filteredLocations.length} locations
+      </p>
+
       <LocationTable
-        locations={filteredLocations}
+        locations={paginatedLocations}
         stockMovements={stockMovements}
         inventoryBalances={inventoryBalances}
         stockTransfers={stockTransfers}
@@ -142,6 +179,13 @@ function LocationSection({
         onDelete={handleDelete}
         canManageLocations={canManageLocations}
         emptyMessage="No locations match the selected filters."
+      />
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPreviousPage={goToPreviousPage}
+        onNextPage={goToNextPage}
       />
     </>
   );

@@ -144,6 +144,7 @@ function ItemSection({
   function clearItemFilters() {
     setItemSearchText("");
     setSelectedItemStatus("");
+    setCurrentPage(1);
   }
 
   // + Pagination

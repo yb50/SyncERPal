@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
+import PaginationControls from "../PaginationControls";
 
 function ItemSection({
   items,
@@ -34,6 +35,9 @@ function ItemSection({
 }) {
   const [itemSearchText, setItemSearchText] = useState("");
   const [selectedItemStatus, setSelectedItemStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 10;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -142,6 +146,28 @@ function ItemSection({
     setSelectedItemStatus("");
   }
 
+  // + Pagination
+
+  const totalPages = Math.ceil(filteredItems.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + pageSize);
+
+  function resetToFirstPage() {
+    setCurrentPage(1);
+  }
+
+  function goToPreviousPage() {
+    setCurrentPage((page) => Math.max(page - 1, 1));
+  }
+
+  function goToNextPage() {
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+  }
+
+  // - Pagination
+
   return (
     <>
       <h2>Add Item</h2>
@@ -194,10 +220,13 @@ function ItemSection({
 
       <div>
         <label>Search items: </label>
-        <input 
+        <input
           type="text"
           value={itemSearchText}
-          onChange={(event) => setItemSearchText(event.target.value)}
+          onChange={(event) => {
+            setItemSearchText(event.target.value);
+            resetToFirstPage();
+          }}
           placeholder="Search by SKU or name"
         />
       </div>
@@ -206,7 +235,10 @@ function ItemSection({
         <label>Filter by status: </label>
         <select
           value={selectedItemStatus}
-          onChange={(event) => setSelectedItemStatus(event.target.value)}
+          onChange={(event) => {
+            setSelectedItemStatus(event.target.value);
+            resetToFirstPage();
+          }}
         >
           <option value="">All statuses</option>
           <option value="OK">OK</option>
@@ -219,19 +251,30 @@ function ItemSection({
         Clear Item Filters
       </button>
 
+      <p className="table-summary">
+        Showing {paginatedItems.length} of {filteredItems.length} items
+      </p>
+
       {!loading && items.length > 0 && (
         <ItemTable
-          items={filteredItems}
+          items={paginatedItems}
           stockMovements={stockMovements}
           inventoryBalances={inventoryBalances}
           stockTransfers={stockTransfers}
-          canManageItems={canManageItems}
           onEdit={handleEdit}
           onDelete={handleDelete}
           onViewHistory={handleViewHistory}
+          canManageItems={canManageItems}
           emptyMessage="No items match the selected filters."
         />
       )}
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPreviousPage={goToPreviousPage}
+        onNextPage={goToNextPage}
+      />
     </>
   );
 }

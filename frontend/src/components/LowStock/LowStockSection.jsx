@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LowStockTable from "./LowStockTable";
-import PaginationControls from "./PaginationControls";
+import PaginationControls from "../PaginationControls";
 
 function LowStockSection({ items, exportLowStockItems }) {
   const [currentPage, setCurrentPage] = useState(1);

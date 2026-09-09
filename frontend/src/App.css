@@ -237,3 +237,18 @@ tr:nth-child(even) {
 .pagination span {
   font-weight: bold;
 }
+
+/* Recent Activity List */
+
+.recent-activity-list {
+  padding-left: 18px;
+  margin-bottom: 0;
+}
+
+.recent-activity-list li {
+  margin-bottom: 12px;
+}
+
+.recent-activity-list small {
+  color: #666;
+}

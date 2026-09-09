@@ -21,7 +21,15 @@ function InventorySummary({
     return item.quantity === 0;
   }).length;
 
-  const recentAuditLog = auditLogs.length > 0 ? auditLogs[0] : null;
+  const recentAuditLogs = auditLogs.slice(0, 5);
+
+  function formatDateTime(dateTimeText) {
+    if (!dateTimeText) {
+      return "";
+    }
+
+    return new Date(dateTimeText).toLocaleString();
+  }
 
   return (
     <>
@@ -75,15 +83,23 @@ function InventorySummary({
       </div>
 
       <div className="summary-recent">
-        <h3>Latest Activity</h3>
+        <h3>Recent Activity</h3>
 
-        {recentAuditLog ? (
-          <p>
-            {recentAuditLog.action} by {recentAuditLog.performedBy}:{" "}
-            {recentAuditLog.message}
-          </p>
-        ) : (
+        {recentAuditLogs.length === 0 ? (
           <p>No activity yet.</p>
+        ) : (
+          <ul className="recent-activity-list">
+            {recentAuditLogs.map((auditLog) => (
+              <li key={auditLog.id}>
+                <strong>{auditLog.action}</strong> by{" "}
+                <strong>{auditLog.performedBy}</strong>
+                <br />
+                <span>{auditLog.message}</span>
+                <br />
+                <small>{formatDateTime(auditLog.createdAt)}</small>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </>

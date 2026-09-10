@@ -4,6 +4,7 @@ import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class AppUserService {
 
     private final AppUserRepository appUserRepository;
     private final AuditLogService auditLogService;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AppUserService(
             AppUserRepository appUserRepository,
@@ -50,6 +52,8 @@ public class AppUserService {
         if (appUserRepository.existsByUsername(appUser.getUsername())) {
             throw new IllegalArgumentException("Username already exists.");
         }
+
+        appUser.setPasswordHash(passwordEncoder.encode("password"));
 
         AppUser savedUser = appUserRepository.save(appUser);
 

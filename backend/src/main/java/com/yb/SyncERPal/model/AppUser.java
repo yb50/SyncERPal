@@ -1,5 +1,6 @@
 package com.yb.SyncERPal.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,8 +14,10 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
@@ -37,6 +40,14 @@ public class AppUser {
 
     public UserRole getRole() {
         return role;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public void setId(Long id) {

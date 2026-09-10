@@ -73,12 +73,14 @@ function App() {
     users,
     username,
     role,
+    password,
     setUsername,
     setRole,
     fetchUsers,
     saveUser,
     changeUserRole,
     removeUser,
+    setPassword,
   } = useUsers();
 
   const {
@@ -332,6 +334,8 @@ function App() {
           changeUserRole={changeUserRole}
           removeUser={removeUser}
           setSuccessMessage={setSuccessMessage}
+          password={password}
+          setPassword={setPassword}
         />
       </section>
 

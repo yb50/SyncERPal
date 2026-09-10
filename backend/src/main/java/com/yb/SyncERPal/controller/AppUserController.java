@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UpdateUserRoleRequest;
 import com.yb.SyncERPal.service.AppUserService;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class AppUserController {
 
     @PostMapping("/users")
     public AppUser createUser(
-            @RequestBody AppUser appUser,
-            @RequestHeader(value = "X-user", defaultValue = "system") String performedBy
+            @RequestBody CreateUserRequest request,
+            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
     ) {
-        return appUserService.createUser(appUser, performedBy);
+        return appUserService.createUser(request, performedBy);
     }
 
     @PutMapping("/users/{id}/role")

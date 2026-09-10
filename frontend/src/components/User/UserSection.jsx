@@ -17,6 +17,8 @@ function UserSection({
   fetchAuditLogs,
   setError,
   setSuccessMessage,
+  password,
+  setPassword,
 }) {
   const [userSearchText, setUserSearchText] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
@@ -134,8 +136,10 @@ function UserSection({
       <UserForm
         username={username}
         role={role}
+        password={password}
         onUsernameChange={setUsername}
         onRoleChange={setRole}
+        onPasswordChange={setPassword}
         onSubmit={handleSubmit}
         canManageUsers={canManageUsers}
       />

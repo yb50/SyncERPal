@@ -1,4 +1,13 @@
-function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit, canManageUsers }) {
+function UserForm({ 
+  username, 
+  role, 
+  onUsernameChange, 
+  onRoleChange, 
+  onSubmit, 
+  canManageUsers, 
+  password,
+  onPasswordChange, 
+}) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -24,6 +33,18 @@ function UserForm({ username, role, onUsernameChange, onRoleChange, onSubmit, ca
           <option value="MANAGER">MANAGER</option>
           <option value="WORKER">WORKER</option>
         </select>
+      </div>
+
+      <div>
+        <label>Password: </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => onPasswordChange(event.target.value)}
+          disabled={!canManageUsers}
+          required
+          minLength="6"
+        />
       </div>
 
       <button type="submit" disabled={!canManageUsers}>Add User</button>

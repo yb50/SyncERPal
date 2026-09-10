@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
@@ -38,22 +39,37 @@ public class AppUserService {
         }
     }
 
-    public AppUser createUser(AppUser appUser) {
-        return createUser(appUser, "system");
+    private void validateCreateUserRequest(CreateUserRequest request) {
+        if (request.getUsername() == null || request.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Username is required.");
+        }
+
+        if (request.getRole() == null) {
+            throw new IllegalArgumentException("User role is required.");
+        }
+
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required.");
+        }
+
+        if (request.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters.");
+        }
     }
 
-    public AppUser createUser(AppUser appUser, String performedBy) {
+    public AppUser createUser(CreateUserRequest request, String performedBy) {
         if (appUserRepository.countUsers() > 0) {
             requireAdmin(performedBy);
         }
 
-        validateUser(appUser);
+        validateCreateUserRequest(request);
 
-        if (appUserRepository.existsByUsername(appUser.getUsername())) {
+        if (appUserRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists.");
         }
 
-        appUser.setPasswordHash(passwordEncoder.encode("password"));
+        AppUser appUser = new AppUser(request.getUsername(), request.getRole());
+        appUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         AppUser savedUser = appUserRepository.save(appUser);
 

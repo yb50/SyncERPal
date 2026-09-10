@@ -5,6 +5,7 @@ function useUsers() {
   const [users, setUsers] = useState([]);
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("WORKER");
+  const [password, setPassword] = useState("");
 
   function fetchUsers() {
     return getUsers().then((data) => {
@@ -16,11 +17,13 @@ function useUsers() {
     const user = {
       username: username,
       role: role,
+      password: password,
     };
 
     return createUser(user, performedBy).then(() => {
       setUsername("");
       setRole("WORKER");
+      setPassword("");
       fetchUsers();
     });
   }
@@ -41,12 +44,14 @@ function useUsers() {
     users,
     username,
     role,
+    password,
     setUsername,
     setRole,
     fetchUsers,
     saveUser,
     changeUserRole,
     removeUser,
+    setPassword,
   };
 }
 

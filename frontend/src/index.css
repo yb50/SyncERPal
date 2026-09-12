@@ -126,3 +126,17 @@ code {
   font-size: 1.4rem;
   margin: 8px 0 0;
 }
+
+/* Login Panel */
+
+.login-panel {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 14px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.login-panel form {
+  margin-bottom: 0;
+}

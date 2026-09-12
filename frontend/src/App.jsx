@@ -17,6 +17,8 @@ import InventoryBalanceSection from "./components/InventoryBalance/InventoryBala
 import useStockTransfers from "./hooks/useStockTransfers";
 import StockTransferSection from "./components/StockTransfer/StockTransferSection";
 import LowStockSection from "./components/LowStock/LowStockSection";
+import useAuth from "./hooks/useAuth";
+import LoginSection from "./components/LoginSection";
 
 function App() {
   const {
@@ -120,9 +122,19 @@ function App() {
     fetchStockTransfers,
   } = useStockTransfers();
 
+  const {
+    loggedInUser,
+    loginUsername,
+    loginPassword,
+    setLoginUsername,
+    setLoginPassword,
+    login,
+    logout,
+  } = useAuth();
+
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [currentUsername, setCurrentUsername] = useState("system");
+  const currentUsername = loggedInUser ? loggedInUser.username : "system";
 
   const currentUser = users.find((user) => user.username === currentUsername);
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
@@ -145,6 +157,18 @@ function App() {
     <div className="app">
       <h1>SyncERPal</h1>
 
+      <LoginSection
+        loggedInUser={loggedInUser}
+        loginUsername={loginUsername}
+        loginPassword={loginPassword}
+        setLoginUsername={setLoginUsername}
+        setLoginPassword={setLoginPassword}
+        login={login}
+        logout={logout}
+        setError={setError}
+        setSuccessMessage={setSuccessMessage}
+      />
+
       <nav className="section-nav">
         <a href="#dashboard">Dashboard</a>
         <a href="#low-stock">Low Stock</a>
@@ -156,26 +180,6 @@ function App() {
         <a href="#users">Users</a>
         <a href="#audit-logs">Audit Logs</a>
       </nav>
-
-      <div>
-        <label>Current user: </label>
-        <select
-          value={currentUsername}
-          onChange={(event) => setCurrentUsername(event.target.value)}
-        >
-          <option value="system">system</option>
-
-          {users.map((user) => (
-            <option key={user.id} value={user.username}>
-              {user.username} ({user.role})
-            </option>
-          ))}
-        </select>
-
-        <p>
-          Current role: {currentUser ? currentUser.role : "No app user selected"}
-        </p>
-      </div>
 
       <section id="dashboard">
         <InventorySummary

@@ -5,7 +5,7 @@ import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +15,16 @@ public class AppUserService {
 
     private final AppUserRepository appUserRepository;
     private final AuditLogService auditLogService;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     public AppUserService(
             AppUserRepository appUserRepository,
-            AuditLogService auditLogService
+            AuditLogService auditLogService,
+            PasswordEncoder passwordEncoder
     ) {
         this.appUserRepository = appUserRepository;
         this.auditLogService = auditLogService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<AppUser> getAllUsers() {

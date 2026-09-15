@@ -1,9 +1,7 @@
 package com.yb.SyncERPal.service;
 
-import com.yb.SyncERPal.model.AppUser;
-import com.yb.SyncERPal.model.AuthToken;
-import com.yb.SyncERPal.model.LoginRequest;
-import com.yb.SyncERPal.model.LoginResponse;
+import com.yb.SyncERPal.exception.UnauthorizedException;
+import com.yb.SyncERPal.model.*;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import com.yb.SyncERPal.repository.AuthTokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -79,5 +77,53 @@ public class AuthService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password is required.");
         }
+    }
+
+    public AuthenticatedUserResponse getCurrentUser(String authorizationHeader) {
+        AppUser appUser = getAuthenticatedUser(authorizationHeader);
+
+        return new AuthenticatedUserResponse(
+                appUser.getId(),
+                appUser.getUsername(),
+                appUser.getRole()
+        );
+    }
+
+    public AppUser getAuthenticatedUser(String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+
+        AuthToken authToken = authTokenRepository.findByToken(token)
+                .orElseThrow(() -> new UnauthorizedException("Invalid authentication token."));
+
+        if (authToken.getExpiresAt() != null &&
+                authToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new UnauthorizedException("Authentication token has expired.");
+        }
+
+        AppUser appUser = appUserRepository.findById(authToken.getUserId());
+
+        if (appUser == null) {
+            throw new UnauthorizedException("Authenticated user no longer exists.");
+        }
+
+        return appUser;
+    }
+
+    private String extractToken(String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+            throw new UnauthorizedException("Authorization header is required.");
+        }
+
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Bearer token is required.");
+        }
+
+        String token = authorizationHeader.substring(7);
+
+        if (token.isBlank()) {
+            throw new UnauthorizedException("Authentication token is required.");
+        }
+
+        return token;
     }
 }

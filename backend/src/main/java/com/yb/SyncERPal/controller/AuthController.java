@@ -1,12 +1,10 @@
 package com.yb.SyncERPal.controller;
 
+import com.yb.SyncERPal.model.AuthenticatedUserResponse;
 import com.yb.SyncERPal.model.LoginRequest;
 import com.yb.SyncERPal.model.LoginResponse;
 import com.yb.SyncERPal.service.AuthService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -21,5 +19,12 @@ public class AuthController {
     @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @GetMapping("/auth/me")
+    public AuthenticatedUserResponse getCurrentUser(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) {
+        return authService.getCurrentUser(authorizationHeader);
     }
 }

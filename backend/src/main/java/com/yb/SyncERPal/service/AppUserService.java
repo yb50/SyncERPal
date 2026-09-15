@@ -41,13 +41,17 @@ public class AppUserService {
         }
     }
 
-    private void validateCreateUserRequest(CreateUserRequest request) {
+    private void validateCreateUserRequest(CreateUserRequest request, boolean isFirstUser) {
         if (request.getUsername() == null || request.getUsername().isBlank()) {
             throw new IllegalArgumentException("Username is required.");
         }
 
         if (request.getRole() == null) {
             throw new IllegalArgumentException("User role is required.");
+        }
+
+        if (isFirstUser && request.getRole() != UserRole.ADMIN) {
+            throw new IllegalArgumentException("First user must be an ADMIN.");
         }
 
         if (request.getPassword() == null || request.getPassword().isBlank()) {
@@ -60,11 +64,13 @@ public class AppUserService {
     }
 
     public AppUser createUser(CreateUserRequest request, String performedBy) {
-        if (appUserRepository.countUsers() > 0) {
+        boolean isFirstUser = appUserRepository.countUsers() == 0;
+
+        if (!isFirstUser) {
             requireAdmin(performedBy);
         }
 
-        validateCreateUserRequest(request);
+        validateCreateUserRequest(request, isFirstUser);
 
         if (appUserRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists.");

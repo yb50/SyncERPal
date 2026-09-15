@@ -11,6 +11,12 @@ function UserForm({
   return (
     <form onSubmit={onSubmit}>
       <div>
+        {canManageUsers && (
+          <p className="hint">
+            First setup user must be created as ADMIN.
+          </p>
+        )}
+
         <label>User: </label>
         <input
           type="text"

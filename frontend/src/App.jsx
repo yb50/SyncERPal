@@ -126,6 +126,7 @@ function App() {
     loggedInUser,
     loginUsername,
     loginPassword,
+    authLoading,
     setLoginUsername,
     setLoginPassword,
     login,
@@ -136,7 +137,7 @@ function App() {
   const [successMessage, setSuccessMessage] = useState("");
   const currentUsername = loggedInUser ? loggedInUser.username : "system";
 
-  const currentUser = users.find((user) => user.username === currentUsername);
+  const currentUser = loggedInUser || users.find((user) => user.username === currentUsername);
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
   const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
   const canCreateStockMovements = currentUser != null;
@@ -161,6 +162,7 @@ function App() {
         loggedInUser={loggedInUser}
         loginUsername={loginUsername}
         loginPassword={loginPassword}
+        authLoading={authLoading}
         setLoginUsername={setLoginUsername}
         setLoginPassword={setLoginPassword}
         login={login}

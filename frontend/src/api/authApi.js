@@ -19,3 +19,19 @@ export function loginUser(credentials) {
     return response.json();
   });
 }
+
+export function getCurrentUser(token) {
+  return fetch(`${AUTH_URL}/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to get current user.");
+      });
+    }
+
+    return response.json();
+  });
+}

@@ -8,6 +8,7 @@ function LoginSection({
   logout,
   setError,
   setSuccessMessage,
+  authLoading,
 }) {
   function handleSubmit(event) {
     event.preventDefault();
@@ -23,6 +24,14 @@ function LoginSection({
         setSuccessMessage("");
         setError(error.message);
       });
+  }
+
+  if (authLoading) {
+    return (
+      <div className="login-panel">
+        <p>Checking login...</p>
+      </div>
+    );
   }
 
   if (loggedInUser) {

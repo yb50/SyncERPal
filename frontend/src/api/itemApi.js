@@ -12,12 +12,13 @@ export function getItems() {
     });
 }
 
-export function createItem(item, performedBy) {
+export function createItem(item, performedBy, token) {
   return fetch(ITEMS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(item),
   }).then((response) => {
@@ -31,12 +32,13 @@ export function createItem(item, performedBy) {
   });
 }
 
-export function updateItem(id, item, performedBy) {
+export function updateItem(id, item, performedBy, token) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(item),
   }).then((response) => {
@@ -50,11 +52,12 @@ export function updateItem(id, item, performedBy) {
   });
 }
 
-export function deleteItem(id, performedBy) {
+export function deleteItem(id, performedBy, token) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "DELETE",
     headers: {
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
   }).then((response) => {
     if (!response.ok) {
@@ -71,7 +74,7 @@ export function exportItemsCsv() {
   window.location.href = `${ITEMS_URL}/export`;
 }
 
-export function importItemsCsv(file, performedBy) {
+export function importItemsCsv(file, performedBy, token) {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -79,6 +82,7 @@ export function importItemsCsv(file, performedBy) {
     method: "POST",
     headers: {
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: formData,
   }).then((response) => {

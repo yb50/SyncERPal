@@ -136,6 +136,7 @@ function App() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const currentUsername = loggedInUser ? loggedInUser.username : "system";
+  const authToken = loggedInUser ? loggedInUser.token : "";
 
   const currentUser = loggedInUser || users.find((user) => user.username === currentUsername);
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
@@ -220,6 +221,7 @@ function App() {
           stockMovements={stockMovements}
           inventoryBalances={inventoryBalances}
           stockTransfers={stockTransfers}
+          authToken={authToken}
           setName={setName}
           setSku={setSku}
           setQuantity={setQuantity}

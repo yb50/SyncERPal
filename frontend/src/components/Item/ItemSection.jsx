@@ -32,6 +32,7 @@ function ItemSection({
   currentUsername,
   canManageItems,
   setSuccessMessage,
+  authToken,
 }) {
   const [itemSearchText, setItemSearchText] = useState("");
   const [selectedItemStatus, setSelectedItemStatus] = useState("");
@@ -44,7 +45,7 @@ function ItemSection({
 
     setSuccessMessage("");
 
-    saveItem(currentUsername)
+    saveItem(currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage(
@@ -71,7 +72,7 @@ function ItemSection({
 
     setSuccessMessage("");
 
-    removeItem(id, currentUsername)
+    removeItem(id, currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Item deleted successfully");
@@ -105,7 +106,7 @@ function ItemSection({
   function handleImportItems(event) {
     event.preventDefault();
 
-    importItems(currentUsername)
+    importItems(currentUsername, authToken)
       .then(() => {
         setError("");
       })

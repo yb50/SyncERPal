@@ -23,17 +23,18 @@ function useItems() {
       });
   }
 
-  function saveItem(performedBy) {
+  function saveItem(performedBy, token) {
     const item = {
       name: name,
-      sku:sku,
+      sku: sku,
       quantity: 0,
       lowStockThreshold: Number(lowStockThreshold),
     };
 
-    const request = editingId === null
-      ? createItem(item, performedBy)
-      : updateItem(editingId, item, performedBy);
+    const request = 
+      editingId === null
+        ? createItem(item, performedBy, token)
+        : updateItem(editingId, item, performedBy, token);
 
     return request.then(() => {
       clearItemForm();
@@ -41,8 +42,10 @@ function useItems() {
     });
   }
 
-  function removeItem(id, performedBy) {
-    return deleteItem(id, performedBy).then(fetchItems);
+  function removeItem(id, performedBy, token) {
+    return deleteItem(id, performedBy, token).then(() => {
+      fetchItems();
+    });
   }
 
   function startEditItem(item) {
@@ -65,12 +68,8 @@ function useItems() {
     exportItemsCsv();
   }
 
-  function importItems(performedBy) {
-    if (importFile === null) {
-      return Promise.reject(new Error("CSV file is required."));
-    }
-
-    return importItemsCsv(importFile, performedBy).then(() => {
+  function importItems(performedBy, token) {
+    return importItemsCsv(importFile, performedBy, token).then(() => {
       setImportFile(null);
       fetchItems();
     });

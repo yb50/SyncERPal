@@ -289,6 +289,7 @@ function App() {
           exportStockMovements={exportStockMovements}
           fetchInventoryBalances={fetchInventoryBalances}
           setSuccessMessage={setSuccessMessage}
+          authToken={authToken}
         />
       </section>
 

@@ -27,6 +27,7 @@ function StockMovementSection({
   currentUsername,
   fetchInventoryBalances,
   setSuccessMessage,
+  authToken,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState("");
   const [selectedMovementType, setSelectedMovementType] = useState("");
@@ -74,7 +75,7 @@ function StockMovementSection({
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
-    saveStockMovement(currentUsername)
+    saveStockMovement(currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Stock movement created successfully.");

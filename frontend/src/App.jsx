@@ -260,6 +260,7 @@ function App() {
           setError={setError}
           removeLocation={removeLocation}
           setSuccessMessage={setSuccessMessage}
+          authToken={authToken}
         />
       </section>
 

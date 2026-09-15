@@ -25,7 +25,7 @@ function useLocations() {
     setEditingLocationId(location.id);
   }
 
-  function saveLocation(performedBy) {
+  function saveLocation(performedBy, token) {
     const location = {
       code: locationCode,
       name: locationName,
@@ -33,8 +33,8 @@ function useLocations() {
 
     const request =
       editingLocationId === null
-        ? createLocation(location, performedBy)
-        : updateLocation(editingLocationId, location, performedBy);
+        ? createLocation(location, performedBy, token)
+        : updateLocation(editingLocationId, location, performedBy, token);
 
     return request.then(() => {
       clearLocationForm();
@@ -42,8 +42,8 @@ function useLocations() {
     });
   }
 
-  function removeLocation(locationId, performedBy) {
-    return deleteLocation(locationId, performedBy).then(() => {
+  function removeLocation(locationId, performedBy, token) {
+    return deleteLocation(locationId, performedBy, token).then(() => {
       fetchLocations();
     });
   }

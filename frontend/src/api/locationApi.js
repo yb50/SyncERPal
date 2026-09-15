@@ -11,12 +11,13 @@ export function getLocations() {
   });
 }
 
-export function createLocation(location, performedBy) {
+export function createLocation(location, performedBy, token) {
   return fetch(LOCATIONS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(location),
   }).then((response) => {
@@ -30,12 +31,13 @@ export function createLocation(location, performedBy) {
   });
 }
 
-export function updateLocation(locationId, location, performedBy) {
+export function updateLocation(locationId, location, performedBy, token) {
   return fetch(`${LOCATIONS_URL}/${locationId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(location),
   }).then((response) => {
@@ -49,11 +51,12 @@ export function updateLocation(locationId, location, performedBy) {
   });
 }
 
-export function deleteLocation(locationId, performedBy) {
+export function deleteLocation(locationId, performedBy, token) {
   return fetch(`${LOCATIONS_URL}/${locationId}`, {
     method: "DELETE",
     headers: {
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
   }).then((response) => {
     if (!response.ok) {

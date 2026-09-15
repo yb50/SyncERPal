@@ -22,6 +22,7 @@ function LocationSection({
   setError,
   removeLocation,
   setSuccessMessage,
+  authToken,
 }) {
   const [locationSearchText, setLocationSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +34,7 @@ function LocationSection({
 
     setSuccessMessage("");
 
-    saveLocation(currentUsername)
+    saveLocation(currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage(
@@ -70,7 +71,7 @@ function LocationSection({
 
     setSuccessMessage("");
 
-    removeLocation(locationId, currentUsername)
+    removeLocation(locationId, currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Location deleted successfully.");

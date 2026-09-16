@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.controller;
 
+import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final AuthService authService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, AuthService authService) {
         this.itemService = itemService;
+        this.authService = authService;
     }
 
     @GetMapping("/items")
@@ -51,30 +55,36 @@ public class ItemController {
     @PostMapping("/items")
     public ResponseEntity<Item> createItem(
             @RequestBody Item item,
-            @RequestHeader(value = "X-user", defaultValue = "system") String performedBy
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        Item createdItem = itemService.createItem(item, performedBy);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
+
+        Item createdItem = itemService.createItem(item, currentUser.getUsername());
 
         return ResponseEntity.ok(createdItem);
     }
 
     @PostMapping("/items/import")
     public ResponseEntity<String> importItems(
-            @RequestParam("file")MultipartFile file,
-            @RequestHeader(value = "X-User", defaultValue = "system") String performedby
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        int importedCount = itemService.importItemsFromCsv(file, performedby);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
 
-        return ResponseEntity.ok("imported " + importedCount + " items.");
+        int importedCount = itemService.importItemsFromCsv(file, currentUser.getUsername());
+
+        return ResponseEntity.ok("Imported " + importedCount + " items.");
     }
 
     @PutMapping("/items/{id}")
-    public ResponseEntity<?> updateItem(
+    public ResponseEntity<Item> updateItem(
             @PathVariable Long id,
             @RequestBody Item item,
-            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        Item updatedItem = itemService.updateItem(id, item, performedBy);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
+
+        Item updatedItem = itemService.updateItem(id, item, currentUser.getUsername());
 
         if (updatedItem == null) {
             return ResponseEntity.notFound().build();
@@ -84,17 +94,15 @@ public class ItemController {
     }
 
     @DeleteMapping("/items/{id}")
-    public ResponseEntity<?> deleteItem(
+    public ResponseEntity<Void> deleteItem(
             @PathVariable Long id,
-            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        Item deletedItem = itemService.deleteItem(id, performedBy);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
 
-        if (deletedItem == null) {
-            return ResponseEntity.notFound().build();
-        }
+        itemService.deleteItem(id, currentUser.getUsername());
 
-        return ResponseEntity.ok(deletedItem);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/items/low-stock/export")

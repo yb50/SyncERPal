@@ -66,7 +66,7 @@ export function deleteItem(id, performedBy, token) {
       });
     }
 
-    return response.json();
+    return;
   });
 }
 

@@ -11,12 +11,13 @@ export function getUsers() {
   });
 }
 
-export function createUser(user, performedBy) {
+export function createUser(user, performedBy, token) {
   return fetch(USERS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-User" : performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(user),
   }).then((response) => {
@@ -30,12 +31,13 @@ export function createUser(user, performedBy) {
   });
 }
 
-export function updateUserRole(userId, role, performedBy) {
+export function updateUserRole(userId, role, performedBy, token) {
   return fetch(`${USERS_URL}/${userId}/role`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ role: role }),
   }).then((response) => {
@@ -49,11 +51,12 @@ export function updateUserRole(userId, role, performedBy) {
   })
 }
 
-export function deleteUser(userId, performedBy) {
+export function deleteUser(userId, performedBy, token) {
   return fetch(`${USERS_URL}/${userId}`, {
     method: "DELETE",
     headers: {
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
   }).then((response) => {
     if (!response.ok) {

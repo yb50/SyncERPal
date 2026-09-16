@@ -19,6 +19,7 @@ function UserSection({
   setSuccessMessage,
   password,
   setPassword,
+  authToken,
 }) {
   const [userSearchText, setUserSearchText] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
@@ -75,7 +76,7 @@ function UserSection({
 
     setSuccessMessage("");
 
-    saveUser(currentUsername)
+    saveUser(currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User created successfully.");
@@ -90,7 +91,7 @@ function UserSection({
   function handleRoleChange(userId, newRole) {
     setSuccessMessage("");
 
-    changeUserRole(userId, newRole, currentUsername)
+    changeUserRole(userId, newRole, currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User role updated successfully.");
@@ -113,7 +114,7 @@ function UserSection({
 
     setSuccessMessage("");
 
-    removeUser(userId, currentUsername)
+    removeUser(userId, currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User deleted successfully.");

@@ -347,6 +347,7 @@ function App() {
           setSuccessMessage={setSuccessMessage}
           password={password}
           setPassword={setPassword}
+          authToken={authToken}
         />
       </section>
 

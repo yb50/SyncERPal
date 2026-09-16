@@ -25,6 +25,7 @@ function StockTransferSection({
   fetchInventoryBalances,
   fetchAuditLogs,
   setError,
+  authToken,
 }) {
   const [selectedItemId, setSelectedItemId] = useState("");
   const [selectedFromLocationId, setSelectedFromLocationId] = useState("");
@@ -84,7 +85,7 @@ function StockTransferSection({
   function handleSubmit(event) {
     event.preventDefault();
 
-    saveStockTransfer(currentUsername)
+    saveStockTransfer(currentUsername, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Stock transfer completed successfully.");

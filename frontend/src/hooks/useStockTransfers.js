@@ -23,7 +23,7 @@ function useStockTransfers() {
     });
   }
 
-  function saveStockTransfer(performedBy) {
+  function saveStockTransfer(performedBy, token) {
     const stockTransfer = {
       itemId: transferItemId === "" ? null : Number(transferItemId),
       fromLocationId: fromLocationId === "" ? null : Number(fromLocationId),
@@ -32,7 +32,7 @@ function useStockTransfers() {
       note: transferNote,
     };
 
-    return createStockTransfer(stockTransfer, performedBy).then(() => {
+    return createStockTransfer(stockTransfer, performedBy, token).then(() => {
       clearStockTransferForm();
       fetchStockTransfers();
     });

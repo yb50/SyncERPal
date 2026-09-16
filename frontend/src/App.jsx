@@ -317,6 +317,7 @@ function App() {
           stockTransfers={stockTransfers}
           exportStockTransfers={exportStockTransfers}
           setSuccessMessage={setSuccessMessage}
+          authToken={authToken}
         />
       </section>
 

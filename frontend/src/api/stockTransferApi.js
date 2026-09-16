@@ -11,12 +11,13 @@ export function getStockTransfers() {
   });
 }
 
-export function createStockTransfer(stockTransfer, performedBy) {
+export function createStockTransfer(stockTransfer, performedBy, token) {
   return fetch(STOCK_TRANSFERS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-User": performedBy,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(stockTransfer),
   }).then((response) => {

@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.controller;
 
+import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.StockMovement;
+import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.StockMovementService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,9 +16,14 @@ import java.util.List;
 public class StockMovementController {
 
     private final StockMovementService stockMovementService;
+    private final AuthService authService;
 
-    public StockMovementController(StockMovementService stockMovementService) {
+    public StockMovementController(
+            StockMovementService stockMovementService,
+            AuthService authService
+    ) {
         this.stockMovementService = stockMovementService;
+        this.authService = authService;
     }
 
     @GetMapping("/stock-movements")
@@ -33,9 +40,13 @@ public class StockMovementController {
     @PostMapping("/stock-movements")
     public StockMovement createStockMovement(
             @RequestBody StockMovement stockMovement,
-            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        return stockMovementService.createStockMovement(stockMovement, performedBy);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
+
+        return stockMovementService.createStockMovement(
+                stockMovement, currentUser.getUsername()
+        );
     }
 
     @GetMapping("/items/{id}/stock-movements")

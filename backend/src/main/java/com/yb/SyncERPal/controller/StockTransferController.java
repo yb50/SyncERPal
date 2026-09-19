@@ -1,7 +1,9 @@
 package com.yb.SyncERPal.controller;
 
+import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.StockTransfer;
 import com.yb.SyncERPal.model.StockTransferRequest;
+import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.StockTransferService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,9 +17,14 @@ import java.util.List;
 public class StockTransferController {
 
     private final StockTransferService stockTransferService;
+    private final AuthService authService;
 
-    public StockTransferController(StockTransferService stockTransferService) {
+    public StockTransferController(
+            StockTransferService stockTransferService,
+            AuthService authService
+    ) {
         this.stockTransferService = stockTransferService;
+        this.authService = authService;
     }
 
     @GetMapping("/stock-transfers")
@@ -28,9 +35,14 @@ public class StockTransferController {
     @PostMapping("/stock-transfers")
     public StockTransfer transferStock(
             @RequestBody StockTransferRequest request,
-            @RequestHeader(value = "X-User", defaultValue = "system") String performedBy
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
-        return stockTransferService.transferStock(request, performedBy);
+        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
+
+        return stockTransferService.transferStock(
+                request,
+                currentUser.getUsername()
+        );
     }
 
     @GetMapping("/stock-transfers/export")

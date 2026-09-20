@@ -34,7 +34,7 @@ function LocationSection({
 
     setSuccessMessage("");
 
-    saveLocation(currentUsername, authToken)
+    saveLocation(authToken)
       .then(() => {
         setError("");
         setSuccessMessage(
@@ -71,7 +71,7 @@ function LocationSection({
 
     setSuccessMessage("");
 
-    removeLocation(locationId, currentUsername, authToken)
+    removeLocation(locationId, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Location deleted successfully.");

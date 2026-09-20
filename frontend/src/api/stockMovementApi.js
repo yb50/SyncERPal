@@ -26,12 +26,11 @@ export function getStockMovementsForItem(itemId) {
     })
 }
 
-export function createStockMovement(stockMovement, performedBy, token) {
+export function createStockMovement(stockMovement, token) {
   return fetch(STOCK_MOVEMENTS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(stockMovement),

@@ -75,7 +75,7 @@ function StockMovementSection({
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
-    saveStockMovement(currentUsername, authToken)
+    saveStockMovement(authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Stock movement created successfully.");

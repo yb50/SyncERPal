@@ -32,7 +32,7 @@ function useStockMovements(fetchItems) {
     return fetchStockMovements(itemId);
   }
 
-  function saveStockMovement(performedBy, token) {
+  function saveStockMovement(token) {
     const stockMovement = {
       itemId: Number(movementItemId),
       locationId: Number(movementLocationId),
@@ -41,7 +41,7 @@ function useStockMovements(fetchItems) {
       note: movementNote,
     };
 
-    return createStockMovement(stockMovement, performedBy, token).then(() => {
+    return createStockMovement(stockMovement, token).then(() => {
       clearStockMovementForm();
       fetchItems();
       fetchStockMovements();

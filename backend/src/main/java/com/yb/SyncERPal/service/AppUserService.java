@@ -27,6 +27,10 @@ public class AppUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public boolean isFirstUserSetupRequired() {
+        return appUserRepository.countUsers() == 0;
+    }
+
     public List<AppUser> getAllUsers() {
         return appUserRepository.findAll();
     }

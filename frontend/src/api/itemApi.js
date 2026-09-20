@@ -12,12 +12,11 @@ export function getItems() {
     });
 }
 
-export function createItem(item, performedBy, token) {
+export function createItem(item, token) {
   return fetch(ITEMS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(item),
@@ -32,12 +31,11 @@ export function createItem(item, performedBy, token) {
   });
 }
 
-export function updateItem(id, item, performedBy, token) {
+export function updateItem(id, item, token) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(item),
@@ -52,11 +50,10 @@ export function updateItem(id, item, performedBy, token) {
   });
 }
 
-export function deleteItem(id, performedBy, token) {
+export function deleteItem(id, token) {
   return fetch(`${ITEMS_URL}/${id}`, {
     method: "DELETE",
     headers: {
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
   }).then((response) => {
@@ -66,7 +63,7 @@ export function deleteItem(id, performedBy, token) {
       });
     }
 
-    return;
+    return response.json();
   });
 }
 
@@ -74,14 +71,13 @@ export function exportItemsCsv() {
   window.location.href = `${ITEMS_URL}/export`;
 }
 
-export function importItemsCsv(file, performedBy, token) {
+export function importItemsCsv(file, token) {
   const formData = new FormData();
   formData.append("file", file);
 
   return fetch(`${ITEMS_URL}/import`, {
     method: "POST",
     headers: {
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
     body: formData,
@@ -91,8 +87,6 @@ export function importItemsCsv(file, performedBy, token) {
         throw new Error(message || "Failed to import items.");
       });
     }
-
-    return response.text();
   });
 }
 

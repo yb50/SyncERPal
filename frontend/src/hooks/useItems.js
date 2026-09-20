@@ -23,7 +23,7 @@ function useItems() {
       });
   }
 
-  function saveItem(performedBy, token) {
+  function saveItem(token) {
     const item = {
       name: name,
       sku: sku,
@@ -33,8 +33,8 @@ function useItems() {
 
     const request = 
       editingId === null
-        ? createItem(item, performedBy, token)
-        : updateItem(editingId, item, performedBy, token);
+        ? createItem(item, token)
+        : updateItem(editingId, item, token);
 
     return request.then(() => {
       clearItemForm();
@@ -42,8 +42,8 @@ function useItems() {
     });
   }
 
-  function removeItem(id, performedBy, token) {
-    return deleteItem(id, performedBy, token).then(() => {
+  function removeItem(id, token) {
+    return deleteItem(id, token).then(() => {
       fetchItems();
     });
   }
@@ -68,8 +68,8 @@ function useItems() {
     exportItemsCsv();
   }
 
-  function importItems(performedBy, token) {
-    return importItemsCsv(importFile, performedBy, token).then(() => {
+  function importItems(token) {
+    return importItemsCsv(importFile, token).then(() => {
       setImportFile(null);
       fetchItems();
     });

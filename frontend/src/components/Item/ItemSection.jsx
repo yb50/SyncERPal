@@ -45,7 +45,7 @@ function ItemSection({
 
     setSuccessMessage("");
 
-    saveItem(currentUsername, authToken)
+    saveItem(authToken)
       .then(() => {
         setError("");
         setSuccessMessage(
@@ -72,7 +72,7 @@ function ItemSection({
 
     setSuccessMessage("");
 
-    removeItem(id, currentUsername, authToken)
+    removeItem(id, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("Item deleted successfully");
@@ -106,7 +106,7 @@ function ItemSection({
   function handleImportItems(event) {
     event.preventDefault();
 
-    importItems(currentUsername, authToken)
+    importItems(authToken)
       .then(() => {
         setError("");
       })

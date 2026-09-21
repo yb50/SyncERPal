@@ -11,19 +11,18 @@ export function getStockTransfers() {
   });
 }
 
-export function createStockTransfer(stockTransfer, performedBy, token) {
+export function createStockTransfer(stockTransfer, token) {
   return fetch(STOCK_TRANSFERS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(stockTransfer),
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((message) => {
-        throw new Error(message || "Failed to transfer stock.");
+        throw new Error(message || "Failed to create stock transfer.");
       });
     }
 

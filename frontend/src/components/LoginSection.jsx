@@ -26,6 +26,20 @@ function LoginSection({
       });
   }
 
+  function handleLogout() {
+    setSuccessMessage("");
+
+    logout()
+      .then(() => {
+        setError("");
+        setSuccessMessage("Logged out successfully.");
+      })
+      .catch((error) => {
+        setSuccessMessage("");
+        setError(error.message);
+      });
+  }
+
   if (authLoading) {
     return (
       <div className="login-panel">
@@ -42,7 +56,7 @@ function LoginSection({
           {loggedInUser.role})
         </p>
 
-        <button type="button" onClick={logout}>
+        <button type="button" onClick={handleLogout}>
           Logout
         </button>
       </div>

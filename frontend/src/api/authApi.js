@@ -35,3 +35,18 @@ export function getCurrentUser(token) {
     return response.json();
   });
 }
+
+export function logoutUser(token) {
+  return fetch(`${AUTH_URL}/logout`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to logout.");
+      });
+    }
+  });
+}

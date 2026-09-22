@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCurrentUser, loginUser } from "../api/authApi";
+import { getCurrentUser, loginUser, logoutUser } from "../api/authApi";
 
 const AUTH_TOKEN_STORAGE_KEY = "syncerpalAuthToken";
 
@@ -50,6 +50,21 @@ function useAuth() {
   }
 
   function logout() {
+    const token = loggedInUser?.token || localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+
+    if (!token) {
+      clearLocalSession();
+      return Promise.resolve();
+    }
+
+    return logoutUser(token)
+    .catch(() => {
+    }).finally(() => {
+      clearLocalSession();
+    });
+  }
+
+  function clearLocalSession() {
     localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
 
     setLoggedInUser(null);

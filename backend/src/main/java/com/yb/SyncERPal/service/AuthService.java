@@ -89,6 +89,15 @@ public class AuthService {
         );
     }
 
+    public void logout(String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+
+        AuthToken authToken = authTokenRepository.findByToken(token)
+                .orElseThrow(() -> new UnauthorizedException("Invalid authentication token."));
+
+        authTokenRepository.delete(authToken);
+    }
+
     public AppUser getAuthenticatedUser(String authorizationHeader) {
         String token = extractToken(authorizationHeader);
 

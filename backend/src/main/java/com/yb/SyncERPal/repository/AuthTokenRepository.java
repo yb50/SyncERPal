@@ -21,4 +21,8 @@ public class AuthTokenRepository {
     public Optional<AuthToken> findByToken(String token) {
         return authTokenJpaRepository.findByToken(token);
     }
+
+    public void delete(AuthToken authToken) {
+        authTokenJpaRepository.delete(authToken);
+    }
 }

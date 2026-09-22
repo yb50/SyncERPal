@@ -27,4 +27,11 @@ public class AuthController {
     ) {
         return authService.getCurrentUser(authorizationHeader);
     }
+
+    @PostMapping("/auth/logout")
+    public void logout(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) {
+        authService.logout(authorizationHeader);
+    }
 }

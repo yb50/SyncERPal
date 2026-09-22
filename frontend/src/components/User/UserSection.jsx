@@ -76,7 +76,7 @@ function UserSection({
 
     setSuccessMessage("");
 
-    saveUser(currentUsername, authToken)
+    saveUser(authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User created successfully.");
@@ -88,10 +88,10 @@ function UserSection({
       });
   }
 
-  function handleRoleChange(userId, newRole) {
+  function handleRoleChange(userId, role) {
     setSuccessMessage("");
 
-    changeUserRole(userId, newRole, currentUsername, authToken)
+    changeUserRole(userId, role, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User role updated successfully.");
@@ -114,7 +114,7 @@ function UserSection({
 
     setSuccessMessage("");
 
-    removeUser(userId, currentUsername, authToken)
+    removeUser(userId, authToken)
       .then(() => {
         setError("");
         setSuccessMessage("User deleted successfully.");

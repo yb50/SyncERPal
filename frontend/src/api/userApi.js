@@ -11,13 +11,12 @@ export function getUsers() {
   });
 }
 
-export function createUser(user, performedBy, token) {
+export function createUser(user, token) {
   return fetch(USERS_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User" : performedBy,
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(user),
   }).then((response) => {
@@ -31,31 +30,29 @@ export function createUser(user, performedBy, token) {
   });
 }
 
-export function updateUserRole(userId, role, performedBy, token) {
+export function updateUserRole(userId, role, token) {
   return fetch(`${USERS_URL}/${userId}/role`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ role: role }),
+    body: JSON.stringify({ role }),
   }).then((response) => {
-     if (!response.ok) {
+    if (!response.ok) {
       return response.text().then((message) => {
         throw new Error(message || "Failed to update user role.");
       });
-     }
+    }
 
-     return response.json();
-  })
+    return response.json();
+  });
 }
 
-export function deleteUser(userId, performedBy, token) {
+export function deleteUser(userId, token) {
   return fetch(`${USERS_URL}/${userId}`, {
     method: "DELETE",
     headers: {
-      "X-User": performedBy,
       Authorization: `Bearer ${token}`,
     },
   }).then((response) => {

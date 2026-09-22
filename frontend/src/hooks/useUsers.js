@@ -13,14 +13,14 @@ function useUsers() {
     });
   }
 
-  function saveUser(performedBy, token) {
+  function saveUser(token) {
     const user = {
       username: username,
       role: role,
       password: password,
     };
 
-    return createUser(user, performedBy, token).then(() => {
+    return createUser(user, token).then(() => {
       setUsername("");
       setRole("WORKER");
       setPassword("");
@@ -28,14 +28,14 @@ function useUsers() {
     });
   }
 
-  function changeUserRole(userId, role, performedBy, token) {
-    return updateUserRole(userId, role, performedBy, token).then(() => {
+  function changeUserRole(userId, role, token) {
+    return updateUserRole(userId, role, token).then(() => {
       fetchUsers();
     });
   }
 
-  function removeUser(userId, performedBy, token) {
-    return deleteUser(userId, performedBy, token).then(() => {
+  function removeUser(userId, token) {
+    return deleteUser(userId, token).then(() => {
       fetchUsers();
     });
   }

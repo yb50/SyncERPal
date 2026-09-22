@@ -29,7 +29,6 @@ function ItemSection({
   exportItems,
   setImportFile,
   importItems,
-  currentUsername,
   canManageItems,
   setSuccessMessage,
   authToken,

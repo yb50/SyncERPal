@@ -16,7 +16,6 @@ function LocationSection({
   saveLocation,
   startEditLocation,
   clearLocationForm,
-  currentUsername,
   canManageLocations,
   fetchAuditLogs,
   setError,

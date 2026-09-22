@@ -19,7 +19,6 @@ function StockTransferSection({
   setTransferNote,
   saveStockTransfer,
   exportStockTransfers,
-  currentUsername,
   canTransferStock,
   fetchItems,
   fetchInventoryBalances,

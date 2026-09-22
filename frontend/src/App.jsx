@@ -135,14 +135,15 @@ function App() {
 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const currentUsername = loggedInUser ? loggedInUser.username : "system";
+
+  const currentUser = loggedInUser;
+  const currentUsername = loggedInUser ? loggedInUser.username : "";
   const authToken = loggedInUser ? loggedInUser.token : "";
 
-  const currentUser = loggedInUser || users.find((user) => user.username === currentUsername);
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
   const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
-  const canCreateStockMovements = currentUser != null;
   const canManageLocations = canManageItems;
+  const canCreateStockMovements = currentUser != null;
   const canTransferStock = currentUser != null;
 
   useEffect(() => {
@@ -216,7 +217,6 @@ function App() {
           editingId={editingId}
           loading={loading}
           importFile={importFile}
-          currentUsername={currentUsername}
           canManageItems={canManageItems}
           stockMovements={stockMovements}
           inventoryBalances={inventoryBalances}
@@ -254,7 +254,6 @@ function App() {
           saveLocation={saveLocation}
           startEditLocation={startEditLocation}
           clearLocationForm={clearLocationForm}
-          currentUsername={currentUsername}
           canManageLocations={canManageLocations}
           fetchAuditLogs={fetchAuditLogs}
           setError={setError}
@@ -275,7 +274,6 @@ function App() {
           movementQuantity={movementQuantity}
           movementNote={movementNote}
           movementFilterItemId={movementFilterItemId}
-          currentUsername={currentUsername}
           canCreateStockMovements={canCreateStockMovements}
           setMovementItemId={setMovementItemId}
           setMovementLocationId={setMovementLocationId}
@@ -308,7 +306,6 @@ function App() {
           setTransferQuantity={setTransferQuantity}
           setTransferNote={setTransferNote}
           saveStockTransfer={saveStockTransfer}
-          currentUsername={currentUsername}
           canTransferStock={canTransferStock}
           fetchItems={fetchItems}
           fetchInventoryBalances={fetchInventoryBalances}

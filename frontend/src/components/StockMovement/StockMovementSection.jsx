@@ -24,7 +24,6 @@ function StockMovementSection({
   saveStockMovement,
   setError,
   exportStockMovements,
-  currentUsername,
   fetchInventoryBalances,
   setSuccessMessage,
   authToken,

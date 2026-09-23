@@ -2,11 +2,11 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.StockMovement;
-import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.StockMovementService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +16,11 @@ import java.util.List;
 public class StockMovementController {
 
     private final StockMovementService stockMovementService;
-    private final AuthService authService;
 
     public StockMovementController(
-            StockMovementService stockMovementService,
-            AuthService authService
+            StockMovementService stockMovementService
     ) {
         this.stockMovementService = stockMovementService;
-        this.authService = authService;
     }
 
     @GetMapping("/stock-movements")
@@ -37,21 +34,20 @@ public class StockMovementController {
         return stockMovementService.getStockMovementsByItemId(itemId);
     }
 
-    @PostMapping("/stock-movements")
-    public StockMovement createStockMovement(
-            @RequestBody StockMovement stockMovement,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
-        return stockMovementService.createStockMovement(
-                stockMovement, currentUser.getUsername()
-        );
-    }
-
     @GetMapping("/items/{id}/stock-movements")
     public List<StockMovement> getStockMovementsForItem(@PathVariable Long id) {
         return stockMovementService.getStockMovementsByItemId(id);
+    }
+
+    @PostMapping("/stock-movements")
+    public StockMovement createStockMovement(
+            @RequestBody StockMovement stockMovement,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        return stockMovementService.createStockMovement(
+                stockMovement,
+                currentUser.getUsername()
+        );
     }
 
     @GetMapping("/stock-movements/export")

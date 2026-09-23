@@ -1,11 +1,13 @@
 package com.yb.SyncERPal.controller;
 
+import com.yb.SyncERPal.exception.UnauthorizedException;
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UpdateUserRoleRequest;
 import com.yb.SyncERPal.service.AppUserService;
 import com.yb.SyncERPal.service.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,14 +17,11 @@ import java.util.List;
 public class AppUserController {
 
     private final AppUserService appUserService;
-    private final AuthService authService;
 
     public AppUserController(
-            AppUserService appUserService,
-            AuthService authService
+            AppUserService appUserService
     ) {
         this.appUserService = appUserService;
-        this.authService = authService;
     }
 
     @GetMapping("/users")
@@ -33,12 +32,15 @@ public class AppUserController {
     @PostMapping("/users")
     public AppUser createUser(
             @RequestBody CreateUserRequest request,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+            @AuthenticationPrincipal AppUser currentUser
     ) {
         String performedBy = "setup";
 
         if (!appUserService.isFirstUserSetupRequired()) {
-            AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
+            if (currentUser == null) {
+                throw new UnauthorizedException("Authentication is required.");
+            }
+
             performedBy = currentUser.getUsername();
         }
 
@@ -49,10 +51,8 @@ public class AppUserController {
     public ResponseEntity<AppUser> updateUserRole(
             @PathVariable Long id,
             @RequestBody UpdateUserRoleRequest request,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+            @AuthenticationPrincipal AppUser currentUser
     ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
         AppUser updatedUser = appUserService.updateUserRole(
                 id,
                 request.getRole(),
@@ -69,10 +69,8 @@ public class AppUserController {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<AppUser> deleteUser(
             @PathVariable Long id,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+            @AuthenticationPrincipal AppUser currentUser
     ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
         AppUser deletedUser = appUserService.deleteUser(
                 id,
                 currentUser.getUsername()

@@ -47,6 +47,15 @@ public class AppUserController {
         return appUserService.createUser(request, performedBy);
     }
 
+    @PostMapping("/users/setup")
+    public AppUser setupFirstUser(@RequestBody CreateUserRequest request) {
+        if (!appUserService.isFirstUserSetupRequired()) {
+            throw new IllegalStateException("Initial setup has already been completed.");
+        }
+
+        return appUserService.createUser(request, "setup");
+    }
+
     @PutMapping("/users/{id}/role")
     public ResponseEntity<AppUser> updateUserRole(
             @PathVariable Long id,

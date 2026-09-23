@@ -38,20 +38,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/items/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/items/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/items/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/items/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/items/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/items/**").hasAnyRole("ADMIN", "MANAGER")
 
-                        .requestMatchers(HttpMethod.POST, "/locations/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/locations/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/locations/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/stock-movements/**").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/stock-transfers/**").authenticated()
 
-                        .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )

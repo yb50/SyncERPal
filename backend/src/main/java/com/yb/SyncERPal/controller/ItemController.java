@@ -2,11 +2,11 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.Item;
-import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +17,9 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final AuthService authService;
 
-    public ItemController(ItemService itemService, AuthService authService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
-        this.authService = authService;
     }
 
     @GetMapping("/items")
@@ -42,6 +40,39 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
+    @PostMapping("/items")
+    public Item createItem(
+            @RequestBody Item item,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        return itemService.createItem(item, currentUser.getUsername());
+    }
+
+    @PutMapping("/items/{id}")
+    public Item updateItem(
+            @PathVariable Long id,
+            @RequestBody Item item,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        return itemService.updateItem(id, item, currentUser.getUsername());
+    }
+
+    @DeleteMapping("/items/{id}")
+    public Item deleteItem(
+            @PathVariable Long id,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        return itemService.deleteItem(id, currentUser.getUsername());
+    }
+
+    @PostMapping("/items/import")
+    public void importItems(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        itemService.importItemsFromCsv(file, currentUser.getUsername());
+    }
+
     @GetMapping("/items/export")
     public ResponseEntity<String> exportItems() {
         String csv = itemService.exportItemsAsCsv();
@@ -50,59 +81,6 @@ public class ItemController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=items.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csv);
-    }
-
-    @PostMapping("/items")
-    public ResponseEntity<Item> createItem(
-            @RequestBody Item item,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
-        Item createdItem = itemService.createItem(item, currentUser.getUsername());
-
-        return ResponseEntity.ok(createdItem);
-    }
-
-    @PostMapping("/items/import")
-    public ResponseEntity<String> importItems(
-            @RequestParam("file") MultipartFile file,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
-        int importedCount = itemService.importItemsFromCsv(file, currentUser.getUsername());
-
-        return ResponseEntity.ok("Imported " + importedCount + " items.");
-    }
-
-    @PutMapping("/items/{id}")
-    public ResponseEntity<Item> updateItem(
-            @PathVariable Long id,
-            @RequestBody Item item,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
-        Item updatedItem = itemService.updateItem(id, item, currentUser.getUsername());
-
-        if (updatedItem == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(updatedItem);
-    }
-
-    @DeleteMapping("/items/{id}")
-    public ResponseEntity<Void> deleteItem(
-            @PathVariable Long id,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
-        AppUser currentUser = authService.getAuthenticatedUser(authorizationHeader);
-
-        itemService.deleteItem(id, currentUser.getUsername());
-
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/items/low-stock/export")

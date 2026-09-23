@@ -47,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/stock-movements/**").authenticated()
-
                         .requestMatchers(HttpMethod.POST, "/stock-transfers/**").authenticated()
 
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
@@ -55,13 +54,22 @@ public class SecurityConfig {
 
                         .anyRequest().permitAll()
                 )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(401);
+                            response.setContentType("text/plain");
+                            response.getWriter().write("Authentication is required.");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(403);
+                            response.setContentType("text/plain");
+                            response.getWriter().write("Access denied.");
+                        })
+                )
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(formLogin -> formLogin.disable())
                 .logout(logout -> logout.disable())
-                .addFilterBefore(
-                        tokenAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
+                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

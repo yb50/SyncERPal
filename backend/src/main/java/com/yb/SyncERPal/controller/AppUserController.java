@@ -29,24 +29,6 @@ public class AppUserController {
         return appUserService.getAllUsers();
     }
 
-    @PostMapping("/users")
-    public AppUser createUser(
-            @RequestBody CreateUserRequest request,
-            @AuthenticationPrincipal AppUser currentUser
-    ) {
-        String performedBy = "setup";
-
-        if (!appUserService.isFirstUserSetupRequired()) {
-            if (currentUser == null) {
-                throw new UnauthorizedException("Authentication is required.");
-            }
-
-            performedBy = currentUser.getUsername();
-        }
-
-        return appUserService.createUser(request, performedBy);
-    }
-
     @PostMapping("/users/setup")
     public AppUser setupFirstUser(@RequestBody CreateUserRequest request) {
         if (!appUserService.isFirstUserSetupRequired()) {
@@ -54,6 +36,14 @@ public class AppUserController {
         }
 
         return appUserService.createUser(request, "setup");
+    }
+
+    @PostMapping("/users")
+    public AppUser createUser(
+            @RequestBody CreateUserRequest request,
+            @AuthenticationPrincipal AppUser currentUser
+    ) {
+        return appUserService.createUser(request, currentUser.getUsername());
     }
 
     @PutMapping("/users/{id}/role")

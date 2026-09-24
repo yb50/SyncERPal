@@ -3,6 +3,8 @@ package com.yb.SyncERPal.controller;
 import com.yb.SyncERPal.model.AuthenticatedUserResponse;
 import com.yb.SyncERPal.model.LoginRequest;
 import com.yb.SyncERPal.model.LoginResponse;
+import com.yb.SyncERPal.model.SetupStatusResponse;
+import com.yb.SyncERPal.service.AppUserService;
 import com.yb.SyncERPal.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +13,19 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final AppUserService appUserService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(
+            AuthService authService,
+            AppUserService appUserService
+    ) {
         this.authService = authService;
+        this.appUserService = appUserService;
+    }
+
+    @GetMapping("/auth/setup-required")
+    public SetupStatusResponse getSetupStatus() {
+        return new SetupStatusResponse(appUserService.isFirstUserSetupRequired());
     }
 
     @PostMapping("/auth/login")

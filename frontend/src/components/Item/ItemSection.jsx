@@ -26,6 +26,7 @@ function ItemSection({
   fetchStockMovementsForItem,
   fetchAuditLogs,
   setError,
+  handleApiError,
   exportItems,
   setImportFile,
   importItems,
@@ -55,8 +56,7 @@ function ItemSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
@@ -78,8 +78,7 @@ function ItemSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 

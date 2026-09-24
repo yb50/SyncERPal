@@ -19,6 +19,7 @@ function LocationSection({
   canManageLocations,
   fetchAuditLogs,
   setError,
+  handleApiError,
   removeLocation,
   setSuccessMessage,
   authToken,
@@ -44,8 +45,7 @@ function LocationSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
@@ -77,8 +77,7 @@ function LocationSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 

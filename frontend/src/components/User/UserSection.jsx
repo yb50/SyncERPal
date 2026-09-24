@@ -16,6 +16,7 @@ function UserSection({
   canManageUsers,
   fetchAuditLogs,
   setError,
+  handleApiError,
   setSuccessMessage,
   password,
   setPassword,
@@ -83,8 +84,7 @@ function UserSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
@@ -98,8 +98,7 @@ function UserSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
@@ -121,8 +120,7 @@ function UserSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 

@@ -19,6 +19,7 @@ import StockTransferSection from "./components/StockTransfer/StockTransferSectio
 import LowStockSection from "./components/LowStock/LowStockSection";
 import useAuth from "./hooks/useAuth";
 import LoginSection from "./components/LoginSection";
+import { isForbiddenError, isUnauthorizedError } from "./api/apiError";
 
 function App() {
   const {
@@ -146,6 +147,25 @@ function App() {
   const canCreateStockMovements = currentUser != null;
   const canTransferStock = currentUser != null;
 
+  function handleApiError(error) {
+    if (isUnauthorizedError(error)) {
+      logout();
+
+      setSuccessMessage("");
+      setError("Your session has expired. Please log in again.");
+      return;
+    }
+
+    if (isForbiddenError(error)) {
+      setSuccessMessage("");
+      setError("You do not have permission to perform this action.");
+      return;
+    }
+
+    setSuccessMessage("");
+    setError(error.message);
+  }
+
   useEffect(() => {
     fetchItems();
     fetchStockMovements();
@@ -233,6 +253,7 @@ function App() {
           fetchStockMovementsForItem={fetchStockMovementsForItem}
           fetchAuditLogs={fetchAuditLogs}
           setError={setError}
+          handleApiError={handleApiError}
           exportItems={exportItems}
           setImportFile={setImportFile}
           importItems={importItems}
@@ -257,6 +278,7 @@ function App() {
           canManageLocations={canManageLocations}
           fetchAuditLogs={fetchAuditLogs}
           setError={setError}
+          handleApiError={handleApiError}
           removeLocation={removeLocation}
           setSuccessMessage={setSuccessMessage}
           authToken={authToken}
@@ -284,6 +306,7 @@ function App() {
           fetchAuditLogs={fetchAuditLogs}
           saveStockMovement={saveStockMovement}
           setError={setError}
+          handleApiError={handleApiError}
           exportStockMovements={exportStockMovements}
           fetchInventoryBalances={fetchInventoryBalances}
           setSuccessMessage={setSuccessMessage}
@@ -311,6 +334,7 @@ function App() {
           fetchInventoryBalances={fetchInventoryBalances}
           fetchAuditLogs={fetchAuditLogs}
           setError={setError}
+          handleApiError={handleApiError}
           stockTransfers={stockTransfers}
           exportStockTransfers={exportStockTransfers}
           setSuccessMessage={setSuccessMessage}
@@ -339,6 +363,7 @@ function App() {
           canManageUsers={canManageUsers}
           fetchAuditLogs={fetchAuditLogs}
           setError={setError}
+          handleApiError={handleApiError}
           changeUserRole={changeUserRole}
           removeUser={removeUser}
           setSuccessMessage={setSuccessMessage}

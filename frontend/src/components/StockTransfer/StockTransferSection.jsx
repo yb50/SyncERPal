@@ -24,6 +24,7 @@ function StockTransferSection({
   fetchInventoryBalances,
   fetchAuditLogs,
   setError,
+  handleApiError,
   setSuccessMessage,
   authToken,
 }) {
@@ -94,8 +95,7 @@ function StockTransferSection({
         fetchAuditLogs();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 

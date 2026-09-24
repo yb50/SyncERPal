@@ -23,6 +23,7 @@ function StockMovementSection({
   canCreateStockMovements,
   saveStockMovement,
   setError,
+  handleApiError,
   exportStockMovements,
   fetchInventoryBalances,
   setSuccessMessage,
@@ -82,8 +83,7 @@ function StockMovementSection({
         fetchInventoryBalances();
       })
       .catch((error) => {
-        setSuccessMessage("");
-        setError(error.message);
+        handleApiError(error);
       });
   }
 

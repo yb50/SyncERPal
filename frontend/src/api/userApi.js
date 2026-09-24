@@ -11,6 +11,24 @@ export function getUsers() {
   });
 }
 
+export function setupFirstUser(user) {
+  return fetch(`${USERS_URL}/setup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((message) => {
+        throw new Error(message || "Failed to create first user.");
+      });
+    }
+
+    return response.json();
+  });
+}
+
 export function createUser(user, token) {
   return fetch(USERS_URL, {
     method: "POST",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUsers, createUser, updateUserRole, deleteUser } from "../api/userApi";
+import { getUsers, setupFirstUser , createUser, updateUserRole, deleteUser } from "../api/userApi";
 
 function useUsers() {
   const [users, setUsers] = useState([]);
@@ -20,7 +20,10 @@ function useUsers() {
       password: password,
     };
 
-    return createUser(user, token).then(() => {
+    const saveUserRequest = 
+      users.length === 0 ? setupFirstUser(user) : createUser(user, token);
+
+    return saveUserRequest.then(() => {
       setUsername("");
       setRole("WORKER");
       setPassword("");

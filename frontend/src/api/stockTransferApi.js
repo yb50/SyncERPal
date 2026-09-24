@@ -1,14 +1,14 @@
+import { handleApiResponse } from "./apiError";
 import { BASE_URL } from "./config";
+
 const STOCK_TRANSFERS_URL = `${BASE_URL}/stock-transfers`;
 
 export function getStockTransfers() {
-  return fetch(STOCK_TRANSFERS_URL).then((response) => {
-    if (!response.ok) {
-      throw new Error("Failed to load stock transfers.");
-    }
-
-    return response.json();
-  });
+  return fetch(STOCK_TRANSFERS_URL)
+    .then((response) =>
+      handleApiResponse(response, "Failed to fetch stock transfers.")
+    )
+    .then((response) => response.json());
 }
 
 export function createStockTransfer(stockTransfer, token) {
@@ -19,17 +19,31 @@ export function createStockTransfer(stockTransfer, token) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(stockTransfer),
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((message) => {
-        throw new Error(message || "Failed to create stock transfer.");
-      });
-    }
-
-    return response.json();
-  });
+  })
+    .then((response) =>
+      handleApiResponse(response, "Failed to create stock transfer.")
+    )
+    .then((response) => response.json());
 }
 
 export function exportStockTransfersCsv() {
-  window.location.href = `${STOCK_TRANSFERS_URL}/export`;
+  return fetch(`${STOCK_TRANSFERS_URL}/export`)
+    .then((response) =>
+      handleApiResponse(response, "Failed to export stock transfers.")
+    )
+    .then((response) => response.blob())
+    .then((blob) => {
+      downloadBlob(blob, "stock-transfers.csv");
+    });
+}
+
+function downloadBlob(blob, fileName) {
+  const url = window.URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+
+  window.URL.revokeObjectURL(url);
 }

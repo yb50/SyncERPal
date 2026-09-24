@@ -1,4 +1,5 @@
 import { BASE_URL } from "./config";
+import { handleApiResponse } from "./apiError";
 
 const AUTH_URL = `${BASE_URL}/auth`;
 
@@ -9,15 +10,9 @@ export function loginUser(credentials) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(credentials),
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((message) => {
-        throw new Error(message || "Failed to login.");
-      });
-    }
-
-    return response.json();
-  });
+  })
+    .then((response) => handleApiResponse(response, "Failed to login."))
+    .then((response) => response.json());
 }
 
 export function getCurrentUser(token) {
@@ -25,15 +20,10 @@ export function getCurrentUser(token) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((message) => {
-        throw new Error(message || "Failed to get current user.");
-      });
-    }
-
-    return response.json();
-  });
+  })
+    .then((response) =>
+      handleApiResponse(response, "Failed to get current user."))
+    .then((response) => response.json());
 }
 
 export function logoutUser(token) {
@@ -42,11 +32,5 @@ export function logoutUser(token) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((message) => {
-        throw new Error(message || "Failed to logout.");
-      });
-    }
-  });
+  }).then((response) => handleApiResponse(response, "Failed to logout."));
 }

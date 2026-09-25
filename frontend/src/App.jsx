@@ -172,12 +172,17 @@ function App() {
     fetchItems();
     fetchStockMovements();
     fetchAuditLogs();
-    fetchUsers(authToken);
     fetchLocations();
     fetchInventoryBalances();
     fetchStockTransfers();
     fetchSetupStatus();
-  }, [authToken]);
+
+    if (loggedInUser?.role === "ADMIN") {
+      fetchUsers(authToken);
+    } else {
+      fetchUsers("");
+    }
+  }, [authToken, loggedInUser?.role]);
 
   return (
     <div className="app">

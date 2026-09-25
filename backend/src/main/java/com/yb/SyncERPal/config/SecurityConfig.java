@@ -32,8 +32,12 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/setup-required").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/users/setup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
                         .requestMatchers("/h2-console/**").permitAll()
 
@@ -50,9 +54,6 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/stock-movements/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/stock-transfers/**").authenticated()
-
-                        .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )

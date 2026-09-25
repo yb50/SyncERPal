@@ -84,6 +84,8 @@ function App() {
     changeUserRole,
     removeUser,
     setPassword,
+    setupRequired,
+    fetchSetupStatus,
   } = useUsers();
 
   const {
@@ -142,7 +144,7 @@ function App() {
   const authToken = loggedInUser ? loggedInUser.token : "";
 
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
-  const canManageUsers = users.length === 0 || currentUser?.role === "ADMIN";
+  const canManageUsers = setupRequired || currentUser?.role === "ADMIN";
   const canManageLocations = canManageItems;
   const canCreateStockMovements = currentUser != null;
   const canTransferStock = currentUser != null;
@@ -174,6 +176,7 @@ function App() {
     fetchLocations();
     fetchInventoryBalances();
     fetchStockTransfers();
+    fetchSetupStatus();
   }, []);
 
   return (
@@ -370,6 +373,7 @@ function App() {
           password={password}
           setPassword={setPassword}
           authToken={authToken}
+          setupRequired={setupRequired}
         />
       </section>
 

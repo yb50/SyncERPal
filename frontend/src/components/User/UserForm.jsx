@@ -6,12 +6,13 @@ function UserForm({
   onSubmit, 
   canManageUsers, 
   password,
-  onPasswordChange, 
+  onPasswordChange,
+  setupRequired,
 }) {
   return (
     <form onSubmit={onSubmit}>
       <div>
-        {canManageUsers && (
+        {setupRequired && (
           <p className="hint">
             First setup user must be created as ADMIN.
           </p>

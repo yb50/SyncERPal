@@ -3,6 +3,12 @@ import { handleApiResponse } from "./apiError";
 
 const AUTH_URL = `${BASE_URL}/auth`;
 
+export function getSetupStatus() {
+  return fetch(`${AUTH_URL}/setup-required`)
+    .then((response) => handleApiResponse(response, "Failed to check setup status."))
+    .then((response) => response.json());
+}
+
 export function loginUser(credentials) {
   return fetch(`${AUTH_URL}/login`, {
     method: "POST",

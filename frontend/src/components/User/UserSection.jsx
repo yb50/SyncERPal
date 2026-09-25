@@ -21,6 +21,7 @@ function UserSection({
   password,
   setPassword,
   authToken,
+  setupRequired,
 }) {
   const [userSearchText, setUserSearchText] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
@@ -141,6 +142,7 @@ function UserSection({
         onPasswordChange={setPassword}
         onSubmit={handleSubmit}
         canManageUsers={canManageUsers}
+        setupRequired={setupRequired}
       />
 
       <h2>Users</h2>

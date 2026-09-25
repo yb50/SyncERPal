@@ -169,7 +169,7 @@ function App() {
   }
 
   useEffect(() => {
-    fetchItems();
+    fetchItems(authToken);
     fetchStockMovements();
     fetchAuditLogs();
     fetchLocations();
@@ -229,6 +229,9 @@ function App() {
         <LowStockSection
           items={items}
           exportLowStockItems={exportLowStockItems}
+          authToken={authToken}
+          setError={setError}
+          handleApiError={handleApiError}
         />
       </section>
 

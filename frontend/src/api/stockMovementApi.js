@@ -15,8 +15,12 @@ export function getStockMovements(itemId) {
     .then((response) => response.json());
 }
 
-export function getStockMovementsForItem(itemId) {
-  return fetch(`${BASE_URL}/items/${itemId}/stock-movements`)
+export function getStockMovementsForItem(itemId, token) {
+  return fetch(`${BASE_URL}/items/${itemId}/stock-movements`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch item stock movements.")
     )

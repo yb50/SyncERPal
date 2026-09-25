@@ -17,13 +17,10 @@ function useStockMovements(fetchItems) {
     });
   }
 
-  function fetchStockMovementsForItem(itemId) {
-    setMovementFilterItemId(String(itemId));
-
-    return getStockMovementsForItem(itemId)
-      .then((data) => {
-        setStockMovements(data);
-      });
+  function fetchStockMovementsForItem(itemId, token) {
+    return getStockMovementsForItem(itemId, token).then((data) => {
+      setStockMovements(data);
+    });
   }
 
   function changeMovementFilterItemId(itemId) {

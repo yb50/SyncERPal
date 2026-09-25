@@ -92,12 +92,12 @@ function ItemSection({
   }
 
   function handleViewHistory(itemId) {
-    fetchStockMovementsForItem(itemId)
+    fetchStockMovementsForItem(itemId, authToken)
       .then(() => {
         setError("");
       })
       .catch((error) => {
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
@@ -109,7 +109,17 @@ function ItemSection({
         setError("");
       })
       .catch((error) => {
-        setError(error.message);
+        handleApiError(error);
+      });
+  }
+
+  function handleExportItems() {
+    exportItems(authToken)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        handleApiError(error);
       });
   }
 
@@ -195,7 +205,7 @@ function ItemSection({
 
       <h2>Items</h2>
 
-      <button type="button" onClick={exportItems}>
+      <button type="button" onClick={handleExportItems}>
         Export Items CSV
       </button>
 

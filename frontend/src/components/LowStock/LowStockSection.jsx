@@ -2,7 +2,13 @@ import { useState } from "react";
 import LowStockTable from "./LowStockTable";
 import PaginationControls from "../PaginationControls";
 
-function LowStockSection({ items, exportLowStockItems }) {
+function LowStockSection({
+  items,
+  exportLowStockItems,
+  authToken,
+  setError,
+  handleApiError,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 10;
@@ -36,11 +42,21 @@ function LowStockSection({ items, exportLowStockItems }) {
 
   // - Pagination
 
+  function handleExportLowStockItems() {
+    exportLowStockItems(authToken)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        handleApiError(error);
+      });
+  }
+
   return (
     <>
       <h2>Low Stock Report</h2>
 
-      <button type="button" onClick={exportLowStockItems}>
+      <button type="button" onClick={handleExportLowStockItems}>
         Export Low Stock CSV
       </button>
 

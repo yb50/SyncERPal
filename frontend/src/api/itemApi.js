@@ -3,8 +3,12 @@ import { BASE_URL } from "./config";
 
 const ITEMS_URL = `${BASE_URL}/items`;
 
-export function getItems() {
-  return fetch(ITEMS_URL)
+export function getItems(token) {
+  return fetch(ITEMS_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) => handleApiResponse(response, "Failed to fetch items."))
     .then((response) => response.json());
 }
@@ -46,8 +50,12 @@ export function deleteItem(id, token) {
     .then((response) => response.json());
 }
 
-export function exportItemsCsv() {
-  return fetch(`${ITEMS_URL}/export`)
+export function exportItemsCsv(token) {
+  return fetch(`${ITEMS_URL}/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) => handleApiResponse(response, "Failed to export items."))
     .then((response) => response.blob())
     .then((blob) => {
@@ -70,8 +78,12 @@ export function importItemsCsv(file, token) {
   );
 }
 
-export function exportLowStockItemsCsv() {
-  return fetch(`${ITEMS_URL}/low-stock/export`)
+export function exportLowStockItemsCsv(token) {
+  return fetch(`${ITEMS_URL}/low-stock/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to export low stock items.")
     )

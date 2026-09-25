@@ -11,17 +11,22 @@ function useItems() {
   const [loading, setLoading] = useState(false);
   const [importFile, setImportFile] = useState(null);
 
-  function fetchItems() {
-    setLoading(true);
-
-    return getItems()
-      .then((data) => {
-        setItems(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+function fetchItems(token) {
+  if (!token) {
+    setItems([]);
+    return Promise.resolve();
   }
+
+  setLoading(true);
+
+  return getItems(token)
+    .then((data) => {
+      setItems(data);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}
 
   function saveItem(token) {
     const item = {
@@ -38,13 +43,13 @@ function useItems() {
 
     return request.then(() => {
       clearItemForm();
-      fetchItems();
+      fetchItems(token);
     });
   }
 
   function removeItem(id, token) {
     return deleteItem(id, token).then(() => {
-      fetchItems();
+      fetchItems(token);
     });
   }
 
@@ -64,19 +69,19 @@ function useItems() {
     setLowStockThreshold("");
   }
 
-  function exportItems() {
-    exportItemsCsv();
+  function exportItems(token) {
+    return exportItemsCsv(token);
   }
 
   function importItems(token) {
     return importItemsCsv(importFile, token).then(() => {
       setImportFile(null);
-      fetchItems();
+      fetchItems(token);
     });
   }
 
-  function exportLowStockItems() {
-    exportLowStockItemsCsv();
+  function exportLowStockItems(token) {
+    return exportLowStockItemsCsv(token);
   }
 
   return {

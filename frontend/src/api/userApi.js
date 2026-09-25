@@ -3,8 +3,12 @@ import { BASE_URL } from "./config";
 
 const USERS_URL = `${BASE_URL}/users`;
 
-export function getUsers() {
-  return fetch(USERS_URL)
+export function getUsers(token) {
+  return fetch(USERS_URL, {
+    headers: {
+      Authorization: `Bearer ${token},`
+    },
+  })
     .then((response) => handleApiResponse(response, "Failed to fetch users."))
     .then((response) => response.json());
 }

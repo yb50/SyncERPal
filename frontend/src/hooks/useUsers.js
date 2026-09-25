@@ -15,8 +15,13 @@ function useUsers() {
     });
   }
 
-  function fetchUsers() {
-    return getUsers().then((data) => {
+  function fetchUsers(token) {
+    if (!token) {
+      setUsers([]);
+      return Promise.resolve();
+    }
+
+    return getUsers(token).then((data) => {
       setUsers(data);
     });
   }
@@ -37,20 +42,20 @@ function useUsers() {
       setRole("WORKER");
       setPassword("");
 
-      fetchUsers();
+      fetchUsers(token);
       fetchSetupStatus();
     });
   }
 
   function changeUserRole(userId, role, token) {
     return updateUserRole(userId, role, token).then(() => {
-      fetchUsers();
+      fetchUsers(token);
     });
   }
 
   function removeUser(userId, token) {
     return deleteUser(userId, token).then(() => {
-      fetchUsers();
+      fetchUsers(token);
     });
   }
 

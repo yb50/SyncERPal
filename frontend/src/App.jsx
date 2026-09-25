@@ -172,12 +172,12 @@ function App() {
     fetchItems();
     fetchStockMovements();
     fetchAuditLogs();
-    fetchUsers();
+    fetchUsers(authToken);
     fetchLocations();
     fetchInventoryBalances();
     fetchStockTransfers();
     fetchSetupStatus();
-  }, []);
+  }, [authToken]);
 
   return (
     <div className="app">

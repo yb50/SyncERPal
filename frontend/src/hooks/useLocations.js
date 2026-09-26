@@ -7,8 +7,13 @@ function useLocations() {
   const [locationName, setLocationName] = useState("");
   const [editingLocationId, setEditingLocationId] = useState(null);
 
-  function fetchLocations() {
-    return getLocations().then((data) => {
+  function fetchLocations(token) {
+    if (!token) {
+      setLocations([]);
+      return Promise.resolve();
+    }
+
+    return getLocations(token).then((data) => {
       setLocations(data);
     });
   }
@@ -38,13 +43,13 @@ function useLocations() {
 
     return request.then(() => {
       clearLocationForm();
-      fetchLocations();
+      fetchLocations(token);
     });
   }
 
   function removeLocation(locationId, token) {
     return deleteLocation(locationId, token).then(() => {
-      fetchLocations();
+      fetchLocations(token);
     });
   }
 

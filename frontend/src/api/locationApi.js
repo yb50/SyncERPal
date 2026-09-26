@@ -3,8 +3,12 @@ import { BASE_URL } from "./config";
 
 const LOCATIONS_URL = `${BASE_URL}/locations`;
 
-export function getLocations() {
-  return fetch(LOCATIONS_URL)
+export function getLocations(token) {
+  return fetch(LOCATIONS_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch locations.")
     )

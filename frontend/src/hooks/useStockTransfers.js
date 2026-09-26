@@ -17,8 +17,13 @@ function useStockTransfers() {
     setTransferNote("");
   }
 
-  function fetchStockTransfers() {
-    return getStockTransfers().then((data) => {
+  function fetchStockTransfers(token) {
+    if (!token) {
+      setStockTransfers([]);
+      return Promise.resolve();
+    }
+
+    return getStockTransfers(token).then((data) => {
       setStockTransfers(data);
     });
   }
@@ -34,12 +39,12 @@ function useStockTransfers() {
 
     return createStockTransfer(stockTransfer, token).then(() => {
       clearStockTransferForm();
-      fetchStockTransfers();
+      fetchStockTransfers(token);
     });
   }
 
-  function exportStockTransfers() {
-    exportStockTransfersCsv();
+  function exportStockTransfers(token) {
+    return exportStockTransfersCsv(token);
   }
 
   return {

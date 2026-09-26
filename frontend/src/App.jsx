@@ -172,9 +172,9 @@ function App() {
     fetchItems(authToken);
     fetchLocations(authToken);
     fetchStockMovements(authToken);
+    fetchStockTransfers(authToken);
     fetchAuditLogs();
     fetchInventoryBalances();
-    fetchStockTransfers();
     fetchSetupStatus();
 
     if (loggedInUser?.role === "ADMIN") {

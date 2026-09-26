@@ -3,8 +3,12 @@ import { BASE_URL } from "./config";
 
 const STOCK_TRANSFERS_URL = `${BASE_URL}/stock-transfers`;
 
-export function getStockTransfers() {
-  return fetch(STOCK_TRANSFERS_URL)
+export function getStockTransfers(token) {
+  return fetch(STOCK_TRANSFERS_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch stock transfers.")
     )
@@ -26,8 +30,12 @@ export function createStockTransfer(stockTransfer, token) {
     .then((response) => response.json());
 }
 
-export function exportStockTransfersCsv() {
-  return fetch(`${STOCK_TRANSFERS_URL}/export`)
+export function exportStockTransfersCsv(token) {
+  return fetch(`${STOCK_TRANSFERS_URL}/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to export stock transfers.")
     )

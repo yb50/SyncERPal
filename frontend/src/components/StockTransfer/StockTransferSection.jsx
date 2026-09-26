@@ -90,7 +90,7 @@ function StockTransferSection({
       .then(() => {
         setError("");
         setSuccessMessage("Stock transfer completed successfully.");
-        fetchItems();
+        fetchItems(authToken);
         fetchInventoryBalances();
         fetchAuditLogs();
       })
@@ -126,7 +126,7 @@ function StockTransferSection({
 
       <h2>Stock Transfer History</h2>
 
-      <button type="button" onClick={exportStockTransfers}>
+      <button type="button" onClick={() => exportStockTransfers(authToken)}>
         Export Stock Transfers CSV
       </button>
 

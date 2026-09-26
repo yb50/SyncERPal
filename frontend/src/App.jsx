@@ -171,7 +171,7 @@ function App() {
   useEffect(() => {
     fetchItems(authToken);
     fetchLocations(authToken);
-    fetchStockMovements();
+    fetchStockMovements(authToken);
     fetchAuditLogs();
     fetchInventoryBalances();
     fetchStockTransfers();

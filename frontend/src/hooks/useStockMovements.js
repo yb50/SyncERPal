@@ -10,23 +10,32 @@ function useStockMovements(fetchItems) {
   const [movementFilterItemId, setMovementFilterItemId] = useState("");
   const [movementLocationId, setMovementLocationId] = useState("");
 
-  function fetchStockMovements(itemId = movementFilterItemId) {
-    return getStockMovements(itemId)
-      .then((data) => {
+  function fetchStockMovements(token, itemId = movementFilterItemId) {
+    if (!token) {
+      setStockMovements([]);
+      return Promise.resolve();
+    }
+
+    return getStockMovements(token, itemId).then((data) => {
         setStockMovements(data);
     });
   }
 
   function fetchStockMovementsForItem(itemId, token) {
+    if (!token) {
+      setStockMovements([]);
+      return Promise.resolve();
+    }
+
     return getStockMovementsForItem(itemId, token).then((data) => {
       setStockMovements(data);
     });
   }
 
-  function changeMovementFilterItemId(itemId) {
+  function changeMovementFilterItemId(itemId, token) {
     setMovementFilterItemId(itemId);
 
-    return fetchStockMovements(itemId);
+    return fetchStockMovements(token, itemId);
   }
 
   function saveStockMovement(token) {
@@ -40,8 +49,8 @@ function useStockMovements(fetchItems) {
 
     return createStockMovement(stockMovement, token).then(() => {
       clearStockMovementForm();
-      fetchItems();
-      fetchStockMovements();
+      fetchItems(token);
+      fetchStockMovements(token);
     });
   }
 
@@ -53,8 +62,8 @@ function useStockMovements(fetchItems) {
     setMovementNote("");
   }
 
-  function exportStockMovements() {
-    exportStockMovementsCsv();
+  function exportStockMovements(token) {
+    return exportStockMovementsCsv(token);
   }
 
   return {

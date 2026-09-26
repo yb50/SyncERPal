@@ -3,12 +3,16 @@ import { BASE_URL } from "./config";
 
 const STOCK_MOVEMENTS_URL = `${BASE_URL}/stock-movements`;
 
-export function getStockMovements(itemId) {
+export function getStockMovements(token, itemId) {
   const url = itemId
     ? `${STOCK_MOVEMENTS_URL}?itemId=${itemId}`
     : STOCK_MOVEMENTS_URL;
 
-  return fetch(url)
+  return fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch stock movements.")
     )
@@ -42,8 +46,12 @@ export function createStockMovement(stockMovement, token) {
     .then((response) => response.json());
 }
 
-export function exportStockMovementsCsv() {
-  return fetch(`${STOCK_MOVEMENTS_URL}/export`)
+export function exportStockMovementsCsv(token) {
+  return fetch(`${STOCK_MOVEMENTS_URL}/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to export stock movements.")
     )

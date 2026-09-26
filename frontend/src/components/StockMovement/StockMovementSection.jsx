@@ -90,26 +90,36 @@ function StockMovementSection({
   function handleItemFilterChange(itemId) {
     resetToFirstPage();
 
-    changeMovementFilterItemId(itemId)
+    changeMovementFilterItemId(itemId, authToken)
       .then(() => {
         setError("");
       })
       .catch((error) => {
-        setError(error.message);
+        handleApiError(error);
       });
   }
 
   function clearFilters() {
     setSelectedLocationId("");
     setSelectedMovementType("");
-    resetToFirstPage(1);
+    resetToFirstPage();
 
-    changeMovementFilterItemId("")
+    changeMovementFilterItemId("", authToken)
       .then(() => {
         setError("");
       })
       .catch((error) => {
-        setError(error.message);
+        handleApiError(error);
+      });
+  }
+
+  function handleExportStockMovements() {
+    exportStockMovements(authToken)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        handleApiError(error);
       });
   }
 
@@ -142,7 +152,7 @@ function StockMovementSection({
 
       <h2>Stock Movements</h2>
 
-      <button type="button" onClick={exportStockMovements}>
+      <button type="button" onClick={handleExportStockMovements}>
         Export Stock Movements CSV
       </button>
 

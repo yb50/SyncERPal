@@ -28,32 +28,96 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
+                        // ==================================
+                        // CORS preflight requests
+                        // ==================================
+
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // ==================================
+                        // Authentication / first-user setup
+                        // ==================================
 
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/setup-required").permitAll()
-
                         .requestMatchers(HttpMethod.POST, "/users/setup").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
+
+                        // ==================================
+                        // User management - ADMIN only
+                        // ==================================
+
                         .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
-                        .requestMatchers("/h2-console/**").permitAll()
+                        // ==================================
+                        // Items
+                        // Read: all authenticated users
+                        // Write: ADMIN and MANAGER
+                        // ==================================
 
-                        .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/items/**").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/items/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/items/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/items/**").hasAnyRole("ADMIN", "MANAGER")
 
+                        // ==================================
+                        // Locations
+                        // Read: all authenticated users
+                        // Write: ADMIN and MANAGER
+                        // ==================================
+
+                        .requestMatchers(HttpMethod.GET, "/locations/**").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/locations/**").hasAnyRole("ADMIN", "MANAGER")
 
+                        // ==================================
+                        // Stock movements
+                        // All authenticated users can read and create movements
+                        // ==================================
+
+                        .requestMatchers(HttpMethod.GET, "/stock-movements/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/stock-movements/**").authenticated()
+
+                        // ==================================
+                        // Stock transfers
+                        // All authenticated users can read and create transfers
+                        // ==================================
+
+                        .requestMatchers(HttpMethod.GET, "/stock-transfers/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/stock-transfers/**").authenticated()
+
+                        // ==================================
+                        // Inventory balances
+                        // Read-only for authenticated users
+                        // ==================================
+
+                        .requestMatchers(HttpMethod.GET, "/inventory-balances/**").authenticated()
+
+                        // ==================================
+                        // Audit logs
+                        // Currently readable by all authenticated users
+                        // ==================================
+
+                        .requestMatchers(HttpMethod.GET, "/audit-logs/**").authenticated()
+
+                        // ==================================
+                        // H2 console - development only
+                        // ==================================
+
+                        .requestMatchers("/h2-console/**").permitAll()
+
+                        // ==================================
+                        // Fallback
+                        // Any endpoint not matched above is currently public
+                        // ==================================
 
                         .anyRequest().permitAll()
                 )

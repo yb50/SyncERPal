@@ -174,7 +174,7 @@ function App() {
     fetchStockMovements(authToken);
     fetchStockTransfers(authToken);
     fetchInventoryBalances(authToken);
-    fetchAuditLogs();
+    fetchAuditLogs(authToken);
     fetchSetupStatus();
 
     if (loggedInUser?.role === "ADMIN") {
@@ -390,6 +390,7 @@ function App() {
         <AuditLogSection
           auditLogs={auditLogs}
           exportAuditLogs={exportAuditLogs}
+          authToken={authToken}
         />
       </section>
     </div>

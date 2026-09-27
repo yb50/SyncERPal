@@ -53,7 +53,7 @@ function ItemSection({
             ? "Item created successfully."
             : "Item updated successfully."
         );
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);
@@ -75,7 +75,7 @@ function ItemSection({
       .then(() => {
         setError("");
         setSuccessMessage("Item deleted successfully");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);

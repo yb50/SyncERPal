@@ -92,7 +92,7 @@ function StockTransferSection({
         setSuccessMessage("Stock transfer completed successfully.");
         fetchItems(authToken);
         fetchInventoryBalances(authToken);
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);

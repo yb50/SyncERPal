@@ -42,7 +42,7 @@ function LocationSection({
             ? "Location created successfully."
             : "Location updated successfully."
         );
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);
@@ -74,7 +74,7 @@ function LocationSection({
       .then(() => {
         setError("");
         setSuccessMessage("Location deleted successfully.");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);

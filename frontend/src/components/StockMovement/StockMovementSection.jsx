@@ -79,7 +79,7 @@ function StockMovementSection({
       .then(() => {
         setError("");
         setSuccessMessage("Stock movement created successfully.");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
         fetchInventoryBalances(authToken);
       })
       .catch((error) => {

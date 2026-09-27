@@ -3,16 +3,24 @@ import { BASE_URL } from "./config";
 
 const AUDIT_LOGS_URL = `${BASE_URL}/audit-logs`;
 
-export function getAuditLogs() {
-  return fetch(AUDIT_LOGS_URL)
+export function getAuditLogs(token) {
+  return fetch(AUDIT_LOGS_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch audit logs.")
     )
     .then((response) => response.json());
 }
 
-export function exportAuditLogsCsv() {
-  return fetch(`${AUDIT_LOGS_URL}/export`)
+export function exportAuditLogsCsv(token) {
+  return fetch(`${AUDIT_LOGS_URL}/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to export audit logs.")
     )

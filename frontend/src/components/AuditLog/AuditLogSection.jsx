@@ -2,7 +2,11 @@ import { useState } from "react";
 import AuditLogTable from "./AuditLogTable";
 import PaginationControls from "../PaginationControls";
 
-function AuditLogSection({ auditLogs, exportAuditLogs }) {
+function AuditLogSection({ 
+  auditLogs, 
+  exportAuditLogs, 
+  authToken 
+}) {
   const [selectedAction, setSelectedAction] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [selectedPerformedBy, setSelectedPerformedBy] = useState("");
@@ -68,7 +72,7 @@ function AuditLogSection({ auditLogs, exportAuditLogs }) {
     <>
       <h2>Audit Logs</h2>
 
-      <button type="button" onClick={exportAuditLogs}>
+      <button type="button" onClick={() => exportAuditLogs(authToken)}>
         Export Audit Logs CSV
       </button>
 

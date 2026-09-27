@@ -4,14 +4,19 @@ import { exportAuditLogsCsv, getAuditLogs } from "../api/auditLogApi";
 function useAuditLogs() {
   const [auditLogs, setAuditLogs] = useState([]);
 
-  function fetchAuditLogs() {
-    return getAuditLogs().then((data) => {
+  function fetchAuditLogs(token) {
+    if (!token) {
+      setAuditLogs([]);
+      return Promise.resolve();
+    }
+
+    return getAuditLogs(token).then((data) => {
       setAuditLogs(data);
     });
   }
 
-  function exportAuditLogs() {
-    exportAuditLogsCsv();
+  function exportAuditLogs(token) {
+    return exportAuditLogsCsv(token);
   }
 
   return {

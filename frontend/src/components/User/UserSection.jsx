@@ -82,7 +82,7 @@ function UserSection({
       .then(() => {
         setError("");
         setSuccessMessage("User created successfully.");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);
@@ -96,7 +96,7 @@ function UserSection({
       .then(() => {
         setError("");
         setSuccessMessage("User role updated successfully.");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);
@@ -118,7 +118,7 @@ function UserSection({
       .then(() => {
         setError("");
         setSuccessMessage("User deleted successfully.");
-        fetchAuditLogs();
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);

@@ -169,19 +169,35 @@ function App() {
   }
 
   useEffect(() => {
-    fetchItems(authToken);
-    fetchLocations(authToken);
-    fetchStockMovements(authToken);
-    fetchStockTransfers(authToken);
-    fetchInventoryBalances(authToken);
-    fetchAuditLogs(authToken);
-    fetchSetupStatus();
+    fetchSetupStatus().catch(handleApiError);
+
+    if (!authToken) {
+      fetchItems("");
+      fetchLocations("");
+      fetchStockMovements("");
+      fetchStockTransfers("");
+      fetchInventoryBalances("");
+      fetchAuditLogs("");
+      fetchUsers("");
+      return;
+    }
+
+    const protectedDataRequests = [
+      fetchItems(authToken),
+      fetchLocations(authToken),
+      fetchStockMovements(authToken),
+      fetchStockTransfers(authToken),
+      fetchInventoryBalances(authToken),
+      fetchAuditLogs(authToken),
+    ];
 
     if (loggedInUser?.role === "ADMIN") {
-      fetchUsers(authToken);
+      protectedDataRequests.push(fetchUsers(authToken));
     } else {
       fetchUsers("");
     }
+
+    Promise.all(protectedDataRequests).catch(handleApiError);
   }, [authToken, loggedInUser?.role]);
 
   return (

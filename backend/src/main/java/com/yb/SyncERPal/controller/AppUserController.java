@@ -1,11 +1,9 @@
 package com.yb.SyncERPal.controller;
 
-import com.yb.SyncERPal.exception.UnauthorizedException;
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UpdateUserRoleRequest;
 import com.yb.SyncERPal.service.AppUserService;
-import com.yb.SyncERPal.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

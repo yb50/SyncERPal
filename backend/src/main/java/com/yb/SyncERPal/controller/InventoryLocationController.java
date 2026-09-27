@@ -2,7 +2,6 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.InventoryLocation;
-import com.yb.SyncERPal.service.AuthService;
 import com.yb.SyncERPal.service.InventoryLocationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

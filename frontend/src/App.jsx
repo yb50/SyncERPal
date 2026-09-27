@@ -144,8 +144,9 @@ function App() {
   const authToken = loggedInUser ? loggedInUser.token : "";
 
   const isLoggedIn = loggedInUser != null;
-  const showSetup = setupRequired && !isLoggedIn;
-  const showErpApp = isLoggedIn;
+  const showSetup = !authToken && setupRequired && !isLoggedIn;
+  const showErpApp = !authLoading && isLoggedIn;
+  const showLoginRequired = !authLoading && !setupRequired && !isLoggedIn;
 
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
   const canManageUsers = setupRequired || currentUser?.role === "ADMIN";
@@ -173,6 +174,10 @@ function App() {
   }
 
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
     fetchSetupStatus().catch(handleApiError);
 
     if (!authToken) {
@@ -221,7 +226,7 @@ function App() {
         setSuccessMessage={setSuccessMessage}
       />
 
-      {!isLoggedIn && !setupRequired && (
+      {showLoginRequired && (
         <section>
           <h2>Login Required</h2>
           <p className="hint">

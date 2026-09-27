@@ -80,7 +80,7 @@ function StockMovementSection({
         setError("");
         setSuccessMessage("Stock movement created successfully.");
         fetchAuditLogs();
-        fetchInventoryBalances();
+        fetchInventoryBalances(authToken);
       })
       .catch((error) => {
         handleApiError(error);

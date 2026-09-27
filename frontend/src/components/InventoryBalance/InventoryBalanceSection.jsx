@@ -7,6 +7,7 @@ function InventoryBalanceSection({
   items,
   locations,
   exportInventoryBalances,
+  authToken
 }) {
   const [selectedItemId, setSelectedItemId] = useState("");
   const [selectedLocationId, setSelectedLocationId] = useState("");
@@ -61,7 +62,7 @@ function InventoryBalanceSection({
     <>
       <h2>Inventory Balances</h2>
 
-      <button type="button" onClick={exportInventoryBalances}>
+      <button type="button" onClick={() => exportInventoryBalances(authToken)}>
         Export Inventory Balances CSV
       </button>
 

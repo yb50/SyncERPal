@@ -173,8 +173,8 @@ function App() {
     fetchLocations(authToken);
     fetchStockMovements(authToken);
     fetchStockTransfers(authToken);
+    fetchInventoryBalances(authToken);
     fetchAuditLogs();
-    fetchInventoryBalances();
     fetchSetupStatus();
 
     if (loggedInUser?.role === "ADMIN") {
@@ -359,6 +359,7 @@ function App() {
           items={items}
           locations={locations}
           exportInventoryBalances={exportInventoryBalances}
+          authToken={authToken}
         />
       </section>
 

@@ -3,16 +3,24 @@ import { BASE_URL } from "./config";
 
 const INVENTORY_BALANCES_URL = `${BASE_URL}/inventory-balances`;
 
-export function getInventoryBalances() {
-  return fetch(INVENTORY_BALANCES_URL)
+export function getInventoryBalances(token) {
+  return fetch(INVENTORY_BALANCES_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to fetch inventory balances.")
     )
     .then((response) => response.json());
 }
 
-export function exportInventoryBalancesCsv() {
-  return fetch(`${INVENTORY_BALANCES_URL}/export`)
+export function exportInventoryBalancesCsv(token) {
+  return fetch(`${INVENTORY_BALANCES_URL}/export`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) =>
       handleApiResponse(response, "Failed to export inventory balances.")
     )

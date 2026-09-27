@@ -4,14 +4,19 @@ import { getInventoryBalances, exportInventoryBalancesCsv } from "../api/invento
 function useInventoryBalances() {
   const [inventoryBalances, setInventoryBalances] = useState([]);
 
-  function fetchInventoryBalances() {
-    return getInventoryBalances().then((data) => {
+  function fetchInventoryBalances(token) {
+    if (!token) {
+      setInventoryBalances([]);
+      return Promise.resolve();
+    }
+
+    return getInventoryBalances(token).then((data) => {
       setInventoryBalances(data);
     });
   }
 
-  function exportInventoryBalances() {
-    exportInventoryBalancesCsv();
+  function exportInventoryBalances(token) {
+    return exportInventoryBalancesCsv(token);
   }
 
   return {

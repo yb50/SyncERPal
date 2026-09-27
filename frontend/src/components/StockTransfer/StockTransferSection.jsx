@@ -91,7 +91,7 @@ function StockTransferSection({
         setError("");
         setSuccessMessage("Stock transfer completed successfully.");
         fetchItems(authToken);
-        fetchInventoryBalances();
+        fetchInventoryBalances(authToken);
         fetchAuditLogs();
       })
       .catch((error) => {

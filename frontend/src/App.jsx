@@ -143,6 +143,10 @@ function App() {
   const currentUsername = loggedInUser ? loggedInUser.username : "";
   const authToken = loggedInUser ? loggedInUser.token : "";
 
+  const isLoggedIn = loggedInUser != null;
+  const showSetup = setupRequired && !isLoggedIn;
+  const showErpApp = isLoggedIn;
+
   const canManageItems = currentUser?.role === "ADMIN" || currentUser?.role === "MANAGER";
   const canManageUsers = setupRequired || currentUser?.role === "ADMIN";
   const canManageLocations = canManageItems;
@@ -217,198 +221,237 @@ function App() {
         setSuccessMessage={setSuccessMessage}
       />
 
-      <nav className="section-nav">
-        <a href="#dashboard">Dashboard</a>
-        <a href="#low-stock">Low Stock</a>
-        <a href="#items">Items</a>
-        <a href="#locations">Locations</a>
-        <a href="#stock-movements">Stock Movements</a>
-        <a href="#stock-transfers">Stock Transfers</a>
-        <a href="#inventory-balances">Inventory Balances</a>
-        <a href="#users">Users</a>
-        <a href="#audit-logs">Audit Logs</a>
-      </nav>
-
-      <section id="dashboard">
-        <InventorySummary
-          items={items}
-          locations={locations}
-          inventoryBalances={inventoryBalances}
-          stockMovements={stockMovements}
-          stockTransfers={stockTransfers}
-          users={users}
-          auditLogs={auditLogs}
-        />
-      </section>
-
-      <section id="low-stock">
-        <LowStockSection
-          items={items}
-          exportLowStockItems={exportLowStockItems}
-          authToken={authToken}
-          setError={setError}
-          handleApiError={handleApiError}
-        />
-      </section>
+      {!isLoggedIn && !setupRequired && (
+        <section>
+          <h2>Login Required</h2>
+          <p className="hint">
+            Please login to view and manage ERP data.
+          </p>
+        </section>
+      )}
 
       {error && <p className="error">{error}</p>}
       {successMessage && <p className="success">{successMessage}</p>}
 
-      <section id="items">
-        <ItemSection
-          items={items}
-          name={name}
-          sku={sku}
-          quantity={quantity}
-          lowStockThreshold={lowStockThreshold}
-          editingId={editingId}
-          loading={loading}
-          importFile={importFile}
-          canManageItems={canManageItems}
-          stockMovements={stockMovements}
-          inventoryBalances={inventoryBalances}
-          stockTransfers={stockTransfers}
-          authToken={authToken}
-          setName={setName}
-          setSku={setSku}
-          setQuantity={setQuantity}
-          setLowStockThreshold={setLowStockThreshold}
-          saveItem={saveItem}
-          removeItem={removeItem}
-          startEditItem={startEditItem}
-          clearItemForm={clearItemForm}
-          fetchStockMovementsForItem={fetchStockMovementsForItem}
-          fetchAuditLogs={fetchAuditLogs}
-          setError={setError}
-          handleApiError={handleApiError}
-          exportItems={exportItems}
-          setImportFile={setImportFile}
-          importItems={importItems}
-          setSuccessMessage={setSuccessMessage}
-        />
-      </section>
+      
+      {showErpApp && (
+        <>
+          <nav className="section-nav">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#low-stock">Low Stock</a>
+            <a href="#items">Items</a>
+            <a href="#locations">Locations</a>
+            <a href="#stock-movements">Stock Movements</a>
+            <a href="#stock-transfers">Stock Transfers</a>
+            <a href="#inventory-balances">Inventory Balances</a>
+            <a href="#users">Users</a>
+            <a href="#audit-logs">Audit Logs</a>
+          </nav>
 
-      <section id="locations">
-        <LocationSection
-          locations={locations}
-          locationCode={locationCode}
-          locationName={locationName}
-          stockMovements={stockMovements}
-          inventoryBalances={inventoryBalances}
-          stockTransfers={stockTransfers}
-          editingLocationId={editingLocationId}
-          setLocationCode={setLocationCode}
-          setLocationName={setLocationName}
-          saveLocation={saveLocation}
-          startEditLocation={startEditLocation}
-          clearLocationForm={clearLocationForm}
-          canManageLocations={canManageLocations}
-          fetchAuditLogs={fetchAuditLogs}
-          setError={setError}
-          handleApiError={handleApiError}
-          removeLocation={removeLocation}
-          setSuccessMessage={setSuccessMessage}
-          authToken={authToken}
-        />
-      </section>
+          <section id="dashboard">
+            <InventorySummary
+              items={items}
+              locations={locations}
+              inventoryBalances={inventoryBalances}
+              stockMovements={stockMovements}
+              stockTransfers={stockTransfers}
+              users={users}
+              auditLogs={auditLogs}
+            />
+          </section>
 
-      <section id="stock-movements">
-        <StockMovementSection
-          items={items}
-          locations={locations}
-          stockMovements={stockMovements}
-          movementItemId={movementItemId}
-          movementLocationId={movementLocationId}
-          movementType={movementType}
-          movementQuantity={movementQuantity}
-          movementNote={movementNote}
-          movementFilterItemId={movementFilterItemId}
-          canCreateStockMovements={canCreateStockMovements}
-          setMovementItemId={setMovementItemId}
-          setMovementLocationId={setMovementLocationId}
-          setMovementType={setMovementType}
-          setMovementQuantity={setMovementQuantity}
-          setMovementNote={setMovementNote}
-          changeMovementFilterItemId={changeMovementFilterItemId}
-          fetchAuditLogs={fetchAuditLogs}
-          saveStockMovement={saveStockMovement}
-          setError={setError}
-          handleApiError={handleApiError}
-          exportStockMovements={exportStockMovements}
-          fetchInventoryBalances={fetchInventoryBalances}
-          setSuccessMessage={setSuccessMessage}
-          authToken={authToken}
-        />
-      </section>
+          <section id="low-stock">
+            <LowStockSection
+              items={items}
+              exportLowStockItems={exportLowStockItems}
+              authToken={authToken}
+              setError={setError}
+              handleApiError={handleApiError}
+            />
+          </section>
 
-      <section id="stock-transfers">
-        <StockTransferSection
-          items={items}
-          locations={locations}
-          transferItemId={transferItemId}
-          fromLocationId={fromLocationId}
-          toLocationId={toLocationId}
-          transferQuantity={transferQuantity}
-          transferNote={transferNote}
-          setTransferItemId={setTransferItemId}
-          setFromLocationId={setFromLocationId}
-          setToLocationId={setToLocationId}
-          setTransferQuantity={setTransferQuantity}
-          setTransferNote={setTransferNote}
-          saveStockTransfer={saveStockTransfer}
-          canTransferStock={canTransferStock}
-          fetchItems={fetchItems}
-          fetchInventoryBalances={fetchInventoryBalances}
-          fetchAuditLogs={fetchAuditLogs}
-          setError={setError}
-          handleApiError={handleApiError}
-          stockTransfers={stockTransfers}
-          exportStockTransfers={exportStockTransfers}
-          setSuccessMessage={setSuccessMessage}
-          authToken={authToken}
-        />
-      </section>
+          <section id="items">
+            <ItemSection
+              items={items}
+              name={name}
+              sku={sku}
+              quantity={quantity}
+              lowStockThreshold={lowStockThreshold}
+              editingId={editingId}
+              loading={loading}
+              importFile={importFile}
+              canManageItems={canManageItems}
+              stockMovements={stockMovements}
+              inventoryBalances={inventoryBalances}
+              stockTransfers={stockTransfers}
+              authToken={authToken}
+              setName={setName}
+              setSku={setSku}
+              setQuantity={setQuantity}
+              setLowStockThreshold={setLowStockThreshold}
+              saveItem={saveItem}
+              removeItem={removeItem}
+              startEditItem={startEditItem}
+              clearItemForm={clearItemForm}
+              fetchStockMovementsForItem={fetchStockMovementsForItem}
+              fetchAuditLogs={fetchAuditLogs}
+              setError={setError}
+              handleApiError={handleApiError}
+              exportItems={exportItems}
+              setImportFile={setImportFile}
+              importItems={importItems}
+              setSuccessMessage={setSuccessMessage}
+            />
+          </section>
 
-      <section id="inventory-balances">
-        <InventoryBalanceSection
-          inventoryBalances={inventoryBalances}
-          items={items}
-          locations={locations}
-          exportInventoryBalances={exportInventoryBalances}
-          authToken={authToken}
-        />
-      </section>
+          <section id="locations">
+            <LocationSection
+              locations={locations}
+              locationCode={locationCode}
+              locationName={locationName}
+              stockMovements={stockMovements}
+              inventoryBalances={inventoryBalances}
+              stockTransfers={stockTransfers}
+              editingLocationId={editingLocationId}
+              setLocationCode={setLocationCode}
+              setLocationName={setLocationName}
+              saveLocation={saveLocation}
+              startEditLocation={startEditLocation}
+              clearLocationForm={clearLocationForm}
+              canManageLocations={canManageLocations}
+              fetchAuditLogs={fetchAuditLogs}
+              setError={setError}
+              handleApiError={handleApiError}
+              removeLocation={removeLocation}
+              setSuccessMessage={setSuccessMessage}
+              authToken={authToken}
+            />
+          </section>
 
-      <section id="users">
-        <UserSection
-          users={users}
-          username={username}
-          role={role}
-          setUsername={setUsername}
-          setRole={setRole}
-          saveUser={saveUser}
-          currentUsername={currentUsername}
-          canManageUsers={canManageUsers}
-          fetchAuditLogs={fetchAuditLogs}
-          setError={setError}
-          handleApiError={handleApiError}
-          changeUserRole={changeUserRole}
-          removeUser={removeUser}
-          setSuccessMessage={setSuccessMessage}
-          password={password}
-          setPassword={setPassword}
-          authToken={authToken}
-          setupRequired={setupRequired}
-        />
-      </section>
+          <section id="stock-movements">
+            <StockMovementSection
+              items={items}
+              locations={locations}
+              stockMovements={stockMovements}
+              movementItemId={movementItemId}
+              movementLocationId={movementLocationId}
+              movementType={movementType}
+              movementQuantity={movementQuantity}
+              movementNote={movementNote}
+              movementFilterItemId={movementFilterItemId}
+              canCreateStockMovements={canCreateStockMovements}
+              setMovementItemId={setMovementItemId}
+              setMovementLocationId={setMovementLocationId}
+              setMovementType={setMovementType}
+              setMovementQuantity={setMovementQuantity}
+              setMovementNote={setMovementNote}
+              changeMovementFilterItemId={changeMovementFilterItemId}
+              fetchAuditLogs={fetchAuditLogs}
+              saveStockMovement={saveStockMovement}
+              setError={setError}
+              handleApiError={handleApiError}
+              exportStockMovements={exportStockMovements}
+              fetchInventoryBalances={fetchInventoryBalances}
+              setSuccessMessage={setSuccessMessage}
+              authToken={authToken}
+            />
+          </section>
 
-      <section id="audit-logs">
-        <AuditLogSection
-          auditLogs={auditLogs}
-          exportAuditLogs={exportAuditLogs}
-          authToken={authToken}
-        />
-      </section>
+          <section id="stock-transfers">
+            <StockTransferSection
+              items={items}
+              locations={locations}
+              transferItemId={transferItemId}
+              fromLocationId={fromLocationId}
+              toLocationId={toLocationId}
+              transferQuantity={transferQuantity}
+              transferNote={transferNote}
+              setTransferItemId={setTransferItemId}
+              setFromLocationId={setFromLocationId}
+              setToLocationId={setToLocationId}
+              setTransferQuantity={setTransferQuantity}
+              setTransferNote={setTransferNote}
+              saveStockTransfer={saveStockTransfer}
+              canTransferStock={canTransferStock}
+              fetchItems={fetchItems}
+              fetchInventoryBalances={fetchInventoryBalances}
+              fetchAuditLogs={fetchAuditLogs}
+              setError={setError}
+              handleApiError={handleApiError}
+              stockTransfers={stockTransfers}
+              exportStockTransfers={exportStockTransfers}
+              setSuccessMessage={setSuccessMessage}
+              authToken={authToken}
+            />
+          </section>
+
+          <section id="inventory-balances">
+            <InventoryBalanceSection
+              inventoryBalances={inventoryBalances}
+              items={items}
+              locations={locations}
+              exportInventoryBalances={exportInventoryBalances}
+              authToken={authToken}
+            />
+          </section>
+
+          <section id="users">
+            <UserSection
+              users={users}
+              username={username}
+              role={role}
+              password={password}
+              setUsername={setUsername}
+              setRole={setRole}
+              setPassword={setPassword}
+              saveUser={saveUser}
+              changeUserRole={changeUserRole}
+              removeUser={removeUser}
+              fetchAuditLogs={fetchAuditLogs}
+              currentUsername={currentUsername}
+              canManageUsers={canManageUsers}
+              setupRequired={setupRequired}
+              authToken={authToken}
+              setError={setError}
+              setSuccessMessage={setSuccessMessage}
+              handleApiError={handleApiError}
+            />
+          </section>
+
+          <section id="audit-logs">
+            <AuditLogSection
+              auditLogs={auditLogs}
+              exportAuditLogs={exportAuditLogs}
+              authToken={authToken}
+            />
+          </section>
+        </>
+      )}
+
+      {showSetup && (
+        <section id="users">
+          <UserSection
+            users={users}
+            username={username}
+            role={role}
+            password={password}
+            setUsername={setUsername}
+            setRole={setRole}
+            setPassword={setPassword}
+            saveUser={saveUser}
+            changeUserRole={changeUserRole}
+            removeUser={removeUser}
+            fetchAuditLogs={fetchAuditLogs}
+            currentUsername={currentUsername}
+            canManageUsers={canManageUsers}
+            setupRequired={setupRequired}
+            authToken={authToken}
+            setError={setError}
+            setSuccessMessage={setSuccessMessage}
+            handleApiError={handleApiError}
+          />
+        </section>
+      )}
     </div>
   );
 }

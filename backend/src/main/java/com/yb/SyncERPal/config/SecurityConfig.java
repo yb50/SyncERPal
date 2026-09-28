@@ -2,23 +2,31 @@ package com.yb.SyncERPal.config;
 
 import java.util.List;
 
+import com.yb.SyncERPal.model.StandardErrorResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class SecurityConfig {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(TokenAuthenticationFilter tokenAuthenticationFilter) {
+    public SecurityConfig(
+            TokenAuthenticationFilter tokenAuthenticationFilter,
+            ObjectMapper objectMapper
+    ) {
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -123,14 +131,32 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(401);
-                            response.setContentType("text/plain");
-                            response.getWriter().write("Authentication is required.");
+                            StandardErrorResponse errorResponse = new StandardErrorResponse(
+                                    HttpStatus.UNAUTHORIZED.value(),
+                                    HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                                    "Authentication is required.",
+                                    request.getRequestURI()
+                            );
+
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+
+                            objectMapper.writeValue(response.getWriter(), errorResponse);
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(403);
-                            response.setContentType("text/plain");
-                            response.getWriter().write("Access denied.");
+                            StandardErrorResponse errorResponse = new StandardErrorResponse(
+                                    HttpStatus.FORBIDDEN.value(),
+                                    HttpStatus.FORBIDDEN.getReasonPhrase(),
+                                    "Access denied.",
+                                    request.getRequestURI()
+                            );
+
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+
+                            objectMapper.writeValue(response.getWriter(), errorResponse);
                         })
                 )
                 .httpBasic(httpBasic -> httpBasic.disable())

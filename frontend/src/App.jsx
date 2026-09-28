@@ -207,7 +207,7 @@ function App() {
     }
 
     Promise.all(protectedDataRequests).catch(handleApiError);
-  }, [authToken, loggedInUser?.role]);
+  }, [authLoading, authToken, loggedInUser?.role]);
 
   return (
     <div className="app">

@@ -5,12 +5,17 @@ import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import com.yb.SyncERPal.repository.StockTransferRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class InventoryLocationService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(InventoryLocationService.class);
 
     private final InventoryLocationRepository inventoryLocationRepository;
     private final AppUserService appUserService;
@@ -68,6 +73,13 @@ public class InventoryLocationService {
                 performedBy
         );
 
+        logger.info(
+                "Location created: id={}, code={}, by={}",
+                savedLocation.getId(),
+                savedLocation.getCode(),
+                performedBy
+        );
+
         return savedLocation;
     }
 
@@ -108,6 +120,13 @@ public class InventoryLocationService {
                 performedBy
         );
 
+        logger.info(
+                "Location updated: id={}, code={}, by={}",
+                updatedLocation.getId(),
+                updatedLocation.getCode(),
+                performedBy
+        );
+
         return updatedLocation;
     }
 
@@ -139,6 +158,13 @@ public class InventoryLocationService {
                 "LOCATION",
                 existingLocation.getId(),
                 "Deleted location: " + existingLocation.getCode(),
+                performedBy
+        );
+
+        logger.info(
+                "Location deleted: id={}, code={}, by={}",
+                existingLocation.getId(),
+                existingLocation.getCode(),
                 performedBy
         );
 

@@ -4,6 +4,8 @@ import com.yb.SyncERPal.model.*;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,9 @@ import java.util.List;
 
 @Service
 public class StockMovementService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(StockMovementService.class);
 
     private final StockMovementRepository stockMovementRepository;
     private final ItemRepository itemRepository;
@@ -124,6 +129,16 @@ public class StockMovementService {
                         savedStockMovement.getQuantity() +
                         " for item " + item.getSku() +
                         " at location " + location.getCode(),
+                performedBy
+        );
+
+        logger.info(
+                "Stock movement created: id={}, itemId={}, locationId={}, type={}, quantity={}, by={}",
+                savedStockMovement.getId(),
+                savedStockMovement.getItemId(),
+                savedStockMovement.getLocationId(),
+                savedStockMovement.getType(),
+                savedStockMovement.getQuantity(),
                 performedBy
         );
 

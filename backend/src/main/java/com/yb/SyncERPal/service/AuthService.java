@@ -4,6 +4,8 @@ import com.yb.SyncERPal.exception.UnauthorizedException;
 import com.yb.SyncERPal.model.*;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import com.yb.SyncERPal.repository.AuthTokenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
@@ -12,6 +14,8 @@ import java.util.Base64;
 
 @Service
 public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,11 +38,15 @@ public class AuthService {
         AppUser appUser = appUserRepository.findByUsername(request.getUsername());
 
         if (appUser == null) {
+            logger.warn("Failed login attempt for unknown username: {}", request.getUsername());
+
             throw new IllegalArgumentException("Invalid username or password.");
         }
 
         if (appUser.getPasswordHash() == null ||
                 !passwordEncoder.matches(request.getPassword(), appUser.getPasswordHash())) {
+            logger.warn("Failed login attempt for username: {}", request.getUsername());
+
             throw new IllegalArgumentException("Invalid username or password.");
         }
 
@@ -51,6 +59,8 @@ public class AuthService {
         );
 
         authTokenRepository.save(authToken);
+
+        logger.info("User logged in: {}", appUser.getUsername());
 
         return new LoginResponse(
                 appUser.getId(),
@@ -89,15 +99,6 @@ public class AuthService {
         );
     }
 
-    public void logout(String authorizationHeader) {
-        String token = extractToken(authorizationHeader);
-
-        AuthToken authToken = authTokenRepository.findByToken(token)
-                .orElseThrow(() -> new UnauthorizedException("Invalid authentication token."));
-
-        authTokenRepository.delete(authToken);
-    }
-
     public AppUser getAuthenticatedUser(String authorizationHeader) {
         String token = extractToken(authorizationHeader);
 
@@ -106,6 +107,8 @@ public class AuthService {
 
         if (authToken.getExpiresAt() != null &&
                 authToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            logger.warn("Expired authentication token used.");
+
             throw new UnauthorizedException("Authentication token has expired.");
         }
 
@@ -134,5 +137,22 @@ public class AuthService {
         }
 
         return token;
+    }
+
+    public void logout(String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+
+        AuthToken authToken = authTokenRepository.findByToken(token)
+                .orElseThrow(() -> new UnauthorizedException("Invalid authentication token."));
+
+        AppUser appUser = appUserRepository.findById(authToken.getUserId());
+
+        authTokenRepository.delete(authToken);
+
+        if (appUser != null) {
+            logger.info("User logged out: {}", appUser.getUsername());
+        } else {
+            logger.info("User logged out with deleted user account.");
+        }
     }
 }

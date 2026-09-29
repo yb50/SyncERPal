@@ -9,12 +9,17 @@ import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockTransferRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StockTransferService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(StockTransferService.class);
 
     private final AppUserService appUserService;
     private final ItemRepository itemRepository;
@@ -147,6 +152,16 @@ public class StockTransferService {
                         " of item " + item.getSku() +
                         " from " + fromLocation.getCode() +
                         " to " + toLocation.getCode(),
+                performedBy
+        );
+
+        logger.info(
+                "Stock transfer created: id={}, itemId={}, fromLocationId={}, toLocationId={}, quantity={}, by={}",
+                savedStockTransfer.getId(),
+                savedStockTransfer.getItemId(),
+                savedStockTransfer.getFromLocationId(),
+                savedStockTransfer.getToLocationId(),
+                savedStockTransfer.getQuantity(),
                 performedBy
         );
 

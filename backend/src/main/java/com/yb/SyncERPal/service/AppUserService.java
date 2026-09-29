@@ -5,6 +5,8 @@ import com.yb.SyncERPal.model.CreateUserRequest;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ import java.util.List;
 
 @Service
 public class AppUserService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(AppUserService.class);
 
     private final AppUserRepository appUserRepository;
     private final AuditLogService auditLogService;
@@ -93,6 +98,14 @@ public class AppUserService {
                 performedBy
         );
 
+        logger.info(
+                "User created: id={}, username={}, role={}, by={}",
+                savedUser.getId(),
+                savedUser.getUsername(),
+                savedUser.getRole(),
+                performedBy
+        );
+
         return savedUser;
     }
 
@@ -167,6 +180,14 @@ public class AppUserService {
                 performedBy
         );
 
+        logger.info(
+                "User role updated: id={}, username={}, role={}, by={}",
+                updatedUser.getId(),
+                updatedUser.getUsername(),
+                updatedUser.getRole(),
+                performedBy
+        );
+
         return updatedUser;
     }
 
@@ -199,6 +220,13 @@ public class AppUserService {
                 "USER",
                 appUser.getId(),
                 "Deleted user: " + appUser.getUsername() + " with role " + appUser.getRole(),
+                performedBy
+        );
+
+        logger.info(
+                "User deleted: id={}, username={}, by={}",
+                appUser.getId(),
+                appUser.getUsername(),
                 performedBy
         );
 

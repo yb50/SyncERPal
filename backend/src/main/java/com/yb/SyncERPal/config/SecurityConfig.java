@@ -3,6 +3,7 @@ package com.yb.SyncERPal.config;
 import java.util.List;
 
 import com.yb.SyncERPal.model.StandardErrorResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,9 @@ import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class SecurityConfig {
+
+    @Value("${app.cors.allowed-origin}")
+    private String allowedOrigin;
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final ObjectMapper objectMapper;
@@ -170,7 +174,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(allowedOrigin));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
 

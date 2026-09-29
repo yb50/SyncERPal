@@ -8,6 +8,8 @@ import com.yb.SyncERPal.repository.StockTransferRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,9 @@ import java.util.List;
 
 @Service
 public class ItemService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(ItemService.class);
 
     private final ItemRepository itemRepository;
     private final StockMovementRepository stockMovementRepository;
@@ -86,6 +91,13 @@ public class ItemService {
 
         Item savedItem = itemRepository.save(item);
 
+        logger.info(
+                "Item created: id={}, sku={}, by={}",
+                savedItem.getId(),
+                savedItem.getSku(),
+                performedBy
+        );
+
         auditLogService.createAuditLog(
                 "CREATE_ITEM",
                 "ITEM",
@@ -120,6 +132,13 @@ public class ItemService {
         }
 
         Item updatedItem = itemRepository.updateItem(id, item);
+
+        logger.info(
+                "Item updated: id={}, sku={}, by={}",
+                updatedItem.getId(),
+                updatedItem.getSku(),
+                performedBy
+        );
 
         auditLogService.createAuditLog(
                 "UPDATE_ITEM",
@@ -158,6 +177,13 @@ public class ItemService {
         }
 
         Item deletedItem = itemRepository.deleteItem(id);
+
+        logger.info(
+                "Item deleted: id={}, sku={}, by={}",
+                deletedItem.getId(),
+                deletedItem.getSku(),
+                performedBy
+        );
 
         auditLogService.createAuditLog(
                 "DELETE_ITEM",
@@ -267,6 +293,8 @@ public class ItemService {
 
                 importedCount++;
             }
+
+            logger.info("Items imported from CSV by: {}", performedBy);
 
             return importedCount;
         } catch (IllegalArgumentException e) {

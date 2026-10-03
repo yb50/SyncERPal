@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.StockMovement;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -35,5 +37,13 @@ public class StockMovementRepository {
 
     public boolean existsByLocationId(Long locationId) {
         return stockMovementJpaRepository.existsByLocationId(locationId);
+    }
+
+    public Page<StockMovement> findAll(Pageable pageable) {
+        return stockMovementJpaRepository.findAll(pageable);
+    }
+
+    public Page<StockMovement> findByItemId(Long itemId, Pageable pageable) {
+        return stockMovementJpaRepository.findByItemId(itemId, pageable);
     }
 }

@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.model.StockMovement;
 import com.yb.SyncERPal.service.StockMovementService;
 import org.springframework.http.HttpHeaders;
@@ -58,5 +59,22 @@ public class StockMovementController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=stock-movements.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csv);
+    }
+
+    @GetMapping("stock-movements/paged")
+    public PageResponse<StockMovement> getPagedStockMovements(
+            @RequestParam(required = false) Long itemId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        return stockMovementService.getPagedStockMovements(
+                itemId,
+                page,
+                size,
+                sortBy,
+                direction
+        );
     }
 }

@@ -6,6 +6,9 @@ import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -176,5 +179,51 @@ public class StockMovementService {
         }
 
         return escapedValue;
+    }
+
+    private String validateStockMovementSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "createdAt";
+        }
+
+        return switch (sortBy) {
+            case "id", "itemId", "locationId", "type", "quantity", "createdAt" -> sortBy;
+            default -> "createdAt";
+        };
+    }
+
+    public PageResponse<StockMovement> getPagedStockMovements(
+            Long itemId,
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateStockMovementSortField(sortBy);
+
+        Sort.Direction sortDirection = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<StockMovement> stockMovementPage;
+
+        if (itemId == null) {
+            stockMovementPage = stockMovementRepository.findAll(pageRequest);
+        } else {
+            stockMovementPage = stockMovementRepository.findByItemId(itemId, pageRequest);
+        }
+
+        return new PageResponse<>(
+                stockMovementPage.getContent(),
+                stockMovementPage.getNumber(),
+                stockMovementPage.getSize(),
+                stockMovementPage.getTotalElements(),
+                stockMovementPage.getTotalPages(),
+                stockMovementPage.isLast()
+        );
     }
 }

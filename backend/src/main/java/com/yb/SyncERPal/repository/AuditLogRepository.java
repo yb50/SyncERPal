@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.AuditLog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,5 +22,9 @@ public class AuditLogRepository {
 
     public AuditLog save(AuditLog auditLog) {
         return auditLogJpaRepository.save(auditLog);
+    }
+
+    public Page<AuditLog> findAll(Pageable pageable) {
+        return auditLogJpaRepository.findAll(pageable);
     }
 }

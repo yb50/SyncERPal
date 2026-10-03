@@ -1,7 +1,11 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.AuditLog;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.repository.AuditLogRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,5 +73,47 @@ public class AuditLogService {
         }
 
         return escapedValue;
+    }
+
+    private String validateAuditLogSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "createdAt";
+        }
+
+        return switch (sortBy) {
+            case "id", "action", "entityType", "entityId", "performedBy", "createdAt" -> sortBy;
+            default -> "createdAt";
+        };
+    }
+
+    public PageResponse<AuditLog> getPagedAuditLogs(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateAuditLogSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "asc".equalsIgnoreCase(direction)
+                        ? Sort.Direction.ASC
+                        : Sort.Direction.DESC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<AuditLog> auditLogPage = auditLogRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                auditLogPage.getContent(),
+                auditLogPage.getNumber(),
+                auditLogPage.getSize(),
+                auditLogPage.getTotalElements(),
+                auditLogPage.getTotalPages(),
+                auditLogPage.isLast()
+        );
     }
 }

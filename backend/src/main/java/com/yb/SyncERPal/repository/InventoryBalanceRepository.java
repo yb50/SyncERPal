@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.InventoryBalance;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,5 +40,9 @@ public class InventoryBalanceRepository {
 
     public boolean existsByItemId(Long itemId) {
         return inventoryBalanceJpaRepository.existsByItemId(itemId);
+    }
+
+    public Page<InventoryBalance> findAll(Pageable pageable) {
+        return inventoryBalanceJpaRepository.findAll(pageable);
     }
 }

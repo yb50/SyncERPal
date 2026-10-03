@@ -3,9 +3,13 @@ package com.yb.SyncERPal.service;
 import com.yb.SyncERPal.model.InventoryBalance;
 import com.yb.SyncERPal.model.InventoryLocation;
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,5 +97,46 @@ public class InventoryBalanceService {
         }
 
         return escapedValue;
+    }
+
+    private String validateInventoryBalanceSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "itemId";
+        }
+
+        return switch (sortBy) {
+            case "id", "itemId", "locationId", "quantity" -> sortBy;
+            default -> "itemId";
+        };
+    }
+
+    public PageResponse<InventoryBalance> getPagedInventoryBalances(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateInventoryBalanceSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<InventoryBalance> inventoryBalancePage =
+                inventoryBalanceRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                inventoryBalancePage.getContent(),
+                inventoryBalancePage.getNumber(),
+                inventoryBalancePage.getSize(),
+                inventoryBalancePage.getTotalElements(),
+                inventoryBalancePage.getTotalPages(),
+                inventoryBalancePage.isLast()
+        );
     }
 }

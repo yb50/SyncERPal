@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.StockTransfer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +30,9 @@ public class StockTransferRepository {
 
     public boolean existsByItemId(Long itemId) {
         return stockTransferJpaRepository.existsByItemId(itemId);
+    }
+
+    public Page<StockTransfer> findAll(Pageable pageable) {
+        return stockTransferJpaRepository.findAll(pageable);
     }
 }

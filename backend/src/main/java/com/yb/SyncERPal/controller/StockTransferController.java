@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.model.StockTransfer;
 import com.yb.SyncERPal.model.StockTransferRequest;
 import com.yb.SyncERPal.service.StockTransferService;
@@ -48,5 +49,20 @@ public class StockTransferController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=stock-transfers.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csv);
+    }
+
+    @GetMapping("/stock-transfers/paged")
+    public PageResponse<StockTransfer> getPagedStockTransfers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        return stockTransferService.getPagedStockTransfers(
+                page,
+                size,
+                sortBy,
+                direction
+        );
     }
 }

@@ -1,16 +1,15 @@
 package com.yb.SyncERPal.service;
 
-import com.yb.SyncERPal.model.InventoryBalance;
-import com.yb.SyncERPal.model.InventoryLocation;
-import com.yb.SyncERPal.model.Item;
-import com.yb.SyncERPal.model.StockTransfer;
-import com.yb.SyncERPal.model.StockTransferRequest;
+import com.yb.SyncERPal.model.*;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockTransferRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -199,5 +198,48 @@ public class StockTransferService {
         }
 
         return escapedValue;
+    }
+
+    private String validateStockTransferSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "createdAt";
+        }
+
+        return switch (sortBy) {
+            case "id", "itemId", "fromLocationId", "toLocationId", "quantity", "performedBy", "createdAt" -> sortBy;
+            default -> "createdAt";
+        };
+    }
+
+    public PageResponse<StockTransfer> getPagedStockTransfers(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateStockTransferSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "asc".equalsIgnoreCase(direction)
+                        ? Sort.Direction.ASC
+                        : Sort.Direction.DESC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<StockTransfer> stockTransferPage =
+                stockTransferRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                stockTransferPage.getContent(),
+                stockTransferPage.getNumber(),
+                stockTransferPage.getSize(),
+                stockTransferPage.getTotalElements(),
+                stockTransferPage.getTotalPages(),
+                stockTransferPage.isLast()
+        );
     }
 }

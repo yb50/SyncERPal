@@ -1,6 +1,10 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.PageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.ItemRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
@@ -332,5 +336,47 @@ public class ItemService {
                     "Row " + record.getRecordNumber() + ": " + columnName + " must be a number."
             );
         }
+    }
+
+    private String validateItemSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "id";
+        }
+
+        return switch (sortBy) {
+            case "id", "name", "sku", "quantity", "lowStockThreshold", "createdAt", "updatedAt" -> sortBy;
+            default -> "id";
+        };
+    }
+
+    public PageResponse<Item> getPagedItems(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateItemSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "desc".equalsIgnoreCase(direction)
+                        ? Sort.Direction.DESC
+                        : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<Item> itemPage = itemRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                itemPage.getContent(),
+                itemPage.getNumber(),
+                itemPage.getSize(),
+                itemPage.getTotalElements(),
+                itemPage.getTotalPages(),
+                itemPage.isLast()
+        );
     }
 }

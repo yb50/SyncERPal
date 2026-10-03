@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -91,5 +92,15 @@ public class ItemController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=low-stock-items.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csv);
+    }
+
+    @GetMapping("/items/paged")
+    public PageResponse<Item> getPagedItems(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return itemService.getPagedItems(page, size, sortBy, direction);
     }
 }

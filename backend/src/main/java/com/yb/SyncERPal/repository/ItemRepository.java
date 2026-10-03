@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -66,5 +68,9 @@ public class ItemRepository {
 
     public boolean existsBySku(String sku) {
         return itemJpaRepository.existsBySku(sku);
+    }
+
+    public Page<Item> findAll(Pageable pageable) {
+        return itemJpaRepository.findAll(pageable);
     }
 }

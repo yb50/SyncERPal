@@ -2,11 +2,15 @@ package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.CreateUserRequest;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.model.UserRole;
 import com.yb.SyncERPal.repository.AppUserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -231,5 +235,45 @@ public class AppUserService {
         );
 
         return appUser;
+    }
+
+    private String validateUserSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "username";
+        }
+
+        return switch (sortBy) {
+            case "id", "username", "role" -> sortBy;
+            default -> "username";
+        };
+    }
+
+    public PageResponse<AppUser> getPagedUsers(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateUserSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<AppUser> userPage = appUserRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                userPage.getContent(),
+                userPage.getNumber(),
+                userPage.getSize(),
+                userPage.getTotalElements(),
+                userPage.getTotalPages(),
+                userPage.isLast()
+        );
     }
 }

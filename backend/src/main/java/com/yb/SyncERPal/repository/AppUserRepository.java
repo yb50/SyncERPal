@@ -2,6 +2,8 @@ package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.UserRole;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,5 +47,9 @@ public class AppUserRepository {
 
     public void delete(AppUser appUser) {
         appUserJpaRepository.delete(appUser);
+    }
+
+    public Page<AppUser> findAll(Pageable pageable) {
+        return appUserJpaRepository.findAll(pageable);
     }
 }

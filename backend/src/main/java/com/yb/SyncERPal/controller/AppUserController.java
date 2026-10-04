@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.CreateUserRequest;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.model.UpdateUserRoleRequest;
 import com.yb.SyncERPal.service.AppUserService;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,20 @@ public class AppUserController {
         }
 
         return ResponseEntity.ok(deletedUser);
+    }
+
+    @GetMapping("/users/paged")
+    public PageResponse<AppUser> getPagedUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "username") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return appUserService.getPagedUsers(
+                page,
+                size,
+                sortBy,
+                direction
+        );
     }
 }

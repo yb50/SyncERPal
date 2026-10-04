@@ -1,12 +1,16 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.InventoryLocation;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.repository.InventoryBalanceRepository;
 import com.yb.SyncERPal.repository.InventoryLocationRepository;
 import com.yb.SyncERPal.repository.StockMovementRepository;
 import com.yb.SyncERPal.repository.StockTransferRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -169,5 +173,46 @@ public class InventoryLocationService {
         );
 
         return existingLocation;
+    }
+
+    private String validateLocationSortField(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "code";
+        }
+
+        return switch (sortBy) {
+            case "id", "code", "name" -> sortBy;
+            default -> "code";
+        };
+    }
+
+    public PageResponse<InventoryLocation> getPagedLocations(
+            int page,
+            int size,
+            String sortBy,
+            String direction
+    ) {
+        String safeSortBy = validateLocationSortField(sortBy);
+
+        Sort.Direction sortDirection =
+                "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1),
+                Sort.by(sortDirection, safeSortBy)
+        );
+
+        Page<InventoryLocation> locationPage =
+                inventoryLocationRepository.findAll(pageRequest);
+
+        return new PageResponse<>(
+                locationPage.getContent(),
+                locationPage.getNumber(),
+                locationPage.getSize(),
+                locationPage.getTotalElements(),
+                locationPage.getTotalPages(),
+                locationPage.isLast()
+        );
     }
 }

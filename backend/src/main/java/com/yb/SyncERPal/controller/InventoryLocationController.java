@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.InventoryLocation;
+import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.service.InventoryLocationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -73,5 +74,20 @@ public class InventoryLocationController {
         }
 
         return ResponseEntity.ok(deletedLocation);
+    }
+
+    @GetMapping("/locations/paged")
+    public PageResponse<InventoryLocation> getPagedLocations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "code") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return inventoryLocationService.getPagedLocations(
+                page,
+                size,
+                sortBy,
+                direction
+        );
     }
 }

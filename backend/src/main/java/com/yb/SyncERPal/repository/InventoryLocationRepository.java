@@ -1,6 +1,8 @@
 package com.yb.SyncERPal.repository;
 
 import com.yb.SyncERPal.model.InventoryLocation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,5 +34,9 @@ public class InventoryLocationRepository {
 
     public void delete(InventoryLocation inventoryLocation) {
         inventoryLocationJpaRepository.delete(inventoryLocation);
+    }
+
+    public Page<InventoryLocation> findAll(Pageable pageable) {
+        return inventoryLocationJpaRepository.findAll(pageable);
     }
 }

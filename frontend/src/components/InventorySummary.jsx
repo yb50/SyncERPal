@@ -21,7 +21,7 @@ function InventorySummary({
     return item.quantity === 0;
   }).length;
 
-  const recentAuditLogs = auditLogs.slice(0, 5);
+  // const recentAuditLogs = auditLogs.slice(0, 5);
 
   function formatDateTime(dateTimeText) {
     if (!dateTimeText) {
@@ -82,7 +82,7 @@ function InventorySummary({
         </div>
       </div>
 
-      <div className="summary-recent">
+      {/* <div className="summary-recent">
         <h3>Recent Activity</h3>
 
         {recentAuditLogs.length === 0 ? (
@@ -101,7 +101,7 @@ function InventorySummary({
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
     </>
   );
 }

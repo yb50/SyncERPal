@@ -252,3 +252,66 @@ tr:nth-child(even) {
 .recent-activity-list small {
   color: #666;
 }
+
+/* App Shell: Content Pane & Sidebar */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  height: calc(100vh - 170px);
+  overflow: hidden;
+}
+
+.app-content {
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.recent-activity-sidebar {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.recent-activity-sidebar h2 {
+  margin-top: 0;
+}
+
+.recent-activity-sidebar .recent-activity-list {
+  padding-left: 18px;
+  margin-bottom: 0;
+}
+
+.recent-activity-sidebar .recent-activity-list li {
+  margin-bottom: 14px;
+}
+
+.recent-activity-sidebar .recent-activity-list p {
+  margin: 4px 0;
+}
+
+.recent-activity-sidebar .recent-activity-list small {
+  color: #666;
+}
+
+/* Responsive Fallback */
+
+@media (max-width: 1000px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+
+  .app-content {
+    overflow-y: visible;
+  }
+
+  .recent-activity-sidebar {
+    margin-top: 18px;
+  }
+}

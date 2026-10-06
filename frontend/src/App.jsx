@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { NavLink, Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import "./App.css";
 import useItems from "./hooks/useItems";
 import useStockMovements from "./hooks/useStockMovements";
@@ -22,6 +22,7 @@ import useAuth from "./hooks/useAuth";
 import LoginSection from "./components/LoginSection";
 import { isForbiddenError, isUnauthorizedError } from "./api/apiError";
 import RecentActivitySidebar from "./components/RecentActivitySidebar";
+import AppHeader from "./components/AppHeader";
 
 function App() {
   const {
@@ -175,6 +176,12 @@ function App() {
     setError(error.message);
   }
 
+  async function handleHeaderLogout() {
+    await logout();
+    setError("");
+    setSuccessMessage("Logged out successfully.");
+  }
+
   useEffect(() => {
     if (authLoading) {
       return;
@@ -213,20 +220,25 @@ function App() {
 
   return (
     <div className="app">
-      <h1>SyncERPal</h1>
-
-      <LoginSection
-        loggedInUser={loggedInUser}
-        loginUsername={loginUsername}
-        loginPassword={loginPassword}
-        authLoading={authLoading}
-        setLoginUsername={setLoginUsername}
-        setLoginPassword={setLoginPassword}
-        login={login}
-        logout={logout}
-        setError={setError}
-        setSuccessMessage={setSuccessMessage}
+      <AppHeader 
+        currentUser={currentUser} 
+        onLogout={handleHeaderLogout} 
       />
+
+      {!isLoggedIn && (
+        <LoginSection
+          loggedInUser={loggedInUser}
+          loginUsername={loginUsername}
+          loginPassword={loginPassword}
+          authLoading={authLoading}
+          setLoginUsername={setLoginUsername}
+          setLoginPassword={setLoginPassword}
+          login={login}
+          logout={logout}
+          setError={setError}
+          setSuccessMessage={setSuccessMessage}
+        />
+      )}
 
       {showLoginRequired && (
         <section>
@@ -242,247 +254,230 @@ function App() {
 
       
       {showErpApp && (
-        <>
-          <nav className="section-nav">
-            <NavLink to="/dashboard">Dashboard</NavLink>
-            <NavLink to="/items">Items</NavLink>
-            <NavLink to="/locations">Locations</NavLink>
-            <NavLink to="/stock-movements">Stock Movements</NavLink>
-            <NavLink to="/stock-transfers">Stock Transfers</NavLink>
-            <NavLink to="/inventory-balances">Inventory Balances</NavLink>
-
-            {currentUser?.role === "ADMIN" && (
-              <NavLink to="/users">Users</NavLink>
-            )}
-
-            <NavLink to="/audit-logs">Audit Logs</NavLink>
-          </nav>
-
-          <div className="app-shell">
-            <main className="app-content">
-              <Routes>
-                <Route 
-                  path="/" 
-                  element={
-                    <Navigate to="/dashboard" replace 
-                    />
-                  } 
-                />
-
-                <Route
-                  path="/dashboard"
-                  element={
-                    <InventorySummary
-                      items={items}
-                      locations={locations}
-                      inventoryBalances={inventoryBalances}
-                      stockMovements={stockMovements}
-                      stockTransfers={stockTransfers}
-                      users={users}
-                      // auditLogs={auditLogs}
-                    />
-                  }
-                />
-
-                <Route
-                  path="/items"
-                  element={
-                    <>
-                      <LowStockSection
-                        items={items}
-                        exportLowStockItems={exportLowStockItems}
-                        authToken={authToken}
-                        setError={setError}
-                        handleApiError={handleApiError}
-                      />
-
-                      <ItemSection
-                        items={items}
-                        stockMovements={stockMovements}
-                        inventoryBalances={inventoryBalances}
-                        stockTransfers={stockTransfers}
-                        name={name}
-                        sku={sku}
-                        quantity={quantity}
-                        lowStockThreshold={lowStockThreshold}
-                        editingId={editingId}
-                        loading={loading}
-                        importFile={importFile}
-                        setName={setName}
-                        setSku={setSku}
-                        setQuantity={setQuantity}
-                        setLowStockThreshold={setLowStockThreshold}
-                        setImportFile={setImportFile}
-                        saveItem={saveItem}
-                        removeItem={removeItem}
-                        startEditItem={startEditItem}
-                        clearItemForm={clearItemForm}
-                        importItems={importItems}
-                        exportItems={exportItems}
-                        exportLowStockItems={exportLowStockItems}
-                        fetchStockMovementsForItem={fetchStockMovementsForItem}
-                        fetchAuditLogs={fetchAuditLogs}
-                        authToken={authToken}
-                        canManageItems={canManageItems}
-                        setError={setError}
-                        setSuccessMessage={setSuccessMessage}
-                        handleApiError={handleApiError}
-                      />
-                    </>
-                  }
-                />
-
-                <Route
-                  path="/locations"
-                  element={
-                    <LocationSection
-                      locations={locations}
-                      stockMovements={stockMovements}
-                      inventoryBalances={inventoryBalances}
-                      stockTransfers={stockTransfers}
-                      locationCode={locationCode}
-                      locationName={locationName}
-                      editingLocationId={editingLocationId}
-                      setLocationCode={setLocationCode}
-                      setLocationName={setLocationName}
-                      saveLocation={saveLocation}
-                      removeLocation={removeLocation}
-                      startEditLocation={startEditLocation}
-                      clearLocationForm={clearLocationForm}
-                      fetchAuditLogs={fetchAuditLogs}
-                      authToken={authToken}
-                      canManageLocations={canManageLocations}
-                      setError={setError}
-                      setSuccessMessage={setSuccessMessage}
-                      handleApiError={handleApiError}
-                    />
-                  }
-                />
-
-                <Route
-                  path="/stock-movements"
-                  element={
-                    <StockMovementSection
-                      items={items}
-                      locations={locations}
-                      stockMovements={stockMovements}
-                      movementItemId={movementItemId}
-                      movementLocationId={movementLocationId}
-                      movementType={movementType}
-                      movementQuantity={movementQuantity}
-                      movementNote={movementNote}
-                      movementFilterItemId={movementFilterItemId}
-                      setMovementItemId={setMovementItemId}
-                      setMovementLocationId={setMovementLocationId}
-                      setMovementType={setMovementType}
-                      setMovementQuantity={setMovementQuantity}
-                      setMovementNote={setMovementNote}
-                      changeMovementFilterItemId={changeMovementFilterItemId}
-                      saveStockMovement={saveStockMovement}
-                      exportStockMovements={exportStockMovements}
-                      fetchInventoryBalances={fetchInventoryBalances}
-                      fetchAuditLogs={fetchAuditLogs}
-                      authToken={authToken}
-                      canCreateStockMovements={canCreateStockMovements}
-                      setError={setError}
-                      setSuccessMessage={setSuccessMessage}
-                      handleApiError={handleApiError}
-                    />
-                  }
-                />
-
-                <Route
-                  path="/stock-transfers"
-                  element={
-                    <StockTransferSection
-                      items={items}
-                      locations={locations}
-                      stockTransfers={stockTransfers}
-                      transferItemId={transferItemId}
-                      fromLocationId={fromLocationId}
-                      toLocationId={toLocationId}
-                      transferQuantity={transferQuantity}
-                      transferNote={transferNote}
-                      setTransferItemId={setTransferItemId}
-                      setFromLocationId={setFromLocationId}
-                      setToLocationId={setToLocationId}
-                      setTransferQuantity={setTransferQuantity}
-                      setTransferNote={setTransferNote}
-                      saveStockTransfer={saveStockTransfer}
-                      exportStockTransfers={exportStockTransfers}
-                      fetchItems={fetchItems}
-                      fetchInventoryBalances={fetchInventoryBalances}
-                      fetchAuditLogs={fetchAuditLogs}
-                      authToken={authToken}
-                      canTransferStock={canTransferStock}
-                      setError={setError}
-                      setSuccessMessage={setSuccessMessage}
-                      handleApiError={handleApiError}
-                    />
-                  }
-                />
-
-                <Route
-                  path="/inventory-balances"
-                  element={
-                    <InventoryBalanceSection
-                      items={items}
-                      locations={locations}
-                      inventoryBalances={inventoryBalances}
-                      exportInventoryBalances={exportInventoryBalances}
-                      authToken={authToken}
-                      handleApiError={handleApiError}
-                    />
-                  }
-                />
-
-                {currentUser?.role === "ADMIN" && (
-                  <Route
-                    path="/users"
-                    element={
-                      <UserSection
-                        users={users}
-                        username={username}
-                        role={role}
-                        password={password}
-                        setupRequired={setupRequired}
-                        currentUsername={currentUsername}
-                        setUsername={setUsername}
-                        setRole={setRole}
-                        setPassword={setPassword}
-                        saveUser={saveUser}
-                        changeUserRole={changeUserRole}
-                        removeUser={removeUser}
-                        fetchAuditLogs={fetchAuditLogs}
-                        authToken={authToken}
-                        canManageUsers={canManageUsers}
-                        setError={setError}
-                        setSuccessMessage={setSuccessMessage}
-                        handleApiError={handleApiError}
-                      />
-                    }
+        <div className="app-shell">
+          <main className="app-content">
+            <Routes>
+              <Route 
+                path="/" 
+                element={
+                  <Navigate to="/dashboard" replace 
                   />
-                )}
+                } 
+              />
 
-                <Route
-                  path="/audit-logs"
-                  element={
-                    <AuditLogSection
-                      auditLogs={auditLogs}
-                      exportAuditLogs={exportAuditLogs}
+              <Route
+                path="/dashboard"
+                element={
+                  <InventorySummary
+                    items={items}
+                    locations={locations}
+                    inventoryBalances={inventoryBalances}
+                    stockMovements={stockMovements}
+                    stockTransfers={stockTransfers}
+                    users={users}
+                    // auditLogs={auditLogs}
+                  />
+                }
+              />
+
+              <Route
+                path="/items"
+                element={
+                  <>
+                    <LowStockSection
+                      items={items}
+                      exportLowStockItems={exportLowStockItems}
                       authToken={authToken}
+                      setError={setError}
+                      handleApiError={handleApiError}
+                    />
+
+                    <ItemSection
+                      items={items}
+                      stockMovements={stockMovements}
+                      inventoryBalances={inventoryBalances}
+                      stockTransfers={stockTransfers}
+                      name={name}
+                      sku={sku}
+                      quantity={quantity}
+                      lowStockThreshold={lowStockThreshold}
+                      editingId={editingId}
+                      loading={loading}
+                      importFile={importFile}
+                      setName={setName}
+                      setSku={setSku}
+                      setQuantity={setQuantity}
+                      setLowStockThreshold={setLowStockThreshold}
+                      setImportFile={setImportFile}
+                      saveItem={saveItem}
+                      removeItem={removeItem}
+                      startEditItem={startEditItem}
+                      clearItemForm={clearItemForm}
+                      importItems={importItems}
+                      exportItems={exportItems}
+                      exportLowStockItems={exportLowStockItems}
+                      fetchStockMovementsForItem={fetchStockMovementsForItem}
+                      fetchAuditLogs={fetchAuditLogs}
+                      authToken={authToken}
+                      canManageItems={canManageItems}
+                      setError={setError}
+                      setSuccessMessage={setSuccessMessage}
+                      handleApiError={handleApiError}
+                    />
+                  </>
+                }
+              />
+
+              <Route
+                path="/locations"
+                element={
+                  <LocationSection
+                    locations={locations}
+                    stockMovements={stockMovements}
+                    inventoryBalances={inventoryBalances}
+                    stockTransfers={stockTransfers}
+                    locationCode={locationCode}
+                    locationName={locationName}
+                    editingLocationId={editingLocationId}
+                    setLocationCode={setLocationCode}
+                    setLocationName={setLocationName}
+                    saveLocation={saveLocation}
+                    removeLocation={removeLocation}
+                    startEditLocation={startEditLocation}
+                    clearLocationForm={clearLocationForm}
+                    fetchAuditLogs={fetchAuditLogs}
+                    authToken={authToken}
+                    canManageLocations={canManageLocations}
+                    setError={setError}
+                    setSuccessMessage={setSuccessMessage}
+                    handleApiError={handleApiError}
+                  />
+                }
+              />
+
+              <Route
+                path="/stock-movements"
+                element={
+                  <StockMovementSection
+                    items={items}
+                    locations={locations}
+                    stockMovements={stockMovements}
+                    movementItemId={movementItemId}
+                    movementLocationId={movementLocationId}
+                    movementType={movementType}
+                    movementQuantity={movementQuantity}
+                    movementNote={movementNote}
+                    movementFilterItemId={movementFilterItemId}
+                    setMovementItemId={setMovementItemId}
+                    setMovementLocationId={setMovementLocationId}
+                    setMovementType={setMovementType}
+                    setMovementQuantity={setMovementQuantity}
+                    setMovementNote={setMovementNote}
+                    changeMovementFilterItemId={changeMovementFilterItemId}
+                    saveStockMovement={saveStockMovement}
+                    exportStockMovements={exportStockMovements}
+                    fetchInventoryBalances={fetchInventoryBalances}
+                    fetchAuditLogs={fetchAuditLogs}
+                    authToken={authToken}
+                    canCreateStockMovements={canCreateStockMovements}
+                    setError={setError}
+                    setSuccessMessage={setSuccessMessage}
+                    handleApiError={handleApiError}
+                  />
+                }
+              />
+
+              <Route
+                path="/stock-transfers"
+                element={
+                  <StockTransferSection
+                    items={items}
+                    locations={locations}
+                    stockTransfers={stockTransfers}
+                    transferItemId={transferItemId}
+                    fromLocationId={fromLocationId}
+                    toLocationId={toLocationId}
+                    transferQuantity={transferQuantity}
+                    transferNote={transferNote}
+                    setTransferItemId={setTransferItemId}
+                    setFromLocationId={setFromLocationId}
+                    setToLocationId={setToLocationId}
+                    setTransferQuantity={setTransferQuantity}
+                    setTransferNote={setTransferNote}
+                    saveStockTransfer={saveStockTransfer}
+                    exportStockTransfers={exportStockTransfers}
+                    fetchItems={fetchItems}
+                    fetchInventoryBalances={fetchInventoryBalances}
+                    fetchAuditLogs={fetchAuditLogs}
+                    authToken={authToken}
+                    canTransferStock={canTransferStock}
+                    setError={setError}
+                    setSuccessMessage={setSuccessMessage}
+                    handleApiError={handleApiError}
+                  />
+                }
+              />
+
+              <Route
+                path="/inventory-balances"
+                element={
+                  <InventoryBalanceSection
+                    items={items}
+                    locations={locations}
+                    inventoryBalances={inventoryBalances}
+                    exportInventoryBalances={exportInventoryBalances}
+                    authToken={authToken}
+                    handleApiError={handleApiError}
+                  />
+                }
+              />
+
+              {currentUser?.role === "ADMIN" && (
+                <Route
+                  path="/users"
+                  element={
+                    <UserSection
+                      users={users}
+                      username={username}
+                      role={role}
+                      password={password}
+                      setupRequired={setupRequired}
+                      currentUsername={currentUsername}
+                      setUsername={setUsername}
+                      setRole={setRole}
+                      setPassword={setPassword}
+                      saveUser={saveUser}
+                      changeUserRole={changeUserRole}
+                      removeUser={removeUser}
+                      fetchAuditLogs={fetchAuditLogs}
+                      authToken={authToken}
+                      canManageUsers={canManageUsers}
+                      setError={setError}
+                      setSuccessMessage={setSuccessMessage}
                       handleApiError={handleApiError}
                     />
                   }
                 />
+              )}
 
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </main>
+              <Route
+                path="/audit-logs"
+                element={
+                  <AuditLogSection
+                    auditLogs={auditLogs}
+                    exportAuditLogs={exportAuditLogs}
+                    authToken={authToken}
+                    handleApiError={handleApiError}
+                  />
+                }
+              />
 
-            <RecentActivitySidebar auditLogs={auditLogs} />
-          </div>
-        </>
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </main>
+
+          <RecentActivitySidebar auditLogs={auditLogs} />
+        </div>
       )}
     </div>
   );

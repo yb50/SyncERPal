@@ -21,18 +21,63 @@ function AppHeader({ currentUser, onLogout }) {
 
       {currentUser && (
         <nav className="section-nav app-header-nav">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/items">Items</NavLink>
-          <NavLink to="/locations">Locations</NavLink>
-          <NavLink to="/stock-movements">Stock Movements</NavLink>
-          <NavLink to="/stock-transfers">Stock Transfers</NavLink>
-          <NavLink to="/inventory-balances">Inventory Balances</NavLink>
+          <NavLink 
+            to="/dashboard"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink 
+            to="/items"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Items
+          </NavLink>
+
+          <NavLink 
+            to="/locations"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Locations
+          </NavLink>
+
+          <NavLink 
+            to="/stock-movements"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Stock Movements
+          </NavLink>
+
+          <NavLink 
+            to="/stock-transfers"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Stock Transfers
+          </NavLink>
+
+          <NavLink 
+            to="/inventory-balances"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Inventory Balances
+          </NavLink>
 
           {currentUser.role === "ADMIN" && (
-            <NavLink to="/users">Users</NavLink>
+            <NavLink 
+              to="/users"
+              className={({ isActive }) => (isActive ? "active" : undefined)}
+            >
+              Users
+            </NavLink>
           )}
 
-          <NavLink to="/audit-logs">Audit Logs</NavLink>
+          <NavLink 
+            to="/audit-logs"
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            Audit Logs
+          </NavLink>
         </nav>
       )}
     </header>

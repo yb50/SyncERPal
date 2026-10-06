@@ -346,3 +346,11 @@ tr:nth-child(even) {
     margin-top: 18px;
   }
 }
+
+/* Active Navigation */
+
+.section-nav a.active {
+  background: darkgray;
+  color: white;
+  border-color: grey;
+}

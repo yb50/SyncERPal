@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
 import PaginationControls from "../PaginationControls";
@@ -37,6 +37,8 @@ function ItemSection({
   const [itemSearchText, setItemSearchText] = useState("");
   const [selectedItemStatus, setSelectedItemStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("name");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   const pageSize = 10;
 
@@ -150,6 +152,35 @@ function ItemSection({
     return matchesSearch && matchesStatus;
   });
 
+  const sortedItems = useMemo(() => {
+    return [...filteredItems].sort((a, b) => {
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+
+      if (sortBy === "createdAt" || sortBy === "updatedAt") {
+        const aTime = aValue ? new Date(aValue).getTime() : 0;
+        const bTime = bValue ? new Date(bValue).getTime() : 0;
+
+        return sortDirection === "asc" 
+          ? aTime - bTime 
+          : bTime - aTime;
+      }
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+
+      const aText = String(aValue ?? "").toLowerCase();
+      const bText = String(bValue ?? "").toLowerCase();
+
+      return sortDirection === "asc"
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+  }, [filteredItems, sortBy, sortDirection]);
+
   function clearItemFilters() {
     setItemSearchText("");
     setSelectedItemStatus("");
@@ -158,11 +189,11 @@ function ItemSection({
 
   // + Pagination
 
-  const totalPages = Math.ceil(filteredItems.length / pageSize);
+  const totalPages = Math.ceil(sortedItems.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
 
-  const paginatedItems = filteredItems.slice(startIndex, startIndex + pageSize);
+  const paginatedItems = sortedItems.slice(startIndex, startIndex + pageSize);
 
   function resetToFirstPage() {
     setCurrentPage(1);
@@ -255,6 +286,34 @@ function ItemSection({
           <option value="LOW_STOCK">Low stock</option>
           <option value="OUT_OF_STOCK">Out of stock</option>
         </select>
+      </div>
+
+      <div className="filter-row">
+        <label>
+          Sort by:
+          <select 
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="name">Name</option>
+            <option value="sku">SKU</option>
+            <option value="quantity">Quantity</option>
+            <option value="lowStockThreshold">Low-stock threshold</option>
+            <option value="createdAt">Created at</option>
+            <option value="updatedAt">Updated at</option>
+          </select>
+        </label>
+
+        <label>
+          Direction:
+          <select
+            value={sortDirection}
+            onChange={(e) => setSortDirection(e.target.value)}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </label>
       </div>
 
       <button type="button" onClick={clearItemFilters}>

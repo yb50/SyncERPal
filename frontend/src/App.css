@@ -350,3 +350,13 @@ tr:nth-child(even) {
   color: white;
   border-color: grey;
 }
+
+/* Sort Controls Above Item Table */
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+}

@@ -293,7 +293,10 @@ function ItemSection({
           Sort by:
           <select 
             value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value)}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
           >
             <option value="name">Name</option>
             <option value="sku">SKU</option>

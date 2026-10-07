@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import LocationForm from "./LocationForm";
 import LocationTable from "./LocationTable";
 import PaginationControls from "../PaginationControls";
@@ -26,6 +26,8 @@ function LocationSection({
 }) {
   const [locationSearchText, setLocationSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("code");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   const pageSize = 10;
 
@@ -91,13 +93,27 @@ function LocationSection({
     );
   });
 
+  const sortedLocations = useMemo(() => {
+    return [...filteredLocations].sort((a, b) => {
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+
+      const aText = String(aValue ?? "").toLowerCase();
+      const bText = String(bValue ?? "").toLowerCase();
+
+      return sortDirection === "asc"
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+  }, [filteredLocations, sortBy, sortDirection]);
+
   // + Pagination
 
-  const totalPages = Math.ceil(filteredLocations.length / pageSize);
+  const totalPages = Math.ceil(sortedLocations.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
 
-  const paginatedLocations = filteredLocations.slice(
+  const paginatedLocations = sortedLocations.slice(
     startIndex,
     startIndex + pageSize
   );
@@ -159,6 +175,36 @@ function LocationSection({
           }}
           placeholder="Search by code or name"
         />
+      </div>
+
+      <div className="filter-row">
+        <label>
+          Sort by:
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="code">Code</option>
+            <option value="name">Name</option>
+          </select>
+        </label>
+
+        <label>
+          Direction:
+          <select
+            value={sortDirection}
+            onChange={(e) => {
+              setSortDirection(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </label>
       </div>
 
       <button type="button" onClick={clearLocationFilters}>

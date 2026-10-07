@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import StockTransferForm from "./StockTransferForm";
 import StockTransferTable from "./StockTransferTable";
 import PaginationControls from "../PaginationControls";
@@ -32,12 +32,16 @@ function StockTransferSection({
   const [selectedFromLocationId, setSelectedFromLocationId] = useState("");
   const [selectedToLocationId, setSelectedToLocationId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   const pageSize = 10;
 
+  // + Filtering
+
   const filteredStockTransfers = stockTransfers.filter((stockTransfer) => {
     const matchesItem =
-      selectedItemId === "" || 
+      selectedItemId === "" ||
       String(stockTransfer.itemId) === selectedItemId;
 
     const matchesFromLocation =
@@ -51,13 +55,84 @@ function StockTransferSection({
     return matchesItem && matchesFromLocation && matchesToLocation;
   });
 
+  // - Filtering
+
+  // + Sorting
+
+  function getItemSortText(stockTransfer) {
+    const item = items.find((item) => item.id === Number(stockTransfer.itemId));
+
+    if (!item) {
+      return "";
+    }
+
+    return `${item.name} ${item.sku}`.toLowerCase();
+  }
+
+  function getLocationSortText(locationId) {
+    const location = locations.find(
+      (location) => location.id === Number(locationId)
+    );
+
+    if (!location) {
+      return "";
+    }
+
+    return `${location.code} ${location.name}`.toLowerCase();
+  }
+
+  function getStockTransferSortValue(stockTransfer) {
+    switch (sortBy) {
+      case "item":
+        return getItemSortText(stockTransfer);
+      case "fromLocation":
+        return getLocationSortText(stockTransfer.fromLocationId);
+      case "toLocation":
+        return getLocationSortText(stockTransfer.toLocationId);
+      case "quantity":
+        return stockTransfer.quantity ?? 0;
+      case "performedBy":
+        return stockTransfer.performedBy ?? "";
+      case "createdAt":
+        return stockTransfer.createdAt
+          ? new Date(stockTransfer.createdAt).getTime()
+          : 0;
+      default:
+        return stockTransfer.createdAt
+          ? new Date(stockTransfer.createdAt).getTime()
+          : 0;
+    }
+  }
+
+  const sortedStockTransfers = useMemo(() => {
+    return [...filteredStockTransfers].sort((a, b) => {
+      const aValue = getStockTransferSortValue(a);
+      const bValue = getStockTransferSortValue(b);
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+
+      const aText = String(aValue).toLowerCase();
+      const bText = String(bValue).toLowerCase();
+
+      return sortDirection === "asc"
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+  }, [filteredStockTransfers, sortBy, sortDirection, items, locations]);
+
+  // - Sorting
+
   // + Pagination
 
-  const totalPages = Math.ceil(filteredStockTransfers.length / pageSize);
+  const totalPages = Math.ceil(sortedStockTransfers.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
 
-  const paginatedStockTransfers = filteredStockTransfers.slice(
+  const paginatedStockTransfers = sortedStockTransfers.slice(
     startIndex,
     startIndex + pageSize
   );
@@ -185,6 +260,40 @@ function StockTransferSection({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="filter-row">
+        <label>
+          Sort by:
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="createdAt">Created at</option>
+            <option value="item">Item</option>
+            <option value="fromLocation">From location</option>
+            <option value="toLocation">To location</option>
+            <option value="quantity">Quantity</option>
+            <option value="performedBy">Performed by</option>
+          </select>
+        </label>
+
+        <label>
+          Direction:
+          <select
+            value={sortDirection}
+            onChange={(e) => {
+              setSortDirection(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </label>
       </div>
 
       <button type="button" onClick={clearFilters}>

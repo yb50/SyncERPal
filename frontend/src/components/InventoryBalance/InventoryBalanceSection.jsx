@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import InventoryBalanceTable from "./InventoryBalanceTable";
 import PaginationControls from "../PaginationControls";
 
@@ -12,8 +12,12 @@ function InventoryBalanceSection({
   const [selectedItemId, setSelectedItemId] = useState("");
   const [selectedLocationId, setSelectedLocationId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("item");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   const pageSize = 10;
+
+  // + Filtering
 
   const filteredInventoryBalances = inventoryBalances.filter((inventoryBalance) => {
     const matchesItem =
@@ -27,13 +31,76 @@ function InventoryBalanceSection({
     return matchesItem && matchesLocation;
   });
 
+  // - Filtering
+
+  // + Sorting
+
+  function getItemSortText(inventoryBalance) {
+    const item = items.find(
+      (item) => item.id === Number(inventoryBalance.itemId)
+    );
+
+    if (!item) {
+      return "";
+    }
+
+    return `${item.name} ${item.sku}`.toLowerCase();
+  }
+
+  function getLocationSortText(inventoryBalance) {
+    const location = locations.find(
+      (location) => location.id === Number(inventoryBalance.locationId)
+    );
+
+    if (!location) {
+      return "";
+    }
+
+    return `${location.code} ${location.name}`.toLowerCase();
+  }
+
+  function getInventoryBalanceSortValue(inventoryBalance) {
+    switch (sortBy) {
+      case "item":
+        return getItemSortText(inventoryBalance);
+      case "location":
+        return getLocationSortText(inventoryBalance);
+      case "quantity":
+        return inventoryBalance.quantity ?? 0;
+      default:
+        return getItemSortText(inventoryBalance);
+    }
+  }
+
+  const sortedInventoryBalances = useMemo(() => {
+    return [...filteredInventoryBalances].sort((a, b) => {
+      const aValue = getInventoryBalanceSortValue(a);
+      const bValue = getInventoryBalanceSortValue(b);
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+
+      const aText = String(aValue).toLowerCase();
+      const bText = String(bValue).toLowerCase();
+
+      return sortDirection === "asc"
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+  }, [filteredInventoryBalances, sortBy, sortDirection, items, locations]);
+
+  // - Sorting
+
   // + Pagination
 
-  const totalPages = Math.ceil(filteredInventoryBalances.length / pageSize);
+  const totalPages = Math.ceil(sortedInventoryBalances.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
 
-  const paginatedInventoryBalances = filteredInventoryBalances.slice(
+  const paginatedInventoryBalances = sortedInventoryBalances.slice(
     startIndex,
     startIndex + pageSize
   );
@@ -102,6 +169,37 @@ function InventoryBalanceSection({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="filter-row">
+        <label>
+          Sort by:
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="item">Item</option>
+            <option value="location">Location</option>
+            <option value="quantity">Quantity</option>
+          </select>
+        </label>
+
+        <label>
+          Direction:
+          <select
+            value={sortDirection}
+            onChange={(e) => {
+              setSortDirection(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </label>
       </div>
 
       <button type="button" onClick={clearFilters}>

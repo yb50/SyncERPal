@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import AuditLogTable from "./AuditLogTable";
 import PaginationControls from "../PaginationControls";
 
@@ -11,6 +11,8 @@ function AuditLogSection({
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [selectedPerformedBy, setSelectedPerformedBy] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   const pageSize = 10;
 
@@ -21,6 +23,8 @@ function AuditLogSection({
   const performedByUsers = [
     ...new Set(auditLogs.map((auditLog) => auditLog.performedBy)),
   ];
+
+  // + Filtering
 
   const filteredAuditLogs = auditLogs.filter((auditLog) => {
     const matchesAction =
@@ -37,12 +41,55 @@ function AuditLogSection({
     return matchesAction && matchesEntityType && matchesPerformedBy;
   });
 
+  // - Filtering
+
+  // + Sorting
+
+  function getAuditLogSortValue(auditLog) {
+    switch (sortBy) {
+      case "createdAt":
+        return auditLog.createdAt ? new Date(auditLog.createdAt).getTime() : 0;
+      case "action":
+        return auditLog.action ?? "";
+      case "entityType":
+        return auditLog.entityType ?? "";
+      case "entityId":
+        return auditLog.entityId ?? 0;
+      case "performedBy":
+        return auditLog.performedBy ?? "";
+      default:
+        return auditLog.createdAt ? new Date(auditLog.createdAt).getTime() : 0;
+    }
+  }
+
+  const sortedAuditLogs = useMemo(() => {
+    return [...filteredAuditLogs].sort((a, b) => {
+      const aValue = getAuditLogSortValue(a);
+      const bValue = getAuditLogSortValue(b);
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+
+      const aText = String(aValue).toLowerCase();
+      const bText = String(bValue).toLowerCase();
+
+      return sortDirection === "asc"
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+  }, [filteredAuditLogs, sortBy, sortDirection]);
+
+  // - Sorting
+
   // + Pagination
 
-  const totalPages = Math.ceil(filteredAuditLogs.length / pageSize);
+  const totalPages = Math.ceil(sortedAuditLogs.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedAuditLogs = filteredAuditLogs.slice(
+  const paginatedAuditLogs = sortedAuditLogs.slice(
     startIndex,
     startIndex + pageSize
   );
@@ -134,6 +181,39 @@ function AuditLogSection({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="filter-row">
+        <label>
+          Sort by:
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="createdAt">Created at</option>
+            <option value="action">Action</option>
+            <option value="entityType">Entity type</option>
+            <option value="entityId">Entity ID</option>
+            <option value="performedBy">Performed by</option>
+          </select>
+        </label>
+
+        <label>
+          Direction:
+          <select
+            value={sortDirection}
+            onChange={(e) => {
+              setSortDirection(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </label>
       </div>
 
       <button type="button" onClick={clearFilters}>

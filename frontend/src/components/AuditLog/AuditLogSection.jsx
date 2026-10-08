@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import AuditLogTable from "./AuditLogTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function AuditLogSection({ 
   auditLogs, 
@@ -183,38 +184,25 @@ function AuditLogSection({
         </select>
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="createdAt">Created at</option>
-            <option value="action">Action</option>
-            <option value="entityType">Entity type</option>
-            <option value="entityId">Entity ID</option>
-            <option value="performedBy">Performed by</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => {
-              setSortDirection(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        sortOptions={[
+          { value: "createdAt", label: "Created at" },
+          { value: "action", label: "Action" },
+          { value: "entityType", label: "Entity type" },
+          { value: "entityId", label: "Entity ID" },
+          { value: "performedBy", label: "Performed by" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearFilters}>
         Clear Audit Filters

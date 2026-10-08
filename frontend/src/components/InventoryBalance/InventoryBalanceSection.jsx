@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import InventoryBalanceTable from "./InventoryBalanceTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function InventoryBalanceSection({
   inventoryBalances,
@@ -171,36 +172,23 @@ function InventoryBalanceSection({
         </select>
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="item">Item</option>
-            <option value="location">Location</option>
-            <option value="quantity">Quantity</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => {
-              setSortDirection(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls
+        sortBy={sortBy}
+        sortDirection={sortDirection} 
+        sortOptions={[
+          { value: "item", label: "Item" },
+          { value: "location", label: "Location" },
+          { value: "quantity", label: "Quantity" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearFilters}>
         Clear Balance Filters

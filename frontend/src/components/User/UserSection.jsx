@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import UserForm from "./UserForm";
 import UserTable from "./UserTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function UserSection({
   users,
@@ -204,35 +205,22 @@ function UserSection({
         </select>
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="username">Username</option>
-            <option value="role">Role</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => {
-              setSortDirection(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        sortOptions={[
+          { value: "username", label: "Username" },
+          { value: "role", label: "Role" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearUserFilters}>
         Clear User Filters

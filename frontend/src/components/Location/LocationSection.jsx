@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import LocationForm from "./LocationForm";
 import LocationTable from "./LocationTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function LocationSection({
   locations,
@@ -177,35 +178,22 @@ function LocationSection({
         />
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="code">Code</option>
-            <option value="name">Name</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => {
-              setSortDirection(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        sortOptions={[
+          { value: "code", label: "Code" },
+          { value: "name", label: "Name" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearLocationFilters}>
         Clear Location Filters

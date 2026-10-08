@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function ItemSection({
   items,
@@ -288,36 +289,26 @@ function ItemSection({
         </select>
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select 
-            value={sortBy} 
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="name">Name</option>
-            <option value="sku">SKU</option>
-            <option value="quantity">Quantity</option>
-            <option value="lowStockThreshold">Low-stock threshold</option>
-            <option value="createdAt">Created at</option>
-            <option value="updatedAt">Updated at</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => setSortDirection(e.target.value)}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls 
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        sortOptions={[
+          { value: "name", label: "Name" },
+          { value: "sku", label: "SKU" },
+          { value: "quantity", label: "Quantity" },
+          { value: "lowStockThreshold", label: "Low-stock threshold" },
+          { value: "createdAt", label: "Created at" },
+          { value: "updatedAt", label: "Updated at" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearItemFilters}>
         Clear Item Filters

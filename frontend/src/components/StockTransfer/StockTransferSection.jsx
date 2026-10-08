@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import StockTransferForm from "./StockTransferForm";
 import StockTransferTable from "./StockTransferTable";
 import PaginationControls from "../PaginationControls";
+import SortControls from "../SortControls";
 
 function StockTransferSection({
   items,
@@ -262,39 +263,26 @@ function StockTransferSection({
         </select>
       </div>
 
-      <div className="filter-row">
-        <label>
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="createdAt">Created at</option>
-            <option value="item">Item</option>
-            <option value="fromLocation">From location</option>
-            <option value="toLocation">To location</option>
-            <option value="quantity">Quantity</option>
-            <option value="performedBy">Performed by</option>
-          </select>
-        </label>
-
-        <label>
-          Direction:
-          <select
-            value={sortDirection}
-            onChange={(e) => {
-              setSortDirection(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </label>
-      </div>
+      <SortControls
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        sortOptions={[
+          { value: "createdAt", label: "Created at" },
+          { value: "item", label: "Item" },
+          { value: "fromLocation", label: "From location" },
+          { value: "toLocation", label: "To location" },
+          { value: "quantity", label: "Quantity" },
+          { value: "performedBy", label: "Performed by" },
+        ]}
+        onSortByChange={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        onSortDirectionChange={(value) => {
+          setSortDirection(value);
+          setCurrentPage(1);
+        }}
+      />
 
       <button type="button" onClick={clearFilters}>
         Clear Transfer Filters

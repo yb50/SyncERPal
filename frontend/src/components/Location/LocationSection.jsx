@@ -3,6 +3,7 @@ import LocationForm from "./LocationForm";
 import LocationTable from "./LocationTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function LocationSection({
   locations,
@@ -165,39 +166,41 @@ function LocationSection({
         Locations with inventory history cannot be deleted.
       </p>
 
-      <div>
-        <label>Search locations: </label>
-        <input
-          type="text"
-          value={locationSearchText}
-          onChange={(event) => {
-            setLocationSearchText(event.target.value);
-            resetToFirstPage();
+      <PageToolbar>
+        <label>
+          Search locations:
+          <input
+            type="text"
+            value={locationSearchText}
+            onChange={(event) => {
+              setLocationSearchText(event.target.value);
+              resetToFirstPage();
+            }}
+            placeholder="Search by code or name"
+          />
+        </label>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "code", label: "Code" },
+            { value: "name", label: "Name" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-          placeholder="Search by code or name"
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
+          }}
         />
-      </div>
 
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "code", label: "Code" },
-          { value: "name", label: "Name" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearLocationFilters}>
-        Clear Location Filters
-      </button>
+        <button type="button" onClick={clearLocationFilters}>
+          Clear Filters
+        </button>
+      </PageToolbar>
 
       <p className="table-summary">
         Showing {paginatedLocations.length} of {filteredLocations.length} locations

@@ -3,6 +3,7 @@ import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function ItemSection({
   items,
@@ -237,82 +238,88 @@ function ItemSection({
 
       <h2>Items</h2>
 
-      <button type="button" onClick={handleExportItems}>
-        Export Items CSV
-      </button>
+      <PageToolbar
+        actions={
+          <>
+            <button type="button" onClick={handleExportItems}>
+              Export Items CSV
+            </button>
 
-      <form onSubmit={handleImportItems}>
-        <input
-          type="file"
-          accept=".csv"
-          onChange={(event) => setImportFile(event.target.files[0])}
-        />
+            <form onSubmit={handleImportItems} className="toolbar-form">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(event) => setImportFile(event.target.files[0])}
+              />
 
-        <button type="submit" disabled={!canManageItems}>
-          Import Items CSV
+              <button type="submit" disabled={!canManageItems}>
+                Import Items CSV
+              </button>
+            </form>
+          </>
+        }
+      >
+        <label>
+          Search items:
+          <input
+            type="text"
+            value={itemSearchText}
+            onChange={(event) => {
+              setItemSearchText(event.target.value);
+              resetToFirstPage();
+            }}
+            placeholder="Search by SKU or name"
+          />
+        </label>
+
+        <label>
+          Status:
+          <select
+            value={selectedItemStatus}
+            onChange={(event) => {
+              setSelectedItemStatus(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All statuses</option>
+            <option value="OK">OK</option>
+            <option value="LOW_STOCK">Low stock</option>
+            <option value="OUT_OF_STOCK">Out of stock</option>
+          </select>
+        </label>
+
+        <button type="button" onClick={clearItemFilters}>
+          Clear Filters
         </button>
-      </form>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "name", label: "Name" },
+            { value: "sku", label: "SKU" },
+            { value: "quantity", label: "Quantity" },
+            { value: "lowStockThreshold", label: "Low-stock threshold" },
+            { value: "createdAt", label: "Created at" },
+            { value: "updatedAt", label: "Updated at" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
+          }}
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
+          }}
+        />
+      </PageToolbar>
 
       {loading && <p>Loading items...</p>}
       {!loading && items.length === 0 && <p>No items found</p>}
-      
+
       <p className="hint">
         Items with inventory history cannot be deleted.
       </p>
-
-      <div>
-        <label>Search items: </label>
-        <input
-          type="text"
-          value={itemSearchText}
-          onChange={(event) => {
-            setItemSearchText(event.target.value);
-            resetToFirstPage();
-          }}
-          placeholder="Search by SKU or name"
-        />
-      </div>
-
-      <div>
-        <label>Filter by status: </label>
-        <select
-          value={selectedItemStatus}
-          onChange={(event) => {
-            setSelectedItemStatus(event.target.value);
-            resetToFirstPage();
-          }}
-        >
-          <option value="">All statuses</option>
-          <option value="OK">OK</option>
-          <option value="LOW_STOCK">Low stock</option>
-          <option value="OUT_OF_STOCK">Out of stock</option>
-        </select>
-      </div>
-
-      <SortControls 
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "name", label: "Name" },
-          { value: "sku", label: "SKU" },
-          { value: "quantity", label: "Quantity" },
-          { value: "lowStockThreshold", label: "Low-stock threshold" },
-          { value: "createdAt", label: "Created at" },
-          { value: "updatedAt", label: "Updated at" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearItemFilters}>
-        Clear Item Filters
-      </button>
 
       <p className="table-summary">
         Showing {paginatedItems.length} of {filteredItems.length} items

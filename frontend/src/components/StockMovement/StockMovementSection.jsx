@@ -3,6 +3,7 @@ import StockMovementForm from "./StockMovementForm";
 import StockMovementTable from "./StockMovementTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function StockMovementSection({
   items,
@@ -226,87 +227,88 @@ function StockMovementSection({
 
       <h2>Stock Movements</h2>
 
-      <button type="button" onClick={handleExportStockMovements}>
-        Export Stock Movements CSV
-      </button>
+      <PageToolbar
+        actions={
+          <button type="button" onClick={handleExportStockMovements}>
+            Export Stock Movements CSV
+          </button>
+        }
+      >
+        <label>
+          Item:
+          <select
+            value={movementFilterItemId}
+            onChange={(event) => handleItemFilterChange(event.target.value)}
+          >
+            <option value="">All items</option>
 
-      <div>
-        <label>Filter by item: </label>
+            {items.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name} ({item.sku})
+              </option>
+            ))}
+          </select>
+        </label>
 
-        <select
-          value={movementFilterItemId}
-          onChange={(event) => handleItemFilterChange(event.target.value)}
-        >
-          <option value="">All items</option>
+        <label>
+          Location:
+          <select
+            value={selectedLocationId}
+            onChange={(event) => {
+              setSelectedLocationId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All locations</option>
 
-          {items.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name} ({item.sku})
-            </option>
-          ))}
-        </select>
-      </div>
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.code} - {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
 
-      <div>
-        <label>Filter by location: </label>
+        <label>
+          Type:
+          <select
+            value={selectedMovementType}
+            onChange={(event) => {
+              setSelectedMovementType(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All types</option>
+            <option value="IN">IN</option>
+            <option value="OUT">OUT</option>
+            <option value="ADJUSTMENT">ADJUSTMENT</option>
+          </select>
+        </label>
 
-        <select
-          value={selectedLocationId}
-          onChange={(event) => {
-            setSelectedLocationId(event.target.value);
-            resetToFirstPage();
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "createdAt", label: "Created at" },
+            { value: "item", label: "Item" },
+            { value: "location", label: "Location" },
+            { value: "type", label: "Type" },
+            { value: "quantity", label: "Quantity" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All locations</option>
-
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.code} - {location.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by type: </label>
-
-        <select
-          value={selectedMovementType}
-          onChange={(event) => {
-            setSelectedMovementType(event.target.value);
-            resetToFirstPage();
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All types</option>
-          <option value="IN">IN</option>
-          <option value="OUT">OUT</option>
-          <option value="ADJUSTMENT">ADJUSTMENT</option>
-        </select>
-      </div>
-
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "createdAt", label: "Created at" },
-          { value: "item", label: "Item" },
-          { value: "location", label: "Location" },
-          { value: "type", label: "Type" },
-          { value: "quantity", label: "Quantity" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearFilters}>
-        Clear Movement Filters
-      </button>
+        />
+      </PageToolbar>
 
       <p className="table-summary">
           Showing {paginatedStockMovements.length} of {filteredStockMovements.length} stock movements

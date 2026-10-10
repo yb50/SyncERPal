@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import InventoryBalanceTable from "./InventoryBalanceTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function InventoryBalanceSection({
   inventoryBalances,
@@ -130,69 +131,73 @@ function InventoryBalanceSection({
     <>
       <h2>Inventory Balances</h2>
 
-      <button type="button" onClick={() => exportInventoryBalances(authToken)}>
-        Export Inventory Balances CSV
-      </button>
+      <PageToolbar
+        actions={
+          <button type="button" onClick={() => exportInventoryBalances(authToken)}>
+            Export Inventory Balances CSV
+          </button>
+        }
+      >
+        <label>
+          Item:
+          <select
+            value={selectedItemId}
+            onChange={(event) => {
+              setSelectedItemId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All items</option>
 
-      <div>
-        <label>Filter by item: </label>
-        <select
-          value={selectedItemId}
-          onChange={(event) => {
-            setSelectedItemId(event.target.value);
-            resetToFirstPage();
+            {items.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name} ({item.sku})
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Location:
+          <select
+            value={selectedLocationId}
+            onChange={(event) => {
+              setSelectedLocationId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All locations</option>
+
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.code} - {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "item", label: "Item" },
+            { value: "location", label: "Location" },
+            { value: "quantity", label: "Quantity" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All items</option>
-
-          {items.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name} ({item.sku})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by location: </label>
-        <select
-          value={selectedLocationId}
-          onChange={(event) => {
-            setSelectedLocationId(event.target.value);
-            resetToFirstPage();
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All locations</option>
+        />
 
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.code} - {location.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection} 
-        sortOptions={[
-          { value: "item", label: "Item" },
-          { value: "location", label: "Location" },
-          { value: "quantity", label: "Quantity" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearFilters}>
-        Clear Balance Filters
-      </button>
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
+      </PageToolbar>
 
       <p className="table-summary">
         Showing {paginatedInventoryBalances.length} of{" "}

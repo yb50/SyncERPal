@@ -3,6 +3,7 @@ import StockTransferForm from "./StockTransferForm";
 import StockTransferTable from "./StockTransferTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function StockTransferSection({
   items,
@@ -202,91 +203,95 @@ function StockTransferSection({
 
       <h2>Stock Transfer History</h2>
 
-      <button type="button" onClick={() => exportStockTransfers(authToken)}>
-        Export Stock Transfers CSV
-      </button>
+      <PageToolbar
+        actions={
+          <button type="button" onClick={() => exportStockTransfers(authToken)}>
+            Export Stock Transfers CSV
+          </button>
+        }
+      >
+        <label>
+          Item:
+          <select
+            value={selectedItemId}
+            onChange={(event) => {
+              setSelectedItemId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All items</option>
 
-      <div>
-        <label>Filter by item: </label>
-        <select
-          value={selectedItemId}
-          onChange={(event) => {
-            setSelectedItemId(event.target.value);
-            resetToFirstPage();
+            {items.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name} ({item.sku})
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          From location:
+          <select
+            value={selectedFromLocationId}
+            onChange={(event) => {
+              setSelectedFromLocationId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All source locations</option>
+
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.code} - {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          To location:
+          <select
+            value={selectedToLocationId}
+            onChange={(event) => {
+              setSelectedToLocationId(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All destination locations</option>
+
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.code} - {location.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "createdAt", label: "Created at" },
+            { value: "item", label: "Item" },
+            { value: "fromLocation", label: "From location" },
+            { value: "toLocation", label: "To location" },
+            { value: "quantity", label: "Quantity" },
+            { value: "performedBy", label: "Performed by" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All items</option>
-
-          {items.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name} ({item.sku})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by from location: </label>
-        <select
-          value={selectedFromLocationId}
-          onChange={(event) => {
-            setSelectedFromLocationId(event.target.value);
-            resetToFirstPage();
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All source locations</option>
-
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.code} - {location.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by to location: </label>
-        <select
-          value={selectedToLocationId}
-          onChange={(event) => {
-            setSelectedToLocationId(event.target.value);
-            resetToFirstPage();
-          }}
-        >
-          <option value="">All destination locations</option>
-
-          {locations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.code} - {location.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "createdAt", label: "Created at" },
-          { value: "item", label: "Item" },
-          { value: "fromLocation", label: "From location" },
-          { value: "toLocation", label: "To location" },
-          { value: "quantity", label: "Quantity" },
-          { value: "performedBy", label: "Performed by" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearFilters}>
-        Clear Transfer Filters
-      </button>
+        />
+      </PageToolbar>
 
       <p className="table-summary">
         Showing {paginatedStockTransfers.length} of {filteredStockTransfers.length} stock transfers

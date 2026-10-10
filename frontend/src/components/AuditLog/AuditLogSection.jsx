@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import AuditLogTable from "./AuditLogTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function AuditLogSection({ 
   auditLogs, 
@@ -120,93 +121,94 @@ function AuditLogSection({
     <>
       <h2>Audit Logs</h2>
 
-      <button type="button" onClick={() => exportAuditLogs(authToken)}>
-        Export Audit Logs CSV
-      </button>
+      <PageToolbar
+        actions={
+          <button type="button" onClick={() => exportAuditLogs(authToken)}>
+            Export Audit Logs CSV
+          </button>
+        }
+      >
+        <label>
+          Action:
+          <select
+            value={selectedAction}
+            onChange={(event) => {
+              setSelectedAction(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All actions</option>
 
-      <div>
-        <label>Filter by action: </label>
+            {actions.map((action) => (
+              <option key={action} value={action}>
+                {action}
+              </option>
+            ))}
+          </select>
+        </label>
 
-        <select
-          value={selectedAction}
-          onChange={(event) => {
-            setSelectedAction(event.target.value);
-            resetToFirstPage();
+        <label>
+          Entity type:
+          <select
+            value={selectedEntityType}
+            onChange={(event) => {
+              setSelectedEntityType(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All entity types</option>
+
+            {entityTypes.map((entityType) => (
+              <option key={entityType} value={entityType}>
+                {entityType}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Performed by:
+          <select
+            value={selectedPerformedBy}
+            onChange={(event) => {
+              setSelectedPerformedBy(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All users</option>
+
+            {performedByUsers.map((performedBy) => (
+              <option key={performedBy} value={performedBy}>
+                {performedBy}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "createdAt", label: "Created at" },
+            { value: "action", label: "Action" },
+            { value: "entityType", label: "Entity type" },
+            { value: "entityId", label: "Entity ID" },
+            { value: "performedBy", label: "Performed by" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All actions</option>
-
-          {actions.map((action) => (
-            <option key={action} value={action}>
-              {action}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by entity type: </label>
-
-        <select
-          value={selectedEntityType}
-          onChange={(event) => {
-            setSelectedEntityType(event.target.value);
-            resetToFirstPage();
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
           }}
-        >
-          <option value="">All entity types</option>
-
-          {entityTypes.map((entityType) => (
-            <option key={entityType} value={entityType}>
-              {entityType}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Filter by performed by: </label>
-
-        <select
-          value={selectedPerformedBy}
-          onChange={(event) => {
-            setSelectedPerformedBy(event.target.value);
-            resetToFirstPage();
-          }}
-        >
-          <option value="">All users</option>
-
-          {performedByUsers.map((performedBy) => (
-            <option key={performedBy} value={performedBy}>
-              {performedBy}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "createdAt", label: "Created at" },
-          { value: "action", label: "Action" },
-          { value: "entityType", label: "Entity type" },
-          { value: "entityId", label: "Entity ID" },
-          { value: "performedBy", label: "Performed by" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearFilters}>
-        Clear Audit Filters
-      </button>
+        />
+      </PageToolbar>
 
       <p className="table-summary">
         Showing {paginatedAuditLogs.length} of {filteredAuditLogs.length} audit

@@ -4,6 +4,7 @@ import ItemTable from "./ItemTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
 import PageToolbar from "../PageToolbar";
+import Modal from "../Modal";
 
 function ItemSection({
   items,
@@ -41,8 +42,11 @@ function ItemSection({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
 
   const pageSize = 10;
+
+  // + Handles
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -57,6 +61,7 @@ function ItemSection({
             ? "Item created successfully."
             : "Item updated successfully."
         );
+        setIsItemModalOpen(false);
         fetchAuditLogs(authToken);
       })
       .catch((error) => {
@@ -88,11 +93,12 @@ function ItemSection({
 
   function handleEdit(item) {
     startEditItem(item);
+    setError("");
+    setIsItemModalOpen(true);
   }
 
   function handleCancelEdit() {
-    clearItemForm();
-    setError("");
+    handleCloseItemModal();
   }
 
   function handleViewHistory(itemId) {
@@ -126,6 +132,20 @@ function ItemSection({
         handleApiError(error);
       });
   }
+
+  function handleOpenCreateItemModal() {
+    clearItemForm();
+    setError("");
+    setIsItemModalOpen(true);
+  }
+
+  function handleCloseItemModal() {
+    clearItemForm();
+    setError("");
+    setIsItemModalOpen(false);
+  }
+
+  // - Handles
 
   function getItemStatus(item) {
     if (item.quantity === 0) {
@@ -213,34 +233,19 @@ function ItemSection({
 
   return (
     <>
-      <h2>Add Item</h2>
-
-      {!canManageItems && (
-        <p className="hint">
-          Only ADMIN and MANAGER users can create, edit, delete, or import items.
-        </p>
-      )}
-
-      <ItemForm
-        name={name}
-        sku={sku}
-        quantity={quantity}
-        lowStockThreshold={lowStockThreshold}
-        editingId={editingId}
-        onNameChange={setName}
-        onSkuChange={setSku}
-        onQuantityChange={setQuantity}
-        onLowStockThreshold={setLowStockThreshold}
-        canManageItems={canManageItems}
-        onSubmit={handleSubmit}
-        onCancelEdit={handleCancelEdit}
-      />
-
       <h2>Items</h2>
 
       <PageToolbar
         actions={
           <>
+            <button
+              type="button"
+              onClick={handleOpenCreateItemModal}
+              disabled={!canManageItems}
+            >
+              + Add Item
+            </button>
+
             <button type="button" onClick={handleExportItems}>
               Export Items CSV
             </button>
@@ -313,6 +318,33 @@ function ItemSection({
           }}
         />
       </PageToolbar>
+
+      {!canManageItems && (
+        <p className="hint">
+          Only ADMIN and MANAGER users can create, edit, delete, or import items.
+        </p>
+      )}
+
+      <Modal
+        isOpen={isItemModalOpen}
+        title={editingId === null ? "Add Item" : "Edit Item"}
+        onClose={handleCloseItemModal}
+      >
+        <ItemForm
+          name={name}
+          sku={sku}
+          quantity={quantity}
+          lowStockThreshold={lowStockThreshold}
+          editingId={editingId}
+          onNameChange={setName}
+          onSkuChange={setSku}
+          onQuantityChange={setQuantity}
+          onLowStockThreshold={setLowStockThreshold}
+          canManageItems={canManageItems}
+          onSubmit={handleSubmit}
+          onCancelEdit={handleCancelEdit}
+        />
+      </Modal>
 
       {loading && <p>Loading items...</p>}
       {!loading && items.length === 0 && <p>No items found</p>}

@@ -3,6 +3,7 @@ import UserForm from "./UserForm";
 import UserTable from "./UserTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
+import PageToolbar from "../PageToolbar";
 
 function UserSection({
   users,
@@ -176,55 +177,57 @@ function UserSection({
         The last ADMIN user cannot be demoted or deleted.
       </p>
 
-      <div>
-        <label>Search users: </label>
-        <input
-          type="text"
-          value={userSearchText}
-          onChange={(event) => {
-            setUserSearchText(event.target.value);
-            resetToFirstPage();
+      <PageToolbar>
+        <label>
+          Search users:
+          <input
+            type="text"
+            value={userSearchText}
+            onChange={(event) => {
+              setUserSearchText(event.target.value);
+              resetToFirstPage();
+            }}
+            placeholder="Search by username"
+          />
+        </label>
+
+        <label>
+          Role:
+          <select
+            value={selectedRole}
+            onChange={(event) => {
+              setSelectedRole(event.target.value);
+              resetToFirstPage();
+            }}
+          >
+            <option value="">All roles</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="MANAGER">MANAGER</option>
+            <option value="WORKER">WORKER</option>
+          </select>
+        </label>
+
+        <SortControls
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          sortOptions={[
+            { value: "username", label: "Username" },
+            { value: "role", label: "Role" },
+          ]}
+          onSortByChange={(value) => {
+            setSortBy(value);
+            setCurrentPage(1);
           }}
-          placeholder="Search by username"
+          onSortDirectionChange={(value) => {
+            setSortDirection(value);
+            setCurrentPage(1);
+          }}
         />
-      </div>
 
-      <div>
-        <label>Filter by role: </label>
-        <select
-          value={selectedRole}
-          onChange={(event) => {
-            setSelectedRole(event.target.value);
-            resetToFirstPage();
-          }}
-        >
-          <option value="">All roles</option>
-          <option value="ADMIN">ADMIN</option>
-          <option value="MANAGER">MANAGER</option>
-          <option value="WORKER">WORKER</option>
-        </select>
-      </div>
-
-      <SortControls
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        sortOptions={[
-          { value: "username", label: "Username" },
-          { value: "role", label: "Role" },
-        ]}
-        onSortByChange={(value) => {
-          setSortBy(value);
-          setCurrentPage(1);
-        }}
-        onSortDirectionChange={(value) => {
-          setSortDirection(value);
-          setCurrentPage(1);
-        }}
-      />
-
-      <button type="button" onClick={clearUserFilters}>
-        Clear User Filters
-      </button>
+        <button type="button" onClick={clearUserFilters}>
+          Clear Filters
+        </button>
+      </PageToolbar>
 
       <p className="table-summary">
         Showing {paginatedUsers.length} of {filteredUsers.length} users

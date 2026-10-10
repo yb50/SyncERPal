@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LowStockTable from "./LowStockTable";
 import PaginationControls from "../PaginationControls";
+import PageToolbar from "../PageToolbar";
 
 function LowStockSection({
   items,
@@ -56,9 +57,13 @@ function LowStockSection({
     <>
       <h2>Low Stock Report</h2>
 
-      <button type="button" onClick={handleExportLowStockItems}>
-        Export Low Stock CSV
-      </button>
+      <PageToolbar
+        actions={
+          <button type="button" onClick={handleExportLowStockItems}>
+            Export Low Stock CSV
+          </button>
+        }
+      />
 
       <p className="table-summary">
         Showing {paginatedLowStockItems.length} of {lowStockItems.length} low-stock items

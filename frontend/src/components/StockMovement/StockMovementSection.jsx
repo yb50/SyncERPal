@@ -151,7 +151,7 @@ function StockMovementSection({
 
   // + Handles
 
-  function handleStockMovementSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
 
     saveStockMovement(authToken)
@@ -341,7 +341,7 @@ function StockMovementSection({
           onMovementTypeChange={setMovementType}
           onMovementQuantityChange={setMovementQuantity}
           onMovementNoteChange={setMovementNote}
-          onSubmit={handleStockMovementSubmit}
+          onSubmit={handleSubmit}
           canCreateStockMovements={canCreateStockMovements}
         />
       </Modal>

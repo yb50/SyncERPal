@@ -4,6 +4,7 @@ import LocationTable from "./LocationTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
 import PageToolbar from "../PageToolbar";
+import Modal from "../Modal";
 
 function LocationSection({
   locations,
@@ -30,8 +31,11 @@ function LocationSection({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("code");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   const pageSize = 10;
+
+  // + Handles
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -46,6 +50,7 @@ function LocationSection({
             ? "Location created successfully."
             : "Location updated successfully."
         );
+        setIsLocationModalOpen(false);
         fetchAuditLogs(authToken);
       })
       .catch((error) => {
@@ -56,11 +61,11 @@ function LocationSection({
   function handleEdit(location) {
     startEditLocation(location);
     setError("");
+    setIsLocationModalOpen(true);
   }
 
   function handleCancelEdit() {
-    clearLocationForm();
-    setError("");
+    handleCloseLocationModal();
   }
 
   function handleDelete(locationId) {
@@ -85,6 +90,22 @@ function LocationSection({
       });
   }
 
+  function handleOpenCreateLocationModal() {
+    clearLocationForm();
+    setError("");
+    setIsLocationModalOpen(true);
+  }
+
+  function handleCloseLocationModal() {
+    clearLocationForm();
+    setError("");
+    setIsLocationModalOpen(false);
+  }
+
+  // - Handles
+
+  // + Filtering
+
   const filteredLocations = locations.filter((location) => {
     const searchText = locationSearchText.toLowerCase();
 
@@ -94,6 +115,10 @@ function LocationSection({
       location.name.toLowerCase().includes(searchText)
     );
   });
+
+  // - Filtering
+
+  // + Sorting
 
   const sortedLocations = useMemo(() => {
     return [...filteredLocations].sort((a, b) => {
@@ -108,6 +133,8 @@ function LocationSection({
         : bText.localeCompare(aText);
     });
   }, [filteredLocations, sortBy, sortDirection]);
+
+  // - Sorting
 
   // + Pagination
 
@@ -141,32 +168,23 @@ function LocationSection({
 
   return (
     <>
-      <h2>{editingLocationId === null ? "Add Location" : "Edit Location"}</h2>
-
-      {!canManageLocations && (
-        <p className="hint">
-          Only ADMIN and MANAGER users can create or edit locations.
-        </p>
-      )}
-
-      <LocationForm
-        locationCode={locationCode}
-        locationName={locationName}
-        editingLocationId={editingLocationId}
-        onLocationCodeChange={setLocationCode}
-        onLocationNameChange={setLocationName}
-        onSubmit={handleSubmit}
-        onCancelEdit={handleCancelEdit}
-        canManageLocations={canManageLocations}
-      />
-
       <h2>Locations</h2>
 
       <p className="hint">
         Locations with inventory history cannot be deleted.
       </p>
 
-      <PageToolbar>
+      <PageToolbar
+        actions={
+          <button
+            type="button"
+            onClick={handleOpenCreateLocationModal}
+            disabled={!canManageLocations}
+          >
+            + Add Location
+          </button>
+        }
+      >
         <label>
           Search locations:
           <input
@@ -201,6 +219,29 @@ function LocationSection({
           Clear Filters
         </button>
       </PageToolbar>
+
+      {!canManageLocations && (
+        <p className="hint">
+          Only ADMIN and MANAGER users can create or edit locations.
+        </p>
+      )}
+
+      <Modal
+        isOpen={isLocationModalOpen}
+        title={editingLocationId === null ? "Add Location" : "Edit Location"}
+        onClose={handleCloseLocationModal}
+      >
+        <LocationForm
+          locationCode={locationCode}
+          locationName={locationName}
+          editingLocationId={editingLocationId}
+          onLocationCodeChange={setLocationCode}
+          onLocationNameChange={setLocationName}
+          onSubmit={handleSubmit}
+          onCancelEdit={handleCancelEdit}
+          canManageLocations={canManageLocations}
+        />
+      </Modal>
 
       <p className="table-summary">
         Showing {paginatedLocations.length} of {filteredLocations.length} locations

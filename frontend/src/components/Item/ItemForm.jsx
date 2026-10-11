@@ -1,4 +1,4 @@
-function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, lowStockThreshold, onLowStockThreshold, onSubmit, onCancelEdit, canManageItems }) {
+function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, onQuantityChange, lowStockThreshold, onLowStockThreshold, onSubmit, canManageItems }) {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -55,12 +55,6 @@ function ItemForm({ name, sku, editingId, onNameChange, onSkuChange, quantity, o
       <button type="submit" disabled={!canManageItems}>
         {editingId === null ? "Add Item" : "Update Item"}
       </button>
-
-      {editingId !== null && (
-        <button type="button" onClick={onCancelEdit}>
-          Cancel
-        </button>
-      )}
     </form>
   )
 }

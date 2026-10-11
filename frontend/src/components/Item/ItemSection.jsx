@@ -97,10 +97,6 @@ function ItemSection({
     setIsItemModalOpen(true);
   }
 
-  function handleCancelEdit() {
-    handleCloseItemModal();
-  }
-
   function handleViewHistory(itemId) {
     fetchStockMovementsForItem(itemId, authToken)
       .then(() => {
@@ -342,7 +338,6 @@ function ItemSection({
           onLowStockThreshold={setLowStockThreshold}
           canManageItems={canManageItems}
           onSubmit={handleSubmit}
-          onCancelEdit={handleCancelEdit}
         />
       </Modal>
 

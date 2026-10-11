@@ -5,7 +5,6 @@ function LocationForm({
   onLocationCodeChange,
   onLocationNameChange,
   onSubmit,
-  onCancelEdit,
   canManageLocations,
 }) {
   return (
@@ -35,12 +34,6 @@ function LocationForm({
       <button type="submit" disabled={!canManageLocations}>
         {editingLocationId === null ? "Add Location" : "Update Location"}
       </button>
-
-      {editingLocationId !== null && (
-        <button type="button" onClick={onCancelEdit}>
-          Cancel
-        </button>
-      )}
     </form>
   );
 }

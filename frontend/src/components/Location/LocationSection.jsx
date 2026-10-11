@@ -64,10 +64,6 @@ function LocationSection({
     setIsLocationModalOpen(true);
   }
 
-  function handleCancelEdit() {
-    handleCloseLocationModal();
-  }
-
   function handleDelete(locationId) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this location?"
@@ -238,7 +234,6 @@ function LocationSection({
           onLocationCodeChange={setLocationCode}
           onLocationNameChange={setLocationName}
           onSubmit={handleSubmit}
-          onCancelEdit={handleCancelEdit}
           canManageLocations={canManageLocations}
         />
       </Modal>

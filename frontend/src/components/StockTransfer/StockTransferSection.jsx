@@ -4,6 +4,7 @@ import StockTransferTable from "./StockTransferTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
 import PageToolbar from "../PageToolbar";
+import Modal from "../Modal";
 
 function StockTransferSection({
   items,
@@ -36,6 +37,7 @@ function StockTransferSection({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortDirection, setSortDirection] = useState("desc");
+  const [isStockTransferModalOpen, setIsStockTransferModalOpen] = useState(false);
 
   const pageSize = 10;
 
@@ -153,12 +155,7 @@ function StockTransferSection({
 
   // - Pagination
 
-  function clearFilters() {
-    setSelectedItemId("");
-    setSelectedFromLocationId("");
-    setSelectedToLocationId("");
-    setCurrentPage(1);
-  }
+  // + Handles
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -167,6 +164,7 @@ function StockTransferSection({
       .then(() => {
         setError("");
         setSuccessMessage("Stock transfer completed successfully.");
+        setIsStockTransferModalOpen(false);
         fetchItems(authToken);
         fetchInventoryBalances(authToken);
         fetchAuditLogs(authToken);
@@ -176,38 +174,54 @@ function StockTransferSection({
       });
   }
 
+  function handleOpenCreateStockTransferModal() {
+    setTransferItemId("");
+    setFromLocationId("");
+    setToLocationId("");
+    setTransferQuantity("");
+    setTransferNote("");
+    setError("");
+    setIsStockTransferModalOpen(true);
+  }
+
+  function handleCloseStockTransferModal() {
+    setTransferItemId("");
+    setFromLocationId("");
+    setToLocationId("");
+    setTransferQuantity("");
+    setTransferNote("");
+    setError("");
+    setIsStockTransferModalOpen(false);
+  }
+
+  // - Handles
+
+  function clearFilters() {
+    setSelectedItemId("");
+    setSelectedFromLocationId("");
+    setSelectedToLocationId("");
+    setCurrentPage(1);
+  }
+
   return (
     <>
-      <h2>Transfer Stock</h2>
-
-      {!canTransferStock && (
-        <p className="hint">Select a real app user before transferring stock.</p>
-      )}
-
-      <StockTransferForm
-        items={items}
-        locations={locations}
-        transferItemId={transferItemId}
-        fromLocationId={fromLocationId}
-        toLocationId={toLocationId}
-        transferQuantity={transferQuantity}
-        transferNote={transferNote}
-        onTransferItemIdChange={setTransferItemId}
-        onFromLocationIdChange={setFromLocationId}
-        onToLocationIdChange={setToLocationId}
-        onTransferQuantityChange={setTransferQuantity}
-        onTransferNoteChange={setTransferNote}
-        onSubmit={handleSubmit}
-        canTransferStock={canTransferStock}
-      />
-
       <h2>Stock Transfer History</h2>
 
       <PageToolbar
         actions={
-          <button type="button" onClick={() => exportStockTransfers(authToken)}>
-            Export Stock Transfers CSV
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleOpenCreateStockTransferModal}
+              disabled={!canTransferStock}
+            >
+              + Transfer Stock
+            </button>
+          
+            <button type="button" onClick={() => exportStockTransfers(authToken)}>
+              Export Stock Transfers CSV
+            </button>
+          </>
         }
       >
         <label>
@@ -292,6 +306,33 @@ function StockTransferSection({
           }}
         />
       </PageToolbar>
+
+      {!canTransferStock && (
+        <p className="hint">Select a real app user before transferring stock.</p>
+      )}
+
+      <Modal
+        isOpen={isStockTransferModalOpen}
+        title="Transfer Stock"
+        onClose={handleCloseStockTransferModal}
+      >
+        <StockTransferForm
+          items={items}
+          locations={locations}
+          transferItemId={transferItemId}
+          fromLocationId={fromLocationId}
+          toLocationId={toLocationId}
+          transferQuantity={transferQuantity}
+          transferNote={transferNote}
+          onTransferItemIdChange={setTransferItemId}
+          onFromLocationIdChange={setFromLocationId}
+          onToLocationIdChange={setToLocationId}
+          onTransferQuantityChange={setTransferQuantity}
+          onTransferNoteChange={setTransferNote}
+          onSubmit={handleSubmit}
+          canTransferStock={canTransferStock}
+        />
+      </Modal>
 
       <p className="table-summary">
         Showing {paginatedStockTransfers.length} of {filteredStockTransfers.length} stock transfers

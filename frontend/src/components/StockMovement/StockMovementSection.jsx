@@ -4,6 +4,7 @@ import StockMovementTable from "./StockMovementTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
 import PageToolbar from "../PageToolbar";
+import Modal from "../Modal";
 
 function StockMovementSection({
   items,
@@ -36,6 +37,7 @@ function StockMovementSection({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortDirection, setSortDirection] = useState("desc");
+  const [isStockMovementModalOpen, setIsStockMovementModalOpen] = useState(false);
 
   const pageSize = 10;
 
@@ -147,6 +149,8 @@ function StockMovementSection({
 
   // - Pagination
 
+  // + Handles
+
   function handleStockMovementSubmit(event) {
     event.preventDefault();
 
@@ -154,8 +158,9 @@ function StockMovementSection({
       .then(() => {
         setError("");
         setSuccessMessage("Stock movement created successfully.");
-        fetchAuditLogs(authToken);
+        setIsStockMovementModalOpen(false);
         fetchInventoryBalances(authToken);
+        fetchAuditLogs(authToken);
       })
       .catch((error) => {
         handleApiError(error);
@@ -198,40 +203,42 @@ function StockMovementSection({
       });
   }
 
+  function handleOpenCreateStockMovementModal() {
+    setError("");
+    setIsStockMovementModalOpen(true);
+  }
+
+  function handleCloseStockMovementModal() {
+    setMovementItemId("");
+    setMovementLocationId("");
+    setMovementType("IN");
+    setMovementQuantity("");
+    setMovementNote("");
+    setError("");
+    setIsStockMovementModalOpen(false);
+  }
+
+  // - Handles
+
   return (
     <>
-      <h2>Add Stock Movement</h2>
-
-      {!canCreateStockMovements && (
-        <p className="hint">
-          Select a real app user before creating stock movements.
-        </p>
-      )}
-
-      <StockMovementForm
-        items={items}
-        locations={locations}
-        movementItemId={movementItemId}
-        movementLocationId={movementLocationId}
-        movementType={movementType}
-        movementQuantity={movementQuantity}
-        movementNote={movementNote}
-        onMovementItemIdChange={setMovementItemId}
-        onLocationIdChange={setMovementLocationId}
-        onMovementTypeChange={setMovementType}
-        onMovementQuantityChange={setMovementQuantity}
-        onMovementNoteChange={setMovementNote}
-        onSubmit={handleStockMovementSubmit}
-        canCreateStockMovements={canCreateStockMovements}
-      />
-
       <h2>Stock Movements</h2>
 
       <PageToolbar
         actions={
-          <button type="button" onClick={handleExportStockMovements}>
-            Export Stock Movements CSV
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleOpenCreateStockMovementModal}
+              disabled={!canCreateStockMovements}
+            >
+              + Add Stock Movement
+            </button>
+
+            <button type="button" onClick={handleExportStockMovements}>
+              Export Stock Movements CSV
+            </button>
+          </>
         }
       >
         <label>
@@ -309,6 +316,35 @@ function StockMovementSection({
           }}
         />
       </PageToolbar>
+
+      {!canCreateStockMovements && (
+        <p className="hint">
+          Select a real app user before creating stock movements.
+        </p>
+      )}
+
+      <Modal
+        isOpen={isStockMovementModalOpen}
+        title="Add Stock Movement"
+        onClose={handleCloseStockMovementModal}
+      >
+        <StockMovementForm
+          items={items}
+          locations={locations}
+          movementItemId={movementItemId}
+          movementLocationId={movementLocationId}
+          movementType={movementType}
+          movementQuantity={movementQuantity}
+          movementNote={movementNote}
+          onMovementItemIdChange={setMovementItemId}
+          onLocationIdChange={setMovementLocationId}
+          onMovementTypeChange={setMovementType}
+          onMovementQuantityChange={setMovementQuantity}
+          onMovementNoteChange={setMovementNote}
+          onSubmit={handleStockMovementSubmit}
+          canCreateStockMovements={canCreateStockMovements}
+        />
+      </Modal>
 
       <p className="table-summary">
           Showing {paginatedStockMovements.length} of {filteredStockMovements.length} stock movements

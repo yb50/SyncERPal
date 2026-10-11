@@ -23,6 +23,7 @@ import LoginSection from "./components/LoginSection";
 import { isForbiddenError, isUnauthorizedError } from "./api/apiError";
 import RecentActivitySidebar from "./components/RecentActivitySidebar";
 import AppHeader from "./components/AppHeader";
+import FirstUserSetupSection from "./components/FirstUserSetupSection";
 
 function App() {
   const {
@@ -147,7 +148,7 @@ function App() {
   const authToken = loggedInUser ? loggedInUser.token : "";
 
   const isLoggedIn = loggedInUser != null;
-  const showSetup = !authToken && setupRequired && !isLoggedIn;
+  const showSetup = !authLoading && !authToken && setupRequired && !isLoggedIn;
   const showErpApp = !authLoading && isLoggedIn;
   const showLoginRequired = !authLoading && !setupRequired && !isLoggedIn;
 
@@ -225,7 +226,7 @@ function App() {
         onLogout={handleHeaderLogout} 
       />
 
-      {!isLoggedIn && (
+      {!isLoggedIn && !setupRequired && (
         <LoginSection
           loggedInUser={loggedInUser}
           loginUsername={loginUsername}
@@ -237,6 +238,19 @@ function App() {
           logout={logout}
           setError={setError}
           setSuccessMessage={setSuccessMessage}
+        />
+      )}
+
+      {showSetup && (
+        <FirstUserSetupSection
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          saveUser={saveUser}
+          setError={setError}
+          setSuccessMessage={setSuccessMessage}
+          handleApiError={handleApiError}
         />
       )}
 

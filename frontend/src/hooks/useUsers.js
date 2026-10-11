@@ -29,7 +29,7 @@ function useUsers() {
   function saveUser(token) {
     const user = {
       username: username,
-      role: role,
+      role: setupRequired ? "ADMIN" : role,
       password: password,
     };
 

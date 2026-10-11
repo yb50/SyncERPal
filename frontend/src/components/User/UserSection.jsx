@@ -4,6 +4,7 @@ import UserTable from "./UserTable";
 import PaginationControls from "../PaginationControls";
 import SortControls from "../SortControls";
 import PageToolbar from "../PageToolbar";
+import Modal from "../Modal";
 
 function UserSection({
   users,
@@ -30,6 +31,7 @@ function UserSection({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("username");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   const pageSize = 10;
 
@@ -93,11 +95,7 @@ function UserSection({
 
   // - Pagination
 
-  function clearUserFilters() {
-    setUserSearchText("");
-    setSelectedRole("");
-    setCurrentPage(1);
-  }
+  // + Handles
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -108,6 +106,7 @@ function UserSection({
       .then(() => {
         setError("");
         setSuccessMessage("User created successfully.");
+        setIsUserModalOpen(false);
         fetchAuditLogs(authToken);
       })
       .catch((error) => {
@@ -151,33 +150,49 @@ function UserSection({
       });
   }
 
+  function handleOpenCreateUserModal() {
+    setUsername("");
+    setRole("WORKER");
+    setPassword("");
+    setError("");
+    setIsUserModalOpen(true);
+  }
+
+  function handleCloseUserModal() {
+    setUsername("");
+    setRole("WORKER");
+    setPassword("");
+    setError("");
+    setIsUserModalOpen(false);
+  }
+
+  // - Handles
+
+  function clearUserFilters() {
+    setUserSearchText("");
+    setSelectedRole("");
+    setCurrentPage(1);
+  }
+
   return (
     <>
-      <h2>Add User</h2>
-
-      {!canManageUsers && (
-        <p className="hint">Only ADMIN users can create new users.</p>
-      )}
-
-      <UserForm
-        username={username}
-        role={role}
-        password={password}
-        onUsernameChange={setUsername}
-        onRoleChange={setRole}
-        onPasswordChange={setPassword}
-        onSubmit={handleSubmit}
-        canManageUsers={canManageUsers}
-        setupRequired={setupRequired}
-      />
-
       <h2>Users</h2>
 
       <p className="hint">
         The last ADMIN user cannot be demoted or deleted.
       </p>
 
-      <PageToolbar>
+      <PageToolbar
+        actions={
+          <button
+            type="button"
+            onClick={handleOpenCreateUserModal}
+            disabled={!canManageUsers}
+          >
+            + Add User
+          </button>
+        }
+      >
         <label>
           Search users:
           <input
@@ -228,6 +243,28 @@ function UserSection({
           Clear Filters
         </button>
       </PageToolbar>
+
+      {!canManageUsers && (
+        <p className="hint">Only ADMIN users can create new users.</p>
+      )}
+
+      <Modal
+        isOpen={isUserModalOpen}
+        title="Add User"
+        onClose={handleCloseUserModal}
+      >
+        <UserForm
+          username={username}
+          role={role}
+          password={password}
+          onUsernameChange={setUsername}
+          onRoleChange={setRole}
+          onPasswordChange={setPassword}
+          onSubmit={handleSubmit}
+          canManageUsers={canManageUsers}
+          setupRequired={setupRequired}
+        />
+      </Modal>
 
       <p className="table-summary">
         Showing {paginatedUsers.length} of {filteredUsers.length} users

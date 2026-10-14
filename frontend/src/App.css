@@ -325,12 +325,24 @@ tr:nth-child(even) {
 }
 
 .recent-activity-sidebar .recent-activity-list {
-  padding-left: 18px;
+  list-style: none;
+  padding-left: 0;
   margin-bottom: 0;
 }
 
 .recent-activity-sidebar .recent-activity-list li {
-  margin-bottom: 14px;
+  padding: 12px 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.recent-activity-sidebar .recent-activity-list li:first-child {
+  padding-top: 0;
+}
+
+.recent-activity-sidebar .recent-activity-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .recent-activity-sidebar .recent-activity-list p {

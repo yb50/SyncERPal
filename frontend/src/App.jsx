@@ -24,6 +24,7 @@ import { isForbiddenError, isUnauthorizedError } from "./api/apiError";
 import RecentActivitySidebar from "./components/RecentActivitySidebar";
 import AppHeader from "./components/AppHeader";
 import FirstUserSetupSection from "./components/FirstUserSetupSection";
+import ToastNotification from "./components/ToastNotification";
 
 function App() {
   const {
@@ -220,6 +221,18 @@ function App() {
 
   return (
     <div className="app">
+      <ToastNotification 
+        type="error"
+        message={error}
+        onClose={() => setError("")}
+      />
+
+      <ToastNotification 
+        type="success"
+        message={successMessage}
+        onClose={() => setSuccessMessage("")}
+      />
+
       <AppHeader 
         currentUser={currentUser} 
         onLogout={handleHeaderLogout} 
@@ -261,10 +274,6 @@ function App() {
           </p>
         </section>
       )}
-
-      {error && <p className="error">{error}</p>}
-      {successMessage && <p className="success">{successMessage}</p>}
-
       
       {showErpApp && (
         <div className="app-shell">

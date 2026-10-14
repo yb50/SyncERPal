@@ -494,3 +494,44 @@ tr:nth-child(even) {
 .modal-body {
   padding: 20px;
 }
+
+/* Toast Notifications */
+
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1200;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  max-width: 420px;
+  padding: 14px 16px;
+
+  border-radius: 8px;
+  border: 1px solid;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+  font-weight: 500;
+}
+
+.toast-notification.success {
+  background: darkgreen;
+  border-color: green;
+}
+
+.toast-notification.error {
+  background: darkred;
+  border-color: red;
+}
+
+.toast-notification button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}

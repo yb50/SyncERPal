@@ -64,7 +64,6 @@ function App() {
     setMovementQuantity,
     setMovementNote,
     fetchStockMovements,
-    fetchStockMovementsForItem,
     saveStockMovement,
     changeMovementFilterItemId,
     exportStockMovements,
@@ -330,7 +329,7 @@ function App() {
                       importItems={importItems}
                       exportItems={exportItems}
                       exportLowStockItems={exportLowStockItems}
-                      fetchStockMovementsForItem={fetchStockMovementsForItem}
+                      changeMovementFilterItemId={changeMovementFilterItemId}
                       fetchAuditLogs={fetchAuditLogs}
                       authToken={authToken}
                       canManageItems={canManageItems}

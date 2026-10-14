@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
 import PaginationControls from "../PaginationControls";
@@ -26,7 +27,7 @@ function ItemSection({
   removeItem,
   startEditItem,
   clearItemForm,
-  fetchStockMovementsForItem,
+  changeMovementFilterItemId,
   fetchAuditLogs,
   setError,
   handleApiError,
@@ -45,6 +46,7 @@ function ItemSection({
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
 
   const pageSize = 10;
+  const navigate = useNavigate();
 
   // + Handles
 
@@ -98,9 +100,20 @@ function ItemSection({
   }
 
   function handleViewHistory(itemId) {
-    fetchStockMovementsForItem(itemId, authToken)
+    const item = items.find((item) => item.id === itemId);
+
+    setSuccessMessage("");
+
+    changeMovementFilterItemId(String(itemId), authToken)
       .then(() => {
         setError("");
+
+        const itemLabel = item
+          ? `${item.name} (${item.sku})`
+          : `item ${itemId}`;
+
+        setSuccessMessage(`Showing stock movement history for ${itemLabel}.`);
+        navigate("/stock-movements");
       })
       .catch((error) => {
         handleApiError(error);

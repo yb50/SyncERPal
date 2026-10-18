@@ -148,9 +148,9 @@ public class StockTransferService {
                 "STOCK_TRANSFER",
                 savedStockTransfer.getId(),
                 "Transferred " + request.getQuantity() +
-                        " of item " + item.getSku() +
-                        " from " + fromLocation.getCode() +
-                        " to " + toLocation.getCode(),
+                        " of item " + item.getName() + " (" + item.getSku() + ")" +
+                        " from " + fromLocation.getName() + " (" + fromLocation.getCode() + ")" +
+                        " to " + toLocation.getName() + " (" + toLocation.getCode() + ")",
                 performedBy
         );
 

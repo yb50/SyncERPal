@@ -130,8 +130,8 @@ public class StockMovementService {
                 savedStockMovement.getId(),
                 savedStockMovement.getType() + " " +
                         savedStockMovement.getQuantity() +
-                        " for item " + item.getSku() +
-                        " at location " + location.getCode(),
+                        " for item " + item.getName() + " (" + item.getSku() + ")" +
+                        " at location " + location.getName() + " (" + location.getCode() + ")",
                 performedBy
         );
 

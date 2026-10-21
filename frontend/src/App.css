@@ -547,3 +547,63 @@ tr:nth-child(even) {
   line-height: 1;
   cursor: pointer;
 }
+
+/* Items CSV Export Dropdown */
+
+.export-dropdown {
+  position: relative;
+}
+
+.export-dropdown summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  margin: 4px 6px 4px 0;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #f1f1f1;
+  white-space: nowrap;
+}
+
+.export-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.export-dropdown summary::after {
+  content: " ▾";
+}
+
+.export-dropdown summary:hover {
+  background: #e3e3e3;
+}
+
+.export-dropdown summary:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.export-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 30;
+  min-width: 190px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.export-dropdown-menu button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  border: none;
+  background: transparent;
+}
+
+.export-dropdown-menu button:hover {
+  background: #f3f4f6;
+}

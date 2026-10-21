@@ -17,7 +17,6 @@ import useInventoryBalances from "./hooks/useInventoryBalances";
 import InventoryBalanceSection from "./components/InventoryBalance/InventoryBalanceSection";
 import useStockTransfers from "./hooks/useStockTransfers";
 import StockTransferSection from "./components/StockTransfer/StockTransferSection";
-import LowStockSection from "./components/LowStock/LowStockSection";
 import useAuth from "./hooks/useAuth";
 import LoginSection from "./components/LoginSection";
 import { isForbiddenError, isUnauthorizedError } from "./api/apiError";
@@ -306,14 +305,6 @@ function App() {
                 path="/items"
                 element={
                   <>
-                    <LowStockSection
-                      items={items}
-                      exportLowStockItems={exportLowStockItems}
-                      authToken={authToken}
-                      setError={setError}
-                      handleApiError={handleApiError}
-                    />
-
                     <ItemSection
                       items={items}
                       stockMovements={stockMovements}

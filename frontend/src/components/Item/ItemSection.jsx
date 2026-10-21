@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import ItemForm from "./ItemForm";
 import ItemTable from "./ItemTable";
@@ -32,6 +32,7 @@ function ItemSection({
   setError,
   handleApiError,
   exportItems,
+  exportLowStockItems,
   setImportFile,
   importItems,
   canManageItems,
@@ -47,6 +48,7 @@ function ItemSection({
 
   const pageSize = 10;
   const navigate = useNavigate();
+  const exportMenuRef = useRef(null);
 
   // + Handles
 
@@ -134,6 +136,16 @@ function ItemSection({
 
   function handleExportItems() {
     exportItems(authToken)
+      .then(() => {
+        setError("");
+      })
+      .catch((error) => {
+        handleApiError(error);
+      });
+  }
+
+  function handleExportLowStockItems() {
+    exportLowStockItems(authToken)
       .then(() => {
         setError("");
       })
@@ -255,9 +267,34 @@ function ItemSection({
               + Add Item
             </button>
 
-            <button type="button" onClick={handleExportItems}>
-              Export Items CSV
-            </button>
+            <details 
+              className="export-dropdown" 
+              ref={exportMenuRef}
+            >
+              <summary>Export CSV</summary>
+
+              <div className="export-dropdown-menu">
+                <button
+                  type="button"
+                  onClick={() => {
+                    exportMenuRef.current.open = false;
+                    handleExportItems();
+                  }}
+                >
+                  All Items
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    exportMenuRef.current.open = false;
+                    handleExportLowStockItems();
+                  }}
+                >
+                  Low Stock Report
+                </button>
+              </div>
+            </details>
 
             <form onSubmit={handleImportItems} className="toolbar-form">
               <input

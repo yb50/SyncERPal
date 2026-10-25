@@ -1,6 +1,7 @@
 package com.yb.SyncERPal.service;
 
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.ItemImportResult;
 import com.yb.SyncERPal.model.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ItemService {
@@ -265,7 +268,10 @@ public class ItemService {
     }
 
     @Transactional
-    public int importItemsFromCsv(MultipartFile file, String performedBy) {
+    public ItemImportResult importItemsFromCsv(
+            MultipartFile file,
+            String performedBy
+    ) {
         appUserService.requireManagerOrAdmin(performedBy);
 
         if (file == null || file.isEmpty()) {
@@ -273,6 +279,9 @@ public class ItemService {
         }
 
         int importedCount = 0;
+        int skippedCount = 0;
+
+        Set<String> importedSkus = new HashSet<>();
 
         try (
                 BufferedReader reader = new BufferedReader(
@@ -286,25 +295,41 @@ public class ItemService {
                         .parse(reader)
         ) {
             for (CSVRecord record : csvParser) {
+                String sku = getRequiredText(record, "sku");
+
+                if (itemRepository.existsBySku(sku) || importedSkus.contains(sku)) {
+                    skippedCount++;
+                    continue;
+                }
+
                 Item item = new Item();
 
-                item.setSku(getRequiredText(record, "sku"));
+                item.setSku(sku);
                 item.setName(getRequiredText(record, "name"));
                 item.setQuantity(0);
                 item.setLowStockThreshold(parseInteger(record, "lowStockThreshold"));
 
                 createItem(item, performedBy);
 
+                importedSkus.add(sku);
                 importedCount++;
             }
 
-            logger.info("Items imported from CSV by: {}", performedBy);
+            logger.info(
+                    "Items CSV import completed: imported={}, skipped={}, by={}",
+                    importedCount,
+                    skippedCount,
+                    performedBy
+            );
 
-            return importedCount;
+            return new ItemImportResult(importedCount, skippedCount);
+
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to import CSV: " + e.getMessage());
+            throw new IllegalArgumentException(
+                    "Failed to import CSV: " + e.getMessage()
+            );
         }
     }
 

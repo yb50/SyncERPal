@@ -2,6 +2,7 @@ package com.yb.SyncERPal.controller;
 
 import com.yb.SyncERPal.model.AppUser;
 import com.yb.SyncERPal.model.Item;
+import com.yb.SyncERPal.model.ItemImportResult;
 import com.yb.SyncERPal.model.PageResponse;
 import com.yb.SyncERPal.service.ItemService;
 import org.springframework.http.HttpHeaders;
@@ -67,11 +68,14 @@ public class ItemController {
     }
 
     @PostMapping("/items/import")
-    public void importItems(
+    public ItemImportResult importItems(
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal AppUser currentUser
     ) {
-        itemService.importItemsFromCsv(file, currentUser.getUsername());
+        return itemService.importItemsFromCsv(
+                file,
+                currentUser.getUsername()
+        );
     }
 
     @GetMapping("/items/export")
